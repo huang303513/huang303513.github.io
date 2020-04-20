@@ -4,6 +4,14 @@
 - http://www.conardli.top/blog/article/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/%E3%80%90%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E3%80%91%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%8F%8A%E9%85%8D%E7%BD%AE.html#_1-1-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85hexo
 
 
+```
+ 1033  npm run clean
+ 1034  npm run build
+ 1035  npm run deploy
+ 1036  history
+ 1037  npm run server
+```
+
 
 # Landscape
 
