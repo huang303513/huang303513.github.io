@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          SDWebImage源码解析(一) - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/05/01/SDWebImage源码解析(一)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                            
+                        </div>
+                        <h1>SDWebImage源码解析(一)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-05-01
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">3.6k</span> and
+                                Reading Time <span class="post-count">14</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h2><p><code>SDWebImage</code>基本是iOS项目的标配。他以灵活简单的api，提供了图片从加载、解析、处理、缓存、清理等一些列功能。让我们专心于业务的处理。但是并不意味着会用就可以了，通过源码分析和学习，让我们知道如何用好它。学习分析优秀源码也可以从潜移默化中给我们提供很多解决日常需求的思路。下面就是一张图来概述<code>SDWebImage</code>的所有类：</p>
+<p><img src="https://huang303513.github.io/assets/postImages/2017050201.png" alt="img"></p>
+<p>通过对这个图片的分析，我们可以把<code>SDWebImage</code>的源码分为三种：</p>
+<ul>
+<li>各种分类：<ul>
+<li><code>UIButton(WebCache)</code>为<code>UIButton</code>类添加载图片的方法。比如正常情况下、点击情况下、的image属性和背景图片等。</li>
+<li><code>MKAnnotationView(WebCache)</code>为<code>MKAnnotationView</code>类添加各种加载图片的方法。</li>
+<li><code>UIImageView(WebCache)</code>为<code>UIImageView</code>类添加加载图片的方法。</li>
+<li><code>UIImageView(HighlightedWebCache)</code>为<code>UIImageView</code>类添加高亮状态下加载图片的方法。</li>
+<li><code>FLAnimatedImageView(WebCache)</code>为<code>FLAnimatedImageView</code>类添加加载动态的方法,这个分类需要引入<code>FLAnimatedImage</code>框架。<code>SDWebImage</code>推荐使用这个框架来处理动态图片(GIF)的加载。</li>
+<li>UIImageView、UIButton、FLAnimatedImageView通过<code>sd_setImageWithURL</code>等api来做图片加载请求。这也是我们唯一需要做的。</li>
+<li>上面的几个UIView子类都会调用<code>UIView(WebCache)</code>分类的<code>sd_internalSetImageWithURL</code>方法来做图片加载请求。具体是通过<code>SDWebImageManager</code>调用来实现的。同时实现了Operation取消、ActivityIndicator的添加与取消。</li>
+</ul>
+</li>
+<li>各种工具类：<ul>
+<li><code>NSData+ImageContentType</code>: 根据图片数据获取图片的类型，比如GIF、PNG等。</li>
+<li><code>SDWebImageCompat</code>: 根据屏幕的分辨倍数成倍放大或者缩小图片大小。</li>
+<li><code>SDImageCacheConfig</code>: 图片缓存策略记录。比如是否解压缩、是否允许iCloud、是否允许内存缓存、缓存时间等。默认的缓存时间是一周。</li>
+<li><code>UIImage+MultiFormat</code>: 获取UIImage对象对应的data、或者根据data生成指定格式的UIImage，其实就是UIImage和NSData之间的转换处理。</li>
+<li><code>UIImage+GIF</code>: 对于一张图片是否GIF做判断。可以根据NSData返回一张GIF的UIImage对象，并且只返回GIF的第一张图片生成的GIF。如果要显示多张GIF，使用<code>FLAnimatedImageView</code>。</li>
+<li><code>SDWebImageDecoder</code>: 根据图片的情况，做图片的解压缩处理。并且根据图片的情况决定如何处理解压缩。</li>
+</ul>
+</li>
+<li>核心类：<ul>
+<li><code>SDImageCache</code>: 负责SDWebImage的整个缓存工作，是一个<code>单列对象</code>。缓存路径处理、缓存名字处理、管理内存缓存和磁盘缓存的创建和删除、根据指定key获取图片、存入图片的类型处理、根据缓存的创建和修改日期删除缓存。</li>
+<li><code>SDWebImageManager</code>: 拥有一个<code>SDWebImageCache</code>和<code>SDWebImageDownloader</code>属性分别用于图片的缓存和加载处理。为UIView及其子类提供了加载图片的统一接口。管理正在加载操作的集合。这个类是<code>一个单列</code>。还有就是各种加载选项的处理。</li>
+<li><code>SDWebImageDownloader</code>: 实现了图片加载的具体处理，如果图片在缓存存在则从缓存区。如果缓存不存在，则直接创建一个。<code>SDWebImageDownloaderOperation</code>对象来下载图片。管理NSURLRequest对象请求头的封装、缓存、cookie的设置。加载选项的处理等功能。管理Operation之间的依赖关系。这个类是<code>一个单列</code>.</li>
+<li><code>SDWebImageDownloaderOperation</code>: 一个自定义的并行Operation子类。这个类主要实现了图片下载的具体操作、以及图片下载完成以后的图片解压缩、Operation生命周期管理等。  </li>
+<li><code>UIView+WebCache</code>: 所有的UIButton、UIImageView都回调用这个分类的方法来完成图片加载的处理。同时通过<code>UIView+WebCacheOperation</code>分类来管理请求的取消和记录工作。所有UIView及其子类的分类都是用这个类的<code>sd_intemalSetImageWithURL:</code>来实现图片的加载。</li>
+<li><code>FLAnimatedImageView</code>: 动态图片的数据通过ALAnimatedImage对象来封装。<code>FLAnimatedImageView</code>是<code>UIImageView</code>的子类。通过他完全可以实现动态图片的加载显示和管理。并且比<code>UIImageView</code>做了流程优化。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-实现流程"><a href="#2-实现流程" class="headerlink" title="2 实现流程"></a>2 实现流程</h2><p><code>SDWebImage</code>为我们实现了图片加载、数据处理、图片缓存等一些列工作。通过下图我们可以分析一下他的流程：</p>
+<p><img src="https://huang303513.github.io/assets/postImages/2017050202.png" alt="img"></p>
+<p>通过这个图，我们发现<code>SDWebImage</code>加载的过程是首先从缓存中加载数据。而且缓存加载又是优先从内存缓存中加载，然后才是磁盘加载。最后如果缓存没有，才从网络上加载。同时网络成功加载图片以后，存入本地缓存。</p>
+<h2 id="3-UIView-WebCache分析"><a href="#3-UIView-WebCache分析" class="headerlink" title="3 UIView+WebCache分析"></a>3 <code>UIView+WebCache</code>分析</h2><p>UIImageView、UIButton、FLAnimatedImageView都会调用<code>UIView(WebCache)</code>分类的<code>sd_internalSetImageWithURL</code>方法来做图片加载请求。具体是通过<code>SDWebImageManager</code>调用来实现的。同时实现了Operation取消、ActivityIndicator的添加与取消。我们首先来看<code>sd_internalSetImageWithURL</code>方法的实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 所有UIView及其子类都是通过这个方法来加载图片</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param url 加载的url</span></span><br><span class="line"><span class="comment"> @param placeholder 占位图</span></span><br><span class="line"><span class="comment"> @param options 加载选项</span></span><br><span class="line"><span class="comment"> @param operationKey key</span></span><br><span class="line"><span class="comment"> @param setImageBlock Block</span></span><br><span class="line"><span class="comment"> @param progressBlock 进度Block</span></span><br><span class="line"><span class="comment"> @param completedBlock 回调Block</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_internalSetImageWithURL:(<span class="keyword">nullable</span> <span class="built_in">NSURL</span> *)url</span><br><span class="line">                  placeholderImage:(<span class="keyword">nullable</span> <span class="built_in">UIImage</span> *)placeholder</span><br><span class="line">                           options:(SDWebImageOptions)options</span><br><span class="line">                      operationKey:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)operationKey</span><br><span class="line">                     setImageBlock:(<span class="keyword">nullable</span> SDSetImageBlock)setImageBlock</span><br><span class="line">                          progress:(<span class="keyword">nullable</span> SDWebImageDownloaderProgressBlock)progressBlock</span><br><span class="line">                         completed:(<span class="keyword">nullable</span> SDExternalCompletionBlock)completedBlock &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//取消当前类所对应的所有下载Operation对象</span></span><br><span class="line">    <span class="built_in">NSString</span> *validOperationKey = operationKey ?: <span class="built_in">NSStringFromClass</span>([<span class="keyword">self</span> <span class="keyword">class</span>]);</span><br><span class="line">    [<span class="keyword">self</span> sd_cancelImageLoadOperationWithKey:validOperationKey];</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     把UIImageView的加载图片操作和他自身用关联对象关联起来，方便后面取消等操作。关联的key就是UIImageView对应的类名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">    <span class="comment">//如果有设置站位图，则先显示站位图</span></span><br><span class="line">    <span class="keyword">if</span> (!(options &amp; SDWebImageDelayPlaceholder)) &#123;</span><br><span class="line">        dispatch_main_async_safe(^&#123;</span><br><span class="line">            [<span class="keyword">self</span> sd_setImage:placeholder imageData:<span class="literal">nil</span> basedOnClassOrViaCustomSetImageBlock:setImageBlock];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (url) &#123;</span><br><span class="line">        <span class="comment">// check if activityView is enabled or not</span></span><br><span class="line">        <span class="comment">//如果UIImageView对象有设置添加转动菊花数据，加载的时候添加转动的菊花</span></span><br><span class="line">        <span class="keyword">if</span> ([<span class="keyword">self</span> sd_showActivityIndicatorView]) &#123;</span><br><span class="line">            [<span class="keyword">self</span> sd_addActivityIndicator];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        __<span class="keyword">weak</span> __<span class="keyword">typeof</span>(<span class="keyword">self</span>)wself = <span class="keyword">self</span>;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         *operation是一个`SDWebImageCombinedOperation`对象。通过这个对象来获取图片</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">id</span> &lt;SDWebImageOperation&gt; operation = [SDWebImageManager.sharedManager loadImageWithURL:url options:options progress:progressBlock completed:^(<span class="built_in">UIImage</span> *image, <span class="built_in">NSData</span> *data, <span class="built_in">NSError</span> *error, SDImageCacheType cacheType, <span class="built_in">BOOL</span> finished, <span class="built_in">NSURL</span> *imageURL) &#123;</span><br><span class="line">            __<span class="keyword">strong</span> __<span class="keyword">typeof</span> (wself) sself = wself;</span><br><span class="line">            <span class="comment">//停止菊花</span></span><br><span class="line">            [sself sd_removeActivityIndicator];</span><br><span class="line">            <span class="keyword">if</span> (!sself) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            dispatch_main_async_safe(^&#123;</span><br><span class="line">                <span class="keyword">if</span> (!sself) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//如果设置了不自动显示图片，则直接调用completedBlock，让调用者处理图片的显示</span></span><br><span class="line">                <span class="keyword">if</span> (image &amp;&amp; (options &amp; SDWebImageAvoidAutoSetImage) &amp;&amp; completedBlock) &#123;</span><br><span class="line">                    completedBlock(image, error, cacheType, url);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (image) &#123;</span><br><span class="line">                    <span class="comment">//自动显示图片</span></span><br><span class="line">                    [sself sd_setImage:image imageData:data basedOnClassOrViaCustomSetImageBlock:setImageBlock];</span><br><span class="line">                    [sself sd_setNeedsLayout];</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//如果设置了延迟显示占位图，则图片加载失败的情况下显示占位图</span></span><br><span class="line">                    <span class="keyword">if</span> ((options &amp; SDWebImageDelayPlaceholder)) &#123;</span><br><span class="line">                        [sself sd_setImage:placeholder imageData:<span class="literal">nil</span> basedOnClassOrViaCustomSetImageBlock:setImageBlock];</span><br><span class="line">                        [sself sd_setNeedsLayout];</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//完成回调</span></span><br><span class="line">                <span class="keyword">if</span> (completedBlock &amp;&amp; finished) &#123;</span><br><span class="line">                    completedBlock(image, error, cacheType, url);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;];</span><br><span class="line">        <span class="comment">//关联Operationkey与Operation对象。方便后面根据key取消operation操作等。</span></span><br><span class="line">        [<span class="keyword">self</span> sd_setImageLoadOperation:operation forKey:validOperationKey];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//加载失败的情况</span></span><br><span class="line">        dispatch_main_async_safe(^&#123;</span><br><span class="line">            <span class="comment">//移除菊花</span></span><br><span class="line">            [<span class="keyword">self</span> sd_removeActivityIndicator];</span><br><span class="line">            <span class="keyword">if</span> (completedBlock) &#123;</span><br><span class="line">                <span class="built_in">NSError</span> *error = [<span class="built_in">NSError</span> errorWithDomain:SDWebImageErrorDomain code:<span class="number">-1</span> userInfo:@&#123;<span class="built_in">NSLocalizedDescriptionKey</span> : <span class="string">@"Trying to load a nil url"</span>&#125;];</span><br><span class="line">                completedBlock(<span class="literal">nil</span>, error, SDImageCacheTypeNone, url);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>给UIView及其子类添加旋转菊花是通过关联对象来实现的。通过如下几个方法来实现：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark 通过关联对象来实现菊花的添加</span></span><br><span class="line">- (<span class="built_in">UIActivityIndicatorView</span> *)activityIndicator &#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">UIActivityIndicatorView</span> *)objc_getAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_INDICATOR);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)setActivityIndicator:(<span class="built_in">UIActivityIndicatorView</span> *)activityIndicator &#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_INDICATOR, activityIndicator, OBJC_ASSOCIATION_RETAIN);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark 是否显示旋转菊花</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_setShowActivityIndicatorView:(<span class="built_in">BOOL</span>)show &#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_SHOW, @(show), OBJC_ASSOCIATION_RETAIN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)sd_showActivityIndicatorView &#123;</span><br><span class="line">    <span class="keyword">return</span> [objc_getAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_SHOW) boolValue];</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark 旋转菊花的样式</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_setIndicatorStyle:(<span class="built_in">UIActivityIndicatorViewStyle</span>)style&#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_STYLE, [<span class="built_in">NSNumber</span> numberWithInt:style], OBJC_ASSOCIATION_RETAIN);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">int</span>)sd_getIndicatorStyle&#123;</span><br><span class="line">    <span class="keyword">return</span> [objc_getAssociatedObject(<span class="keyword">self</span>, &amp;TAG_ACTIVITY_STYLE) intValue];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还有就是通过<code>UIView+WebCacheOperation</code>类来实现UIView的图片下载<code>Operation</code>的关联和取消。具体key的值可以从<code>sd_internalSetImageWithURL</code>中找到具体获取方式，通过在这个方法中实现<code>Operation</code>的关联与取消。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 关联Operation对象与key对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param operation Operation对象</span></span><br><span class="line"><span class="comment"> @param key key</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_setImageLoadOperation:(<span class="keyword">nullable</span> <span class="keyword">id</span>)operation forKey:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)key &#123;</span><br><span class="line">    <span class="keyword">if</span> (key) &#123;</span><br><span class="line">        [<span class="keyword">self</span> sd_cancelImageLoadOperationWithKey:key];</span><br><span class="line">        <span class="keyword">if</span> (operation) &#123;</span><br><span class="line">            SDOperationsDictionary *operationDictionary = [<span class="keyword">self</span> operationDictionary];</span><br><span class="line">            operationDictionary[key] = operation;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 取消当前key对应的所有实现了SDWebImageOperation协议的Operation对象</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param key Operation对应的key</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_cancelImageLoadOperationWithKey:(<span class="keyword">nullable</span> <span class="built_in">NSString</span> *)key &#123;</span><br><span class="line">    <span class="comment">// Cancel in progress downloader from queue</span></span><br><span class="line">    <span class="comment">//获取当前View对应的所有key</span></span><br><span class="line">    SDOperationsDictionary *operationDictionary = [<span class="keyword">self</span> operationDictionary];</span><br><span class="line">    <span class="comment">//获取对应的图片加载Operation</span></span><br><span class="line">    <span class="keyword">id</span> operations = operationDictionary[key];</span><br><span class="line">    <span class="comment">//取消所有当前View对应的所有Operation</span></span><br><span class="line">    <span class="keyword">if</span> (operations) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([operations isKindOfClass:[<span class="built_in">NSArray</span> <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">id</span> &lt;SDWebImageOperation&gt; operation <span class="keyword">in</span> operations) &#123;</span><br><span class="line">                <span class="keyword">if</span> (operation) &#123;</span><br><span class="line">                    [operation cancel];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([operations conformsToProtocol:<span class="class"><span class="keyword">@protocol</span>(<span class="title">SDWebImageOperation</span>)])</span>&#123;</span><br><span class="line">            [(<span class="keyword">id</span>&lt;SDWebImageOperation&gt;) operations cancel];</span><br><span class="line">        &#125;</span><br><span class="line">        [operationDictionary removeObjectForKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-FLAnimatedImageView分析"><a href="#4-FLAnimatedImageView分析" class="headerlink" title="4 FLAnimatedImageView分析"></a>4 FLAnimatedImageView分析</h2><p><code>SDWebImage</code>使用<code>FLAnimatedImage</code>框架来处理动态图片，它包含<code>FLAnimatedImage</code>和<code>FLAnimatedImageView</code>两个雷。动态图片的数据通过<code>ALAnimatedImage</code>对象来封装。<code>FLAnimatedImageView</code>是<code>UIImageView</code>的子类。通过他完全可以实现动态图片的加载显示和管理。并且比<code>UIImageView</code>做了流程优化。我们来看一下<code>FLAnimatedImageView.h</code>里面定义的接口：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> `FLAnimatedImageView`是一个`UIImageView`的子类。实现了`UIImageView`的`start/stop/isAnimating`方法。所以我们可以直接使用`FLAnimatedImageView`替代`UIImageView`。</span></span><br><span class="line"><span class="comment"> 通过`CADisplayLink`对象来处理当前图片帧和下一帧图片的显示。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">FLAnimatedImageView</span> : <span class="title">UIImageView</span></span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 动态图片的封装对象。首先通过设置`[UIImageView.image]`为nil来清除已经存在的动态图片。设置`animatedImage`属性会自动设置新的动态图片并且开始显示。而且会把当前显示的UIImage存入`currentFrame`中。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) FLAnimatedImage *animatedImage;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="keyword">void</span>(^loopCompletionBlock)(<span class="built_in">NSUInteger</span> loopCountRemaining);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 当前动画帧对应的UIImage对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>, <span class="keyword">readonly</span>) <span class="built_in">UIImage</span> *currentFrame;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 当前图片镇对应的索引</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>, <span class="keyword">readonly</span>) <span class="built_in">NSUInteger</span> currentFrameIndex;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 指定动态图片执行所在的runloop的mode。NSRunLoopCommonMode</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *runLoopMode;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<p>我们通过<code>FLAnimatedImageView+WebCache</code>这个分类的<code>sd_setImageWithURL</code>来加载动态图片：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> FLAnimatedImage+WebCache分类通过这个方法来加载动态图片</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param url 图片的url</span></span><br><span class="line"><span class="comment"> @param placeholder 占位图</span></span><br><span class="line"><span class="comment"> @param options 加载选项</span></span><br><span class="line"><span class="comment"> @param progressBlock 进度Block</span></span><br><span class="line"><span class="comment"> @param completedBlock 完成Block</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)sd_setImageWithURL:(<span class="keyword">nullable</span> <span class="built_in">NSURL</span> *)url</span><br><span class="line">          placeholderImage:(<span class="keyword">nullable</span> <span class="built_in">UIImage</span> *)placeholder</span><br><span class="line">                   options:(SDWebImageOptions)options</span><br><span class="line">                  progress:(<span class="keyword">nullable</span> SDWebImageDownloaderProgressBlock)progressBlock</span><br><span class="line">                 completed:(<span class="keyword">nullable</span> SDExternalCompletionBlock)completedBlock &#123;</span><br><span class="line">    __<span class="keyword">weak</span> <span class="keyword">typeof</span>(<span class="keyword">self</span>)weakSelf = <span class="keyword">self</span>;</span><br><span class="line">    [<span class="keyword">self</span> sd_internalSetImageWithURL:url</span><br><span class="line">                    placeholderImage:placeholder</span><br><span class="line">                             options:options</span><br><span class="line">                        operationKey:<span class="literal">nil</span></span><br><span class="line">                       setImageBlock:^(<span class="built_in">UIImage</span> *image, <span class="built_in">NSData</span> *imageData) &#123;</span><br><span class="line">                           <span class="comment">//根据NSData的类型获取图片的类型</span></span><br><span class="line">                           SDImageFormat imageFormat = [<span class="built_in">NSData</span> sd_imageFormatForImageData:imageData];</span><br><span class="line">                           <span class="comment">//如果是GIF，则处理</span></span><br><span class="line">                           <span class="keyword">if</span> (imageFormat == SDImageFormatGIF) &#123;</span><br><span class="line">                               <span class="comment">//给FLAnimatedImageView的animatedImage属性设置动态图片。这个setter方法被重写了</span></span><br><span class="line">                               weakSelf.animatedImage = [FLAnimatedImage animatedImageWithGIFData:imageData];</span><br><span class="line">                               weakSelf.image = <span class="literal">nil</span>;</span><br><span class="line">                           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                               <span class="comment">//不是动态图片，则正常显示</span></span><br><span class="line">                               weakSelf.image = image;</span><br><span class="line">                               weakSelf.animatedImage = <span class="literal">nil</span>;</span><br><span class="line">                           &#125;</span><br><span class="line">                       &#125;</span><br><span class="line">                            progress:progressBlock</span><br><span class="line">                           completed:completedBlock];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面可以看出，获取图片数据以后。首先通过<code>SDImageFormat</code>得到图片的类型。如果是GIF类型，则先把图片数据封装成一个<code>FLAnimatedImage</code>对象。然后设置给animatedImage属性。这个属性的setter方法如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> animatedImage的setter方法。通过这个属性setter方法来设置FLAnimatedImageView的数据。并且开始动态显示</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"> @param animatedImage animatedImage属性</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)setAnimatedImage:(FLAnimatedImage *)animatedImage</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (![_animatedImage isEqual:animatedImage]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (animatedImage) &#123;</span><br><span class="line">            <span class="comment">//清除UIImageView以前的图片数据</span></span><br><span class="line">            <span class="keyword">super</span>.image = <span class="literal">nil</span>;</span><br><span class="line">            <span class="keyword">super</span>.highlighted = <span class="literal">NO</span>;</span><br><span class="line">            <span class="comment">//先说intrinsicContentSize，也就是控件的内置大小。比如UILabel，UIButton等控件，他们都有自己的内置大小。控件的内置大小往往是由控件本身的内容所决定的，比如一个UILabel的文字很长，那么该UILabel的内置大小自然会很长。控件的内置大小可以通过UIView的intrinsicContentSize属性来获取内置大小，也可以通过invalidateIntrinsicContentSize方法来在下次UI规划事件中重新计算intrinsicContentSize。如果直接创建一个原始的UIView对象，显然它的内置大小为0。</span></span><br><span class="line">            [<span class="keyword">self</span> invalidateIntrinsicContentSize];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//停止动态图片的动态显示</span></span><br><span class="line">            [<span class="keyword">self</span> stopAnimating];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//赋值</span></span><br><span class="line">        _animatedImage = animatedImage;</span><br><span class="line">        <span class="comment">//当前动态图片数据帧</span></span><br><span class="line">        <span class="keyword">self</span>.currentFrame = animatedImage.posterImage;</span><br><span class="line">        <span class="comment">//当前数据帧索引</span></span><br><span class="line">        <span class="keyword">self</span>.currentFrameIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (animatedImage.loopCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">self</span>.loopCountdown = animatedImage.loopCount;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">self</span>.loopCountdown = <span class="built_in">NSUIntegerMax</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">self</span>.accumulator = <span class="number">0.0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//更新对象的状态。从而更新shouldAnimated这个属性的值。</span></span><br><span class="line">        [<span class="keyword">self</span> updateShouldAnimate];</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.shouldAnimate) &#123;</span><br><span class="line">            <span class="comment">//开始动态显示</span></span><br><span class="line">            [<span class="keyword">self</span> startAnimating];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [<span class="keyword">self</span>.layer setNeedsDisplay];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 判断当前FLAnimatedImageView是否需要显示动画</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)updateShouldAnimate</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">BOOL</span> isVisible = <span class="keyword">self</span>.window &amp;&amp; <span class="keyword">self</span>.superview &amp;&amp; ![<span class="keyword">self</span> isHidden] &amp;&amp; <span class="keyword">self</span>.alpha &gt; <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">self</span>.shouldAnimate = <span class="keyword">self</span>.animatedImage &amp;&amp; isVisible;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-CADisplayLink"><a href="#5-CADisplayLink" class="headerlink" title="5 CADisplayLink"></a>5 CADisplayLink</h2><p>有趣的地方是<code>FLAnimatedImageView</code>通过过CADisplayLink来刷新动态图片帧的显示。CADisplayLink是一个能让我们以和屏幕刷新率相同的频率将内容画到屏幕上的定时器。我们在应用中创建一个新的CADisplayLink对象，把它添加到一个runloop中，并给它提供一个target和selector在屏幕刷新的时候调用。</p>
+<p>一但CADisplayLink以特定的模式注册到runloop之后，每当屏幕需要刷新的时候runloop就会调用CADisplayLink绑定的target上的selector，这时target可以读到CADisplayLink的每次调用的时间戳，用来准备下一帧显示需要的数据。例如一个视频应用使用时间戳来计算下一帧要显示的视频数据。在UI做动画的过程中，需要通过时间戳来计算UI对象在动画的下一帧要更新的大小等等。在添加进runloop的时候我们应该选用高一些的优先级，来保证动画的平滑。可以设想一下，我们在动画的过程中，runloop被添加进来了一个高优先级的任务，那么，下一次的调用就会被暂停转而先去执行高优先级的任务，然后在接着执行CADisplayLink的调用，从而造成动画过程的卡顿，使动画不流畅。duration属性提供了每帧之间的时间，也就是屏幕每次刷新之间的的时间。我们可以使用这个时间来计算出下一帧要显示的UI的数值。但是duration只是个大概的时间，如果CPU忙于其它计算，就没法保证以相同的频率执行屏幕的绘制操作，这样会跳过几次调用回调方法的机会。frameInterval属性是可读可写的NSInteger型值，标识间隔多少帧调用一次selector方法，默认值是1，即每帧都调用一次。如果每帧都调用一次的话，对于iOS设备来说那刷新频率就是60HZ也就是每秒60次，如果将 frameInterval 设为2 那么就会两帧调用一次，也就是变成了每秒刷新30次。我们通过pause属性开控制CADisplayLink的运行。当我们想结束一个CADisplayLink的时候，应该调用-(void)invalidate从runloop中删除并删除之前绑定的 target跟selector。另外CADisplayLink 不能被继承。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//每1/60秒都回调用一次displayDidRefresh方法来做UI处理</span></span><br><span class="line"><span class="keyword">self</span>.displayLink = [<span class="built_in">CADisplayLink</span> displayLinkWithTarget:weakProxy selector:<span class="keyword">@selector</span>(displayDidRefresh:)];</span><br><span class="line"><span class="comment">//把displayLink加入主线程的commomMode里面        </span></span><br><span class="line">[<span class="keyword">self</span>.displayLink addToRunLoop:[<span class="built_in">NSRunLoop</span> mainRunLoop] forMode:<span class="keyword">self</span>.runLoopMode];</span><br></pre></td></tr></table></figure>
+<p>最后<a href="https://huang303513.github.io/2017/05/01/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90(%E4%B8%80" target="_blank" rel="noopener">原文地址</a>.html),<a href="https://github.com/huang303513/iOSSourceCodeStudy">demo地址</a>。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/05/02/SDWebImage源码解析(二)/" data-toggle="tooltip" data-placement="top" title="SDWebImage源码解析(二)">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/04/26/AFNetWorking源码之AFSecurityPolicy/" data-toggle="tooltip" data-placement="top" title="AFNetWorking源码之AFSecurityPolicy">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-概述"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 概述</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-实现流程"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 实现流程</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-UIView-WebCache分析"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 UIView+WebCache分析</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-FLAnimatedImageView分析"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 FLAnimatedImageView分析</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-CADisplayLink"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 CADisplayLink</span></a></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

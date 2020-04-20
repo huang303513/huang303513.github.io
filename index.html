@@ -156,25 +156,11 @@
                     
 
                         
-                        <li>
-                            <a href="/博客模板.html">前端JSONP的原理与实现以及XSS,CSRF的相亲相爱</a>
-                        </li>
-                        
-                    
-
-                        
                     
 
                         
                         <li>
                             <a href="/about/">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/photography/">Photography</a>
                         </li>
                         
                     
@@ -188,14 +174,21 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/categories/">Categories</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/categories/">Categories</a>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -283,9 +276,88 @@
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
 
 
 <!-- Main Content -->
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2018/10/22/一次CocoaPod库的封装总结/">
+                <h2 class="post-title">
+                    一次CocoaPod库的封装总结
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    概述通过CocoaPods来管理项目的依赖关系可以说是iOS开发的基本入门技能了。使用CocoaPods管理有如下几个好处：
+
+避免了同一个第三库在不同项目之间的复制粘贴，第三方库升级以后，只需要更新Podfile即可。
+项目结构更清晰、可以更直观的查看项目依赖的第三方库。
+可以灵活的指定第三库的版本、分支。方便项目管理。
+对于移动端的组件化开发的基础，一个公司组件化的成功与失败很大程度上决......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2018-10-22
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#CocoaPods" title="CocoaPods">CocoaPods</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
 
     
 
@@ -353,12 +425,245 @@
 
     
 
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/05/04/SDWebImage源码解析(四)/">
+                <h2 class="post-title">
+                    SDWebImage源码解析(四)
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述这篇博文将分析SDWebImageDownloader和SDWebImageDownloaderOperation。SDWebImage通过这两个类处理图片的网络加载。SDWebImageManager通过属性imageDownloader持有SDWebImageDownloader并且调用它的downloadImageWithURL来从网络加载图片。SDWebImageDownlo......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-05-04
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/05/03/SDWebImage源码解析(三)/">
+                <h2 class="post-title">
+                    SDWebImage源码解析(三)
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述这篇博文中，我将分析SDWebImageManager和SDImageCache。SDWebImageManager拥有一个SDWebImageCache和SDWebImageDownloader属性分别用于图片的缓存和加载处理。为UIView及其子类提供了加载图片的统一接口。管理正在加载操作的集合,这个类是一个单列。同时管理各种加载选项的处理。SDImageCache负责SDWeb......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-05-03
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/05/02/SDWebImage源码解析(二)/">
+                <h2 class="post-title">
+                    SDWebImage源码解析(二)
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述SDWebImage使用了很多工具类来对图片的处理。比如获取图片类型、图片放大缩小、GIF图片处理、图片解压缩处理等。接下来我就要分析下面这几个工具类的实现。
+2 NSData+ImageContentType分析这个类提供了一个类方法sd_imageFormatForImageData。通过这个方法传入图片的NSData数据，然后返回图片类型。图片类型通过SDImageFormat......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-05-02
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/05/01/SDWebImage源码解析(一)/">
+                <h2 class="post-title">
+                    SDWebImage源码解析(一)
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述SDWebImage基本是iOS项目的标配。他以灵活简单的api，提供了图片从加载、解析、处理、缓存、清理等一些列功能。让我们专心于业务的处理。但是并不意味着会用就可以了，通过源码分析和学习，让我们知道如何用好它。学习分析优秀源码也可以从潜移默化中给我们提供很多解决日常需求的思路。下面就是一张图来概述SDWebImage的所有类：
+
+通过对这个图片的分析，我们可以把SDWebImag......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-05-01
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#SDWebImage" title="SDWebImage">SDWebImage</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/04/26/AFNetWorking源码之AFSecurityPolicy/">
+                <h2 class="post-title">
+                    AFNetWorking源码之AFSecurityPolicy
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 HTTPS以及SSL/TSLSSL(Secure Sockets Layer, 安全套接字层)，因为原先互联网上使用的HTTP协议是明文的，存在很多缺点，比如传输内容会被偷窥和篡改。SSL协议的作用就是在传输层对网络连接进行加密。
+到了1999年，SSL 因为应用广泛，已经成为互联网上的事实标准。IETF就在那年把SSL标准化。标准化之后的名称改为 TLS（Transport Layer......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-04-26
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/04/25/AFNetWorking源码之AFURLRequestSerialization/">
+                <h2 class="post-title">
+                    AFNetWorking源码之AFURLRequestSerialization
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述AFURLRequestSerialization主要实现了根据不同情况和参数初始化NSURLRequest对象的功能。只有AFHTTPSessionManager有requestSerialization，默认是AFHTTPRequestSerializer对象。尤其是我们使用MultipartForm请求的时候，可以使用它帮我们完成繁杂的请求头拼接过程，这个是最值得推荐的。
+在阅......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-04-25
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
+    
+
+        <div class="post-preview">
+
+            <a href="/2017/04/20/AFNetWorking源码之AFHTTPSessionManager/">
+                <h2 class="post-title">
+                    AFNetWorking源码之AFHTTPSessionManager
+                </h2>
+                <h3 class="post-subtitle">
+                    
+                </h3>
+                <div class="post-content-preview">
+                    1 概述AFHTTPSessionManager是AFURLSessionManager的子类。我们可以通过这个类做HTTP请求。其实整个AFHTTPSessionManager逻辑很简单，只是用HTTP的方式拼接了请求，并且调用父类的方式做处理。我会通过AFHTTPSessionManagerapi来讲一下POST上传数据的几种基本格式,然后我再随便分析一下AFHTTPSessionMan......
+                </div>
+            </a>
+            
+                <p class="post-meta" style="margin: 10px 0;">
+                    Posted by 黄成都 on
+                    2017-04-20
+                </p>
+                <div class="tags">
+                    
+                      <a href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                    
+                </div>
+            
+
+        </div>
+        <hr>
+
+    
+
 
 
 <!-- Pager -->
 
 <ul class="pager">
     
+    
+        <li class="next">
+            <a href="/archives/2/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 
@@ -406,6 +711,34 @@
     <div class="tags">
         
             
+            <a href="/tags/#javascript" title="javascript" rel="2">javascript</a>
+            
+        
+            
+            <a href="/tags/#数据结构与算法" title="数据结构与算法" rel="4">数据结构与算法</a>
+            
+        
+            
+            <a href="/tags/#http" title="http" rel="2">http</a>
+            
+        
+            
+        
+            
+            <a href="/tags/#AFNetWorking" title="AFNetWorking" rel="5">AFNetWorking</a>
+            
+        
+            
+        
+            
+        
+            
+            <a href="/tags/#SDWebImage" title="SDWebImage" rel="4">SDWebImage</a>
+            
+        
+            
+        
+            
         
             
         
@@ -420,11 +753,23 @@
     <ul>
       
         <li>
+          <a href="/2018/10/22/%E4%B8%80%E6%AC%A1CocoaPod%E5%BA%93%E7%9A%84%E5%B0%81%E8%A3%85%E6%80%BB%E7%BB%93/">一次CocoaPod库的封装总结</a>
+        </li>
+      
+        <li>
           <a href="/2018/02/07/%E5%89%8D%E7%AB%AFCORS%E5%92%8CXMLHttpRequest%E5%85%A8%E6%96%B9%E4%BD%8D%E8%AF%A6%E8%A7%A3/">前端CORS和XMLHttpRequest全方位详解</a>
         </li>
       
         <li>
           <a href="/2017/12/27/%E5%89%8D%E7%AB%AFJSONP%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0%E4%BB%A5%E5%8F%8AXSS,CSRF%E7%9A%84%E7%9B%B8%E4%BA%B2%E7%9B%B8%E7%88%B1/">前端JSONP的原理与实现以及XSS,CSRF的相亲相爱</a>
+        </li>
+      
+        <li>
+          <a href="/2017/05/04/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90(%E5%9B%9B)/">SDWebImage源码解析(四)</a>
+        </li>
+      
+        <li>
+          <a href="/2017/05/03/SDWebImage%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90(%E4%B8%89)/">SDWebImage源码解析(三)</a>
         </li>
       
     </ul>
@@ -435,7 +780,7 @@
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">四月 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">2</span></li></ul>
     </div>
 
         <hr>
@@ -445,6 +790,14 @@
     <h5>categories</h5>
     <div class="widget">
       <ul>
+        
+          <a href="categories/#javascript"><li>javascript</li></a>
+        
+          <a href="categories/#数据结构与算法"><li>数据结构与算法</li></a>
+        
+          <a href="categories/#HTTP"><li>HTTP</li></a>
+        
+          <a href="categories/#iOS"><li>iOS</li></a>
         
           <a href="categories/#前端"><li>前端</li></a>
         

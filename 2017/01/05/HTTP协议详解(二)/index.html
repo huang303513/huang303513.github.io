@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          HTTP协议详解(二) - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/01/05/HTTP协议详解(二)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#http" title="http">http</a>
+                            
+                        </div>
+                        <h1>HTTP协议详解(二)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-01-05
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">5.3k</span> and
+                                Reading Time <span class="post-count">19</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="HTTP结构"><a href="#HTTP结构" class="headerlink" title="HTTP结构"></a>HTTP结构</h1><h2 id="1-1-Web服务器"><a href="#1-1-Web服务器" class="headerlink" title="1.1 Web服务器"></a>1.1 Web服务器</h2><hr>
+<p>Web服务器一般会执行以下几个操作：</p>
+<ul>
+<li>(1) 建立连接——接受一个客户端连接,或者如果不希望与这个客户端建立连接,就 将其关闭。</li>
+<li>(2) 接收请求——从网络中读取一条 HTTP 请求报文。</li>
+<li>(3) 处理请求——对请求报文进行解释,并采取行动。 </li>
+<li>(4) 访问资源——访问报文中指定的资源。</li>
+<li>(5) 构建响应——创建带有正确首部的 HTTP 响应报文。 </li>
+<li>(6) 发送响应——将响应回送给客户端。</li>
+<li>(7) 记录事务处理过程——将与已完成事务有关的内容记录在一个日志文件中。</li>
+</ul>
+<h2 id="1-2-代理"><a href="#1-2-代理" class="headerlink" title="1.2 代理"></a>1.2 代理</h2><hr>
+<p>Web上的代理服务器是代表客户端完成事务处理的中间人。如果没有Web代理,HTTP客户端就要直接与HTTP服务器进行对话。有了Web代理,客户端就可以与代理进行对话,然后由代理代表客户端与服务器进行交流。代理与客户端和服务器之间使用 的都是 HTTP 协议。代理连接的是两个或多个使用相同协议的应用程序,而网关连接的则是两个或多个使用不同协议的端点。网关扮演的是“协议转换器”的角色,即使客户 端和服务器使用的是不同的协议,客户端也可以通过它完成与服务器之间的事务 处理。</p>
+<h2 id="1-3-缓存"><a href="#1-3-缓存" class="headerlink" title="1.3 缓存"></a>1.3 缓存</h2><hr>
+<p>Web 缓存是可以自动保存常见文档副本的HTTP设备。当Web请求抵达缓存时,如果本地有“已缓存的”副本,就可以从本地存储设备而不是原始服务器中提取这 个文档。使用缓存有下列优点：</p>
+<ul>
+<li>缓存减少了冗余的数据传输，节约宽带。</li>
+<li>缓存缓解了网络瓶颈的问题。不需要更多的带宽就能够更快地加载页面。</li>
+<li>缓存降低了对原始服务器的要求。服务器可以更快地响应,避免过载的出现。</li>
+<li>缓存降低了距离时延,因为从较远的地方加载页面会更慢一些。</li>
+</ul>
+<p>可以用已有的副本为某些到达缓存的请求提供服务。这被称为缓存命中(cache hit)。其他一些到达缓存的请求可能会由于没有副本可用,而被转发 给原始服务器。这被称为缓存未命中(cache miss)。原始服务器的内容可能会发生变化,缓存要不时对其进行检测,看看它们保存的副本是否仍是服务器上最新的副本。这些“新鲜度检测”被称为 HTTP再验证(revalidation)。为了有效地进行再验证,HTTP定义了一些特殊的请求,不用从服务器上获取整个对象,就可以快速检测出内容是否是最新的。</p>
+<p>缓存对缓存的副本进行再验证时,会向原始服务器发送一个小的再验证请求。如果 内容没有变化,服务器会以一个小的304 Not Modified进行响应。只要缓存知道副本仍然有效,就会再次将副本标识为暂时新鲜的,并将副本提供给客户端这被称作再验证命中。HTTP 为我们提供了几个用来对已缓存对象进行再验证的工具,但最常用的是 If- Modified-Since 首部。将这个首部添加到 GET 请求中去,就可以告诉服务器,只 有在缓存了对象的副本之后,又对其进行了修改的情况下,才发送此对象。服务器收到 GET If-Modified-Since 请求时会发生的情况:</p>
+<ul>
+<li>再验证命中：如果服务器对象未被修改,服务器会向客户端发送一个小的HTTP 304 Not Modified 响应。</li>
+<li>再验证未命中：如果服务器对象与已缓存副本不同,服务器向客户端发送一条普通的、带有完整 内容的 HTTP 200 OK 响应。</li>
+<li>对象被删除：如果服务器对象已经被删除了,服务器就回送一个404 Not Found响应,缓存也 会将其副本删除。</li>
+</ul>
+<p>私有缓存是个人的缓存,包含了单个用户最常用的页面。共享的缓存被称为公有缓存(public cache)。公有缓存中包含了某个用户团体的常用页面。Web浏览器中有内建的私有缓存——大多数浏览器都会将常用文档缓存在你个人电脑的磁盘 和内存中,并且允许用户去配置缓存的大小和各种设置。还可以去看看浏览器的缓存中 有些什么内容。我们可以通过<code>about:cache</code>来查看缓存。</p>
+<p>缓存服务器收到一个GET报文的处理的过程分为七个步骤：</p>
+<ul>
+<li>(1) 接收——缓存从网络中读取抵达的请求报文。</li>
+<li>(2) 解析——缓存对报文进行解析,提取出 URL 和各种首部。</li>
+<li>(3) 查询——缓存查看是否有本地副本可用,如果没有,就获取一份副本(并将其保<br>存在本地)。</li>
+<li>(4) 新鲜度检测——缓存查看已缓存副本是否足够新鲜,如果不是,就询问服务器是<br>否有任何更新。</li>
+<li>(5) 创建响应——缓存会用新的首部和已缓存的主体来构建一条响应报文。</li>
+<li>(6) 发送——缓存通过网络将响应发回给客户端。</li>
+<li>(7) 日志——缓存可选地创建一个日志文件条目来描述这个事务。</li>
+</ul>
+<p>已缓存对象中包含了服务器响应主体和原始服务器响应首部,这样就会在缓存命中时返回正确的服务器首部。已缓存对象中还包含了一些元数据(metadata),用来记 录对象在缓存中停留了多长时间,以及它被用过多少次等。在这段时间里,都认为文档是 “新鲜的”,缓存可以在不联系服务器的情况下,直接提供该文档。但一旦已缓存副 本停留的时间太长,超过了文档的新鲜度限值(freshness limit),就认为对象“过 时”了,在提供该文档之前,缓存要再次与服务器进行确认,以查看文档是否发生 了变化。</p>
+<p>我们希望缓存的响应看起来就像来自原始服务器的一样,缓存将已缓存的服务器响应首部作为响应首部的起点。然后缓存对这些基础首部进行了修改和扩充。缓存服务器负责对这些首部进行改造,以便与客户端的要求相匹配。比如,服务器返回 的可能是一条 HTTP/1.0 响应(甚至是 HTTP/0.9 响应),而客户端期待的是一条HTTP/1.1响应,在这种情况下,缓存服务器必须对首部进行相应的转换。缓存服务器还会向其中插入新鲜度信息(Cache-Control、Age 以及 Expires 首部),而且通常会包含一 个 Via 首部来说明请求是由一个代理缓存提供的。</p>
+<h3 id="1-3-1-缓存过期判断"><a href="#1-3-1-缓存过期判断" class="headerlink" title="1.3.1 缓存过期判断"></a>1.3.1 缓存过期判断</h3><p>HTTP 有一些简单的机制可以在不要求服务器记住有哪些缓存拥有其文档副本的情况下,保持已缓存数据与服务器数据之间充分一致。HTTP 将这些简单的机制称为 文档过期(document expiration)和服务器再验证(server revalidation)。</p>
+<p>通过特殊的HTTP响应头<code>Cache-Control</code>首部和<code>Expires</code>首部,HTTP让原始服务器向每个文档附加了一个“过期日期”。除非客户端请求中包含有阻止提供已缓存或未验证资源的首部，否则在缓存文档过期之前,缓存可以以任意频率使用这些副本,而无需与服务器联系。一旦已缓存文档过期,缓存就必须与服务器进行核对,询问文档是否被修改过,如果 被修改过,就要获取一份新鲜(带有新的过期日期)的副本。</p>
+<p>服务器用HTTP/1.0+的Expires首部或HTTP/1.1的<code>Cache-Control:max-age</code>响应首部来指定过期日期,同时还会带有响应主体。Expires 首部和<code>Cache-Control: max-age</code>首部所做的事情本质上是一样的,但由于Cache-Control首部使用的是相对时间而不是绝对日期,所以我们更倾向于使用比较新的<code>Cache-Control</code>首部。 </p>
+<ul>
+<li>Cache-Control:max-age : max-age 值定义了文档的最大使用期——从第一次生成文档到文档不再新 鲜、无法使用为止,最大的合法生存时间(以秒为单位)。如Cache-Control: max-age=484200。</li>
+<li>Expires : 指定一个绝对的过期日期。如果过期日期已经过了,就说明文档不再新鲜了,如Expires: Fri, 05 Jul 2002, 05:00:00 GMT.</li>
+</ul>
+<h3 id="1-3-2-缓存再验证"><a href="#1-3-2-缓存再验证" class="headerlink" title="1.3.2 缓存再验证"></a>1.3.2 缓存再验证</h3><p>仅仅是已缓存文档过期了并不意味着它和原始服务器上目前处于活跃状态的文档有实际的区别。这只是意味着到了要进行核对的时间了。这种情况被称为“服务器再 验证”,说明缓存需要询问原始服务器文档是否发生了变化。</p>
+<ul>
+<li>如果再验证显示内容发生了变化,缓存会获取一份新的文档副本,并将其存储在 旧文档的位置上,然后将文档发送给客户端。</li>
+<li>如果再验证显示内容没有发生变化,缓存只需要获取新的首部,包括一个新的过 期日期,并对缓存中的首部进行更新就行了。</li>
+</ul>
+<p>HTTP 的条件方法可以高效地实现再验证。HTTP 允许缓存向原始服务器发送一个 “条件 GET”,请求服务器只有在文档与缓存中现有的副本不同时,才回送对象主体。通过这种方式,将新鲜度检测和对象获取结合成了单个条件GET。向GET请求报文中添加一些特殊的条件首部,就可以发起条件 GET。只有条件为真时,Web服务器才会返回对象。</p>
+<p>HTTP 定义了 5 个条件请求首部。对缓存再验证来说最有用的 2 个首部是 If- Modified-Since 和 If-None-Match。15 所有的条件首部都以前缀“If-”开头。</p>
+<ul>
+<li>If-Modified-Since:<date> : 如果从指定日期之后文档被修改过了,就执行请求的方法。可以与 Last-Modified 服务器响应首部配合使用,只有在内容被修改后与已缓存版本有所不同的时候才去获取内容。</li>
+<li>If-None-Match:<tags> : 服务器可以为文档提供特殊的标签(参见 ETag),而不是将其与最近修改日期相匹配,这些标签就像序列号一样。如果已缓存标签与服务器文档中的标签有所不同,If-None-Match 首部就会执行所请求的方法。</li>
+</ul>
+<h4 id="1-3-2-1-If-Modified-Since-Date再验证"><a href="#1-3-2-1-If-Modified-Since-Date再验证" class="headerlink" title="1.3.2.1 If-Modified-Since:Date再验证"></a>1.3.2.1 If-Modified-Since:Date再验证</h4><p>最常见的缓存再验证首部是 If-Modified-Since。If-Modified-Since 再验证请 求通常被称为 IMS 请求。只有自某个日期之后资源发生了变化的时候,IMS 请求才 会指示服务器执行请求:</p>
+<ul>
+<li>如果自指定日期后,文档被修改了,If-Modified-Since条件就为真,通常 GET 就会成功执行。携带新首部的新文档会被返回给缓存,新首部除了其他信 息之外,还包含了一个新的过期日期。</li>
+<li>如果自指定日期后,文档没被修改过,条件就为假,会向客户端返回一个小 的 304 Not Modified 响应报文,为了提高有效性,不会返回文档的主体。这 些首部是放在响应中返回的,但只会返回那些需要在源端更新的首部。比如, Content-Type 首部通常不会被修改,所以通常不需要发送。一般会发送一个 新的过期日期。</li>
+</ul>
+<p>If-Modified-Since 首部可以与 Last-Modified 服务器响应首部配合工作。原始 服务器会将最后的修改日期附加到所提供的文档上去。当缓存要对已缓存文档进行 再验证时,就会包含一个 If-Modified-Since 首部,其中携带有最后修改已缓存副 本的日期:<br><code>If-Modified-Since: &lt;cached last-modified date&gt;</code>。<br>如果在此期间内容被修改了,最后的修改日期就会有所不同,原始服务器就会回送新的文档。否则,服务器会注意到缓存的最后修改日期与服务器文档当前的最后修 改日期相符,会返回一个 304 Not Modified 响应。</p>
+<h4 id="1-3-2-2-If-None-Match-实体标签再验证"><a href="#1-3-2-2-If-None-Match-实体标签再验证" class="headerlink" title="1.3.2.2 If-None-Match:实体标签再验证"></a>1.3.2.2 If-None-Match:实体标签再验证</h4><p>有些情况下仅使用最后修改日期进行再验证是不够的。比如下面几种情况：</p>
+<ul>
+<li>有些文档可能会被周期性地重写(比如,从一个后台进程中写入),但实际包含 的数据常常是一样的。尽管内容没有变化,但修改日期会发生变化。</li>
+<li>有些文档可能被修改了,但所做修改并不重要,不需要让世界范围内的缓存都重 装数据(比如对拼写或注释的修改)。</li>
+<li>有些服务器无法准确地判定其页面的最后修改日期。</li>
+<li>有些服务器提供的文档会在亚秒间隙发生变化,对这些服务器来说,以一秒为粒度的修改日期可能就不够用了。</li>
+</ul>
+<p>为了解决这些问题,HTTP 允许用户对被称为实体标签(ETag)的“版本标识符” 进行比较。实体标签是附加到文档上的任意标签(引用字符串)。它们可能包含了文 档的序列号或版本名,或者是文档内容的校验和及其他指纹信息。<br>当发布者对文档进行修改时,可以修改文档的实体标签来说明这个新的版本。这样, 如果实体标签被修改了,缓存就可以用 If-None-Match 条件首部来GET文档的新副本了。如下图：</p>
+<p><img src="/assets/postImages/2017011201.png" alt="img"></p>
+<p><code>如果服务器回送了一个实体标签,HTTP/1.1 客户端就必须使用实体标签验证器。如 果服务器只回送了一个 Last-Modified 值,客户端就可以使用 If-Modified-Since 验证。如果实体标签和最后修改日期都提供了,客户端就应该使用这两种再验证方 案,这样 HTTP/1.0 和 HTTP/1.1 缓存就都可以正确响应了。如果 HTTP/1.1 缓存或服务器收到的请求既带有 If-Modified-Since,又带有实体 标签条件首部,那么只有这两个条件都满足时,才能返回 304 Not Modified 响应。</code></p>
+<h3 id="1-3-3-控制缓存的能力"><a href="#1-3-3-控制缓存的能力" class="headerlink" title="1.3.3 控制缓存的能力"></a>1.3.3 控制缓存的能力</h3><p>服务器可以通过 HTTP 定义的几种方式来指定在文档过期之前可以将其缓存多长时<br>间。按照优先级递减的顺序,服务器可以:</p>
+<ul>
+<li>附加一个Cache-Control:no-store首部到响应中去;</li>
+<li>附加一个Cache-Control:no-cache首部到响应中去;</li>
+<li>附加一个Cache-Control:must-revalidate首部到响应中去; • 附加一个Cache-Control:max-age首部到响应中去;</li>
+<li>附加一个Expires日期首部到响应中去;</li>
+<li>不附加过期信息,让缓存确定自己的过期日期。</li>
+</ul>
+<h4 id="1-3-3-1-no-Store与no-Cache响应首部"><a href="#1-3-3-1-no-Store与no-Cache响应首部" class="headerlink" title="1.3.3.1 no-Store与no-Cache响应首部"></a>1.3.3.1 no-Store与no-Cache响应首部</h4><p>HTTP/1.1 提供了几种限制对象缓存,或限制提供已缓存对象的方式,以维持对象的新鲜度。no-store 首部和 no-cache 首部可以防止缓存提供未经证实的已缓存对象:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pragma: no-cache Cache-Control: no-store Cache-Control: no-cache</span><br></pre></td></tr></table></figure>
+<p>标识为 no-store 的响应会禁止缓存对响应进行复制。缓存通常会像非缓存代理服 务器一样,向客户端转发一条 no-store 响应,然后删除对象。标识为 no-cache 的响应实际上是可以存储在本地缓存区中的。只是在与原始服务器进行新鲜度再验证之前,缓存不能将其提供给客户端使用。这个首部使用do-not-serve-from-cache-without-revalidation这个名字会更恰当一些。HTTP/1.1 中提供 Pragma: no-cache 首部 17 是为了兼容于 HTTP/1.0+。除了与只 理解Pragma: no-cache的HTTP/1.0应用程序进行交互时,HTTP 1.1应用程序都 应该使用 Cache-Control: no-cache。</p>
+<h4 id="1-3-3-2-max-age响应首部-Expires响应首部"><a href="#1-3-3-2-max-age响应首部-Expires响应首部" class="headerlink" title="1.3.3.2 max-age响应首部,Expires响应首部"></a>1.3.3.2 max-age响应首部,Expires响应首部</h4><p>Cache-Control: max-age首部表示的是从服务器将文档传来之时起,可以认为此 文档处于新鲜状态的秒数。还有一个 s-maxage 首部(注意 maxage 的中间没有连 字符),其行为与 max-age 类似,但仅适用于共享(公有)缓存:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: max-age&#x3D;3600 Cache-Control: s-maxage&#x3D;3600</span><br></pre></td></tr></table></figure>
+<p>服务器可以请求缓存不要缓存文档,或者将最大使用期设置为零,从而在每次访问 的时候都进行刷新:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: max-age&#x3D;0 Cache-Control: s-maxage&#x3D;0</span><br></pre></td></tr></table></figure>
+<p>不推荐使用 Expires 首部,它指定的是实际的过期日期而不是秒数。HTTP 设计者 后来认为,由于很多服务器的时钟都不同步,或者不正确,所以最好还是用剩余秒 数,而不是绝对时间来表示过期时间。可以通过计算过期值和日期值之间的秒数差 来计算类似的新鲜生存期:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Expires: Fri, 05 Jul 2002, 05:00:00 GMT</span><br></pre></td></tr></table></figure>
+<p>有些服务器还会回送一个 Expires:0 响应首部,试图将文档置于永远过期的状态, 但这种语法是非法的,可能给某些软件带来问题。应该试着支持这种结构的输入, 但不应该产生这种结构的输出。</p>
+<p>可以配置缓存,使其提供一些陈旧(过期)的对象,以提高性能。如果原始服务器 希望缓存严格遵守过期信息,可以在原始响应中附加一个Cache-Control: must- revalidate 首部。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control: must-revalidate</span><br></pre></td></tr></table></figure>
+<p>Cache-Control: must-revalidate响应首部告诉缓存,在事先没有跟原始服务 器进行再验证的情况下,不能提供这个对象的陈旧副本。缓存仍然可以随意提供新 鲜的副本。如果在缓存进行 must-revalidate 新鲜度检查时,原始服务器不可 用,缓存就必须返回一条 504 Gateway Timeout 错误。</p>
+<h4 id="1-3-3-3-客户端的新鲜度限制"><a href="#1-3-3-3-客户端的新鲜度限制" class="headerlink" title="1.3.3.3 客户端的新鲜度限制"></a>1.3.3.3 客户端的新鲜度限制</h4><p>Web 浏览器都有 Refresh(刷新)或 Reload(重载)按钮,可以强制对浏览器或 代理缓存中可能过期的内容进行刷新。Refresh 按钮会发布一个附加了 Cache- Control 请求首部的 GET 请求,这个请求会强制进行再验证,或者无条件地从服 务器获取文档。Refresh 的确切行为取决于特定的浏览器、文档以及拦截缓存的配置。<br>客户端可以用 Cache-Control 请求首部来强化或放松对过期时间的限制。有些应 用程序对文档的新鲜度要求很高(比如人工刷新按钮),对这些应用程序来说,客 户端可以用 Cache-Control 首部使过期时间更严格。另一方面,作为提高性能、 可靠性或开支的一种折衷方式,客户端可能会放松新鲜度要求。下图对 Cache- Control请求指令进行了总结：</p>
+<p><img src="/assets/postImages/2017011202.png" alt="img"></p>
+<h3 id="1-3-4-设置缓存控制"><a href="#1-3-4-设置缓存控制" class="headerlink" title="1.3.4 设置缓存控制"></a>1.3.4 设置缓存控制</h3><p>为了让作者在无需与 Web 服务器的配置文件进行交互的情况下,能够更容易地为所 提供的 HTML 文档分配 HTTP 首部信息,HTML 2.0 定义了 <META HTTP-EQUIV> 标签。这个可选的标签位于 HTML 文档的顶部,定义了应该与文档有所关联的 HTTP 首部。这里有一个 <META HTTP-EQUIV> 标签设置的例子,它将 HTML 文档 标记为非缓冲的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;HTML&gt; &lt;HEAD&gt;</span><br><span class="line">&lt;TITLE&gt;My Document&lt;&#x2F;TITLE&gt;</span><br><span class="line">&lt;META HTTP-EQUIV&#x3D;&quot;Cache-control&quot; CONTENT&#x3D;&quot;no-cache&quot;&gt; &lt;&#x2F;HEAD&gt;</span><br></pre></td></tr></table></figure>
+<p>有些浏览器确实会解析并在HTML内容中使用HTTP-EQUIV标签,像对待真的HTTP首部那样来处理嵌入式首部。这样的效果并不好,因为支 持 HTTP-EQUIV 标签的 HTML浏览器使用的Cache-control规则可能会与拦截代理缓存所用的规则有所不同。这样会使缓存的过期处理行为发生混乱。总之,<META HTTP-EQUIV>标签并不是控制文档缓存特性的好方法。通过配置正确的服务器发出 HTTP 首部,是传送文档缓存控制请求的唯一可靠的方法。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/01/WebViewJavascriptBridge原理解析/" data-toggle="tooltip" data-placement="top" title="WebViewJavascriptBridge原理解析">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/01/03/HTTP协议详解(一)/" data-toggle="tooltip" data-placement="top" title="HTTP协议详解(一)">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#HTTP结构"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">HTTP结构</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-1-Web服务器"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 Web服务器</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-2-代理"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">1.2 代理</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-3-缓存"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">1.3 缓存</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-3-1-缓存过期判断"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">1.3.1 缓存过期判断</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-3-2-缓存再验证"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">1.3.2 缓存再验证</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-3-2-1-If-Modified-Since-Date再验证"><span class="toc-nav-number">1.3.2.1.</span> <span class="toc-nav-text">1.3.2.1 If-Modified-Since:Date再验证</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-3-2-2-If-None-Match-实体标签再验证"><span class="toc-nav-number">1.3.2.2.</span> <span class="toc-nav-text">1.3.2.2 If-None-Match:实体标签再验证</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-3-3-控制缓存的能力"><span class="toc-nav-number">1.3.3.</span> <span class="toc-nav-text">1.3.3 控制缓存的能力</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-3-3-1-no-Store与no-Cache响应首部"><span class="toc-nav-number">1.3.3.1.</span> <span class="toc-nav-text">1.3.3.1 no-Store与no-Cache响应首部</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-3-3-2-max-age响应首部-Expires响应首部"><span class="toc-nav-number">1.3.3.2.</span> <span class="toc-nav-text">1.3.3.2 max-age响应首部,Expires响应首部</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-3-3-3-客户端的新鲜度限制"><span class="toc-nav-number">1.3.3.3.</span> <span class="toc-nav-text">1.3.3.3 客户端的新鲜度限制</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-3-4-设置缓存控制"><span class="toc-nav-number">1.3.4.</span> <span class="toc-nav-text">1.3.4 设置缓存控制</span></a></li></ol></li></ol></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#http" title="http">http</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

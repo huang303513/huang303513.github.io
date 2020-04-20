@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          Block原理分析详解 - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/04/11/Block原理分析详解/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Block" title="Block">Block</a>
+                            
+                        </div>
+                        <h1>Block原理分析详解</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-04-11
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">3.1k</span> and
+                                Reading Time <span class="post-count">13</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-基本说明"><a href="#1-基本说明" class="headerlink" title="1 基本说明"></a>1 基本说明</h2><p>Block一直是OC的一个重点、难点、黑科技。Block在日常项目中经常使用，他的实现方式和一般的oc代码不一样。同时也很容易出现使用不慎的情况。我们知道OC的本质是<code>C语言+runtime</code>。<code>runtime</code>中的具体实现完全就是汇编加上C语言。而且我们发现大部分都是通过结构体实现的。我们可以通过<code>clang -rewrite-objc main.m</code>这种命令把包含Block的<code>main.m</code>函数反编译<code>(注意：这里所说的反编译并不是真正的反编译，只是把OC源码转换为对等的C++源码)</code>为为C++的具体实现。下面我就会通过这个命令来分析一下Block转换以后的源码。下面所有列子中转换前的代码都在<code>main.m</code>中，替换后的代码都在<code>mainX.cpp</code>中.</p>
+<h2 id="2-void-block-void-类型解析"><a href="#2-void-block-void-类型解析" class="headerlink" title="2 void (*block)(void)类型解析"></a>2 void (*block)(void)类型解析</h2><p>我们先看一下转换以前的代码。顶一个一个block。只定义一个变量i并且赋值为1。对应的文件为<code>mainX.cpp</code>。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">void</span> (^blk)(<span class="keyword">void</span>) = ^()&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    blk();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是转换以后的代码。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> __block_impl &#123;</span><br><span class="line">    <span class="keyword">void</span> *isa;</span><br><span class="line">    <span class="keyword">int</span> Flags;</span><br><span class="line">    <span class="keyword">int</span> Reserved;</span><br><span class="line">    <span class="keyword">void</span> *FuncPtr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(<span class="keyword">struct</span> __main_block_impl_0 *__cself) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __main_block_impl_0 &#123;</span><br><span class="line">    <span class="keyword">struct</span> __block_impl impl;</span><br><span class="line">    <span class="keyword">struct</span> __main_block_desc_0* Desc;</span><br><span class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, <span class="keyword">struct</span> __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</span><br><span class="line">        impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">        impl.Flags = flags;</span><br><span class="line">        impl.FuncPtr = fp;</span><br><span class="line">        Desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> __main_block_desc_0 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">&#125; __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> __main_block_impl_0)&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> (*blk)(<span class="keyword">void</span>) = (  (<span class="keyword">void</span> (*)())  &amp;  __main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA)  );</span><br><span class="line">    </span><br><span class="line">    ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)blk)-&gt;FuncPtr)((__block_impl *)blk);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面是我截取的关键部分源码，其他还有很多辅助性的代码，这里我们就不用管了。看这段代码我们发现一个简单的block的转换成C++以后增加了很多代码：</p>
+<ul>
+<li>main函数入口，我们可以发现这个函数里面主要初始化了一个<code>__main_block_impl_0</code>的结构体。并且调用结构体的<code>FuncPtr</code>方法。</li>
+<li><code>__main_block_impl_0</code>结构体。这个结构体有一个<code>__block_impl</code>和<code>__main_block_desc_0</code>结构体。以及一个初始化函数。</li>
+<li><code>__block_impl</code>结构体。这个结构体有四个变量。其中我们可以发现有两个很关键的<code>isa</code>和<code>FuncPtr</code>。</li>
+<li><code>__main_block_desc_0</code>结构体。这个结构体包含了两个<code>size_t</code>类型的属性，主要用于记录Block的内存大小。</li>
+<li><code>__main_block_func_0</code>静态方法，我们发现这个方法就是BLock的具体实现。</li>
+</ul>
+<h3 id="2-1具体流程分析"><a href="#2-1具体流程分析" class="headerlink" title="2.1具体流程分析"></a>2.1具体流程分析</h3><p>首先<code>main</code>函数代码。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">void</span> (*blk)(<span class="keyword">void</span>) = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA));</span><br><span class="line">    ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)blk)-&gt;FuncPtr)((__block_impl *)blk);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们把它具体简化以后如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> __main_block_impl_0 tmp = __main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA);</span><br><span class="line"><span class="keyword">struct</span> __main_block_impl_0 *blk = &amp;tmp; </span><br><span class="line">(*blk-&gt;impl.FuncPtr)(blk);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>1首先初始化一个<code>__main_block_impl_0</code>结构体变量。并且传入的参数是<code>__main_block_func_0</code>指向结构体的具体实现。<code>__main_block_desc_0_DATA</code>是<code>__main_block_desc_0</code>结构体的一个变量，主要目的是指定结构体的大小。</li>
+<li>2 把<code>tmp</code>的地址赋值给<code>blk</code>指针。</li>
+<li>3 通过<code>blk</code>找到他的<code>impl</code>属性，然后再通过<code>impl</code>这个<code>__block_impl</code>变量获取<code>FuncPtr</code>函数的地址。然后传入<code>blk</code>的指针作为参数。从而实现OC中的<code>blk();</code>这句话。</li>
+</ul>
+<p>接下来我们看一下<code>__main_block_impl_0</code>这个结构体。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> __main_block_impl_0 &#123;</span><br><span class="line">    <span class="keyword">struct</span> __block_impl impl;</span><br><span class="line">    <span class="keyword">struct</span> __main_block_desc_0* Desc;</span><br><span class="line">    __main_block_impl_0(<span class="keyword">void</span> *fp, <span class="keyword">struct</span> __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</span><br><span class="line">        impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">        impl.Flags = flags;</span><br><span class="line">        impl.FuncPtr = fp;</span><br><span class="line">        Desc = desc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这个结构体主要有一个初始化函数，通过传入结构体具体实现的函数指针fp，记录大小描述信息的参数desc，已经一个标记为flags。通过他来初始化<code>__block_impl</code>和<code>__main_block_desc_0</code>。</p>
+<p><code>__block_impl</code>这个结构体我们从他的结构发现和OC的类结构体有点像。他的<code>isa</code>属性其实就是OC的<code>isa</code>属性有异曲同工的作用，用于指向结构体的具体类型。<code>FuncPtr</code>函数指针就是指向Block具体实现的函数。</p>
+<h2 id="3-int-block-int-类型解析"><a href="#3-int-block-int-类型解析" class="headerlink" title="3 int (*block)(int)类型解析"></a>3 int (*block)(int)类型解析</h2><p>废话少说，上代码。通过代码我们发现和上面那种没有什么区别。主要是<code>__main_block_func_0</code>函数的实现多了返回值和多了一个参数。具体看代码注释。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">int</span> (^blk)(<span class="keyword">int</span> i) = ^(<span class="keyword">int</span> i)&#123;</span><br><span class="line">        <span class="keyword">int</span> result =  i + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;;</span><br><span class="line">    blk(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//==============上面是反编译以前的代码==================</span></span><br><span class="line"><span class="keyword">struct</span> __block_impl &#123;</span><br><span class="line">    <span class="keyword">void</span> *isa;<span class="comment">//isa表明结构体类型。</span></span><br><span class="line">    <span class="keyword">int</span> Flags;</span><br><span class="line">    <span class="keyword">int</span> Reserved;</span><br><span class="line">    <span class="keyword">void</span> *FuncPtr;<span class="comment">//指向函数指针</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//这个结构体及时Block反编译以后生成的主要结构。</span></span><br><span class="line"><span class="keyword">struct</span> __main_block_impl_0 &#123;</span><br><span class="line">  <span class="keyword">struct</span> __block_impl impl;</span><br><span class="line">  <span class="keyword">struct</span> __main_block_desc_0* Desc;</span><br><span class="line">    <span class="comment">//初始化函数</span></span><br><span class="line">  __main_block_impl_0(<span class="keyword">void</span> *fp, <span class="keyword">struct</span> __main_block_desc_0 *desc, <span class="keyword">int</span> flags=<span class="number">0</span>) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;<span class="comment">//表示这个Block是存储于栈上。</span></span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;<span class="comment">//函数指针赋值</span></span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//这个函数就是Block的具体实现，并且添加了一个默认实现。</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __main_block_func_0(<span class="keyword">struct</span> __main_block_impl_0 *__cself, <span class="keyword">int</span> i) &#123;</span><br><span class="line">    <span class="keyword">int</span> result = i + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//Block的描述信息</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> __main_block_desc_0 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//__main_block_desc_0的一个实例，其中Block_size初始化为__main_block_impl_0结构体的大小。</span></span><br><span class="line"><span class="keyword">struct</span> __main_block_desc_0 __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> __main_block_impl_0)&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="comment">//int (*blk)(int i) = ((int (*)(int))&amp;__main_block_impl_0((void *)__main_block_func_0, &amp;__main_block_desc_0_DATA));</span></span><br><span class="line">    <span class="comment">//上面一行转换为下面两行等价</span></span><br><span class="line">    <span class="keyword">struct</span> __main_block_impl_0 tmp = __main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA);</span><br><span class="line">    <span class="keyword">struct</span> __main_block_impl_0 *blk = &amp;tmp;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//int blkRerurn = ((int (*)(__block_impl *, int))((__block_impl *)blk)-&gt;FuncPtr)((__block_impl *)blk, 3);</span></span><br><span class="line">    <span class="comment">//下面一行是上面一行的简化版</span></span><br><span class="line">    (*blk-&gt;impl.FuncPtr)(blk,<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-带-block变量的void-block-void-类型解析"><a href="#4-带-block变量的void-block-void-类型解析" class="headerlink" title="4 带__block变量的void (*block)(void)类型解析"></a>4 带__block变量的void (*block)(void)类型解析</h2><p>我们发现加入一个带__block标志位的变量以后，代码复杂了很多。具体如下：</p>
+<ul>
+<li>多了<code>__Block_byref_i_0</code>结构体。这个结构体就是__block变量i直接生成的。</li>
+<li>多了两个函数<code>__main_block_copy_0</code>和<code>__main_block_dispose_0</code>。这两个函数主要用于处理block复制的时候，对应的__block变量i的处理。</li>
+<li><code>__main_block_impl_0</code>结构体多了一个<code>__Block_byref_i_0</code>类型的属性i。这个i就是对应于block里面的变量。</li>
+<li><code>__main_block_desc_0</code>结构体多了两个函数。<code>copy</code>和<code>dispose</code>。在初始化结构体的时候，传入上面新增的两个函数作为参数。</li>
+<li>每个<strong>block变量都回生成一个对应的结构体，并且作为`</strong>main_block_impl_0`结构体的属性。</li>
+</ul>
+<p>通过对结构体<code>__main_block_impl_0</code>的初始化函数和<code>__main_block_func_0</code>方法的分析。我们可以得到如下结论：</p>
+<ul>
+<li><strong>block变量i在转换为c语言后直接转换为一个`</strong>Block_byref_i_0`类型的结构体。</li>
+<li><code>__main_block_impl_0</code>结构体中的i指针用于存储__block结构体变量，也就是block里面的那个i对象。</li>
+<li>block外面的那个i其实是block里面的i变量通过<code>i-&gt;__forwarding-&gt;i</code>来获取的。当我们在block里面改变i的值的时候，其实是间接的通过<code>i-&gt;__forwarding-&gt;i</code>来改变。其中第一个i是block里面的变量。第二个i是block外边的变量。这样就解释了为什么block里面改变i的值block外面的i改变的原因。</li>
+<li>非block类型的变量在block里面是直接引用，不会生成专门的结构体。</li>
+</ul>
+<p>同时我们也注意到<code>__main_block_copy_0</code>和<code>__main_block_dispose_0</code>这两个函数，我们虽然不能找到他的具体实现，不过可以根据上下文做一下具体的猜测：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当我们复制block的时候。分别传入两个block的block变量的指针，然后做处理。</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(<span class="keyword">struct</span> __main_block_impl_0*dst, <span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;one, (<span class="keyword">void</span>*)src-&gt;one, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当我们销毁一个block后，估计会调用这个函数的block变量的指针，做销毁操作</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(<span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;one, <span class="number">8</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NORMAL</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (^Block)();</span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        __block <span class="keyword">int</span> i = <span class="number">1</span>;</span><br><span class="line">        Block block1 = ^()&#123;</span><br><span class="line">            i =  <span class="number">2</span>;</span><br><span class="line">            printf(<span class="string">"%d"</span>,i);</span><br><span class="line">        &#125;;</span><br><span class="line">        block1();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//==============上面是反编译以前的代码==================</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*Block)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __block_impl &#123;</span><br><span class="line">    <span class="keyword">void</span> *isa;</span><br><span class="line">    <span class="keyword">int</span> Flags;</span><br><span class="line">    <span class="keyword">int</span> Reserved;</span><br><span class="line">    <span class="keyword">void</span> *FuncPtr;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//这个结构体是专门为了__block变量i生成的。</span></span><br><span class="line"><span class="keyword">struct</span> __Block_byref_i_0 &#123;</span><br><span class="line">  <span class="keyword">void</span> *__isa;</span><br><span class="line">__Block_byref_i_0 *__forwarding;</span><br><span class="line"> <span class="keyword">int</span> __flags;</span><br><span class="line"> <span class="keyword">int</span> __size;</span><br><span class="line"> <span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//多了一个__Block_byref_i_0变量</span></span><br><span class="line"><span class="keyword">struct</span> __main_block_impl_0 &#123;</span><br><span class="line">  <span class="keyword">struct</span> __block_impl impl;</span><br><span class="line">  <span class="keyword">struct</span> __main_block_desc_0* Desc;</span><br><span class="line">  __Block_byref_i_0 *i; <span class="comment">// 多了一个i属性。block变量</span></span><br><span class="line">  __main_block_impl_0(<span class="keyword">void</span> *fp, <span class="keyword">struct</span> __main_block_desc_0 *desc, __Block_byref_i_0 *_i, <span class="keyword">int</span> flags=<span class="number">0</span>) : i(_i-&gt;__forwarding) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;</span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//Block的具体实现。从这里我们发现为啥改变i的值的猫腻。</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(<span class="keyword">struct</span> __main_block_impl_0 *__cself) &#123;</span><br><span class="line">  __Block_byref_i_0 *i = __cself-&gt;i; <span class="comment">// bound by ref</span></span><br><span class="line"></span><br><span class="line">            (i-&gt;__forwarding-&gt;i) = <span class="number">2</span>;</span><br><span class="line">            printf(<span class="string">"%d"</span>,(i-&gt;__forwarding-&gt;i));</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//用于管理i变量的声明周期。复制一个block的时候，复制他对应的i变量。</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(<span class="keyword">struct</span> __main_block_impl_0*dst, <span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    </span><br><span class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;i, (<span class="keyword">void</span>*)src-&gt;i, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//用于管理i变量的声明周期</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(<span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;i, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//多了两个指针函数、</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> __main_block_desc_0 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">  <span class="keyword">void</span> (*<span class="keyword">copy</span>)(<span class="keyword">struct</span> __main_block_impl_0*, <span class="keyword">struct</span> __main_block_impl_0*);</span><br><span class="line">  <span class="keyword">void</span> (*dispose)(<span class="keyword">struct</span> __main_block_impl_0*);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//实例变量</span></span><br><span class="line"> <span class="keyword">struct</span> __main_block_desc_0 __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0&#125;;</span><br><span class="line"><span class="comment">//入口</span></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="comment">//自动释放池，这里暂不管他</span></span><br><span class="line">     &#123;__AtAutoreleasePool __autoreleasepool;</span><br><span class="line">         </span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> NORMAL</span></span><br><span class="line">     __attribute__((__blocks__(<span class="keyword">byref</span>))) __Block_byref_i_0 i;</span><br><span class="line">     i = &#123;(<span class="keyword">void</span>*)<span class="number">0</span>,(__Block_byref_i_0 *)&amp;i, <span class="number">0</span>, <span class="keyword">sizeof</span>(__Block_byref_i_0), <span class="number">1</span>&#125;;</span><br><span class="line">         </span><br><span class="line">      Block block1 = ((<span class="keyword">void</span> (*)())&amp;__main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, (__Block_byref_i_0 *)&amp;i, <span class="number">570425344</span>));</span><br><span class="line">         </span><br><span class="line">         ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)block1)-&gt;FuncPtr)((__block_impl *)block1);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">         <span class="comment">//定义一个__Block_byref_i_0结构体变量。并且初始化</span></span><br><span class="line">         __Block_byref_i_0 i;</span><br><span class="line">         i = &#123;(<span class="keyword">void</span>*)<span class="number">0</span>,(__Block_byref_i_0 *)&amp;i, <span class="number">0</span>, <span class="keyword">sizeof</span>(__Block_byref_i_0), <span class="number">1</span>&#125;;</span><br><span class="line">       <span class="comment">//定义一个__main_block_impl_0结构体变量，同时传入i的指针</span></span><br><span class="line">        __main_block_impl_0 tmp = __main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, (__Block_byref_i_0 *)&amp;i, <span class="number">570425344</span>);</span><br><span class="line">         <span class="comment">//把结构体变量的指针赋值给block1对象</span></span><br><span class="line">        Block block1 = &amp;tmp;</span><br><span class="line">         <span class="comment">//调用解耦固体。就是OC里面的`block1()`</span></span><br><span class="line">         ((*block1-&gt;impl)-&gt;FuncPrt)(block1);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-带全局变量、静态全局变量、局部全局变量类型的Block解析"><a href="#5-带全局变量、静态全局变量、局部全局变量类型的Block解析" class="headerlink" title="5 带全局变量、静态全局变量、局部全局变量类型的Block解析"></a>5 带全局变量、静态全局变量、局部全局变量类型的Block解析</h2><p>从转换以前和转换以后的代码比较。发现<strong>block变量和上面一样，这里就不做具体分析了。但是对于几个非</strong>block变量则有不同情况：</p>
+<ul>
+<li>全局变量<code>global_val</code>和静态全局变量<code>static_global_val</code>转换以前和转换以后调用方式没有任何区别。</li>
+<li>局部静态变量<code>static_val</code>会作为结构体<code>__main_block_impl_0</code>的一个属性。并且这个属性是局部静态变量的一个指针。</li>
+<li>当改变局部静态变量的值的时候，我们通过<code>__main_block_impl_0</code>结构体的<code>static_val</code>属性拿到静态局部变量的指针，然后直接赋值。</li>
+<li>Block直接截取的值静态局部变量的指针。然后对指针操作。</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> global_val = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> static_global_val = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        __block <span class="keyword">int</span> one = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">int</span> static_val = <span class="number">2</span>;</span><br><span class="line">        Block block1 = ^()&#123;</span><br><span class="line">            one =  <span class="number">2</span>;</span><br><span class="line">            global_val = global_val + <span class="number">1</span>;</span><br><span class="line">            static_global_val = static_global_val + <span class="number">1</span>;</span><br><span class="line">            static_val = static_val + <span class="number">1</span>;</span><br><span class="line">            printf(<span class="string">"%d--%d--%d--%d"</span>,one,global_val,static_global_val,static_val);</span><br><span class="line">        &#125;;</span><br><span class="line">        block1();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//==============上面是反编译以前的代码==================</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*Block)();</span><br><span class="line"><span class="comment">//全局变量和静态全局变量的用法没有任何转变。</span></span><br><span class="line"><span class="keyword">int</span> global_val = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> static_global_val = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">struct</span> __block_impl &#123;</span><br><span class="line">    <span class="keyword">void</span> *isa;</span><br><span class="line">    <span class="keyword">int</span> Flags;</span><br><span class="line">    <span class="keyword">int</span> Reserved;</span><br><span class="line">    <span class="keyword">void</span> *FuncPtr;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __Block_byref_one_0 &#123;</span><br><span class="line">  <span class="keyword">void</span> *__isa;</span><br><span class="line">__Block_byref_one_0 *__forwarding;</span><br><span class="line"> <span class="keyword">int</span> __flags;</span><br><span class="line"> <span class="keyword">int</span> __size;</span><br><span class="line"> <span class="keyword">int</span> one;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __main_block_impl_0 &#123;</span><br><span class="line">  <span class="keyword">struct</span> __block_impl impl;</span><br><span class="line">  <span class="keyword">struct</span> __main_block_desc_0* Desc;</span><br><span class="line">  <span class="keyword">int</span> *static_val;<span class="comment">//局部静态变量的指针作为结构体的一个属性</span></span><br><span class="line">  __Block_byref_one_0 *one; <span class="comment">// by ref</span></span><br><span class="line">  __main_block_impl_0(<span class="keyword">void</span> *fp, <span class="keyword">struct</span> __main_block_desc_0 *desc, <span class="keyword">int</span> *_static_val, __Block_byref_one_0 *_one, <span class="keyword">int</span> flags=<span class="number">0</span>) : static_val(_static_val), one(_one-&gt;__forwarding) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;</span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_func_0(<span class="keyword">struct</span> __main_block_impl_0 *__cself) &#123;</span><br><span class="line">  __Block_byref_one_0 *one = __cself-&gt;one; <span class="comment">// bound by ref</span></span><br><span class="line">  <span class="keyword">int</span> *static_val = __cself-&gt;static_val; <span class="comment">// bound by copy</span></span><br><span class="line">    (one-&gt;__forwarding-&gt;one) = <span class="number">2</span>;</span><br><span class="line">    global_val = global_val + <span class="number">1</span>;</span><br><span class="line">    static_global_val = static_global_val + <span class="number">1</span>;</span><br><span class="line">    (*static_val) = (*static_val) + <span class="number">1</span>;</span><br><span class="line">    printf(<span class="string">"%d--%d--%d--%d"</span>,(one-&gt;__forwarding-&gt;one),global_val,static_global_val,(*static_val));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_copy_0(<span class="keyword">struct</span> __main_block_impl_0*dst, <span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    _Block_object_assign((<span class="keyword">void</span>*)&amp;dst-&gt;one, (<span class="keyword">void</span>*)src-&gt;one, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __main_block_dispose_0(<span class="keyword">struct</span> __main_block_impl_0*src) &#123;</span><br><span class="line">    _Block_object_dispose((<span class="keyword">void</span>*)src-&gt;one, <span class="number">8</span><span class="comment">/*BLOCK_FIELD_IS_BYREF*/</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> __main_block_desc_0 &#123;</span><br><span class="line">  size_t reserved;</span><br><span class="line">  size_t Block_size;</span><br><span class="line">  <span class="keyword">void</span> (*<span class="keyword">copy</span>)(<span class="keyword">struct</span> __main_block_impl_0*, <span class="keyword">struct</span> __main_block_impl_0*);</span><br><span class="line">  <span class="keyword">void</span> (*dispose)(<span class="keyword">struct</span> __main_block_impl_0*);</span><br><span class="line">&#125; __main_block_desc_0_DATA = &#123; <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </span><br><span class="line">        __attribute__((__blocks__(<span class="keyword">byref</span>))) __Block_byref_one_0 one = &#123;(<span class="keyword">void</span>*)<span class="number">0</span>,(__Block_byref_one_0 *)&amp;one, <span class="number">0</span>, <span class="keyword">sizeof</span>(__Block_byref_one_0), <span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">int</span> static_val = <span class="number">2</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//Block block1 = ((void (*)())&amp;__main_block_impl_0((void *)__main_block_func_0, &amp;__main_block_desc_0_DATA, &amp;static_val, (__Block_byref_one_0 *)&amp;one, 570425344));</span></span><br><span class="line">        <span class="comment">//上面这行转换为下面这行</span></span><br><span class="line">        __main_block_impl_0 tmp = __main_block_impl_0((<span class="keyword">void</span> *)__main_block_func_0, &amp;__main_block_desc_0_DATA, &amp;static_val, (__Block_byref_one_0 *)&amp;one, <span class="number">570425344</span>);</span><br><span class="line">        Block block1 = (<span class="keyword">void</span> (*)())&amp;tmp;</span><br><span class="line">        </span><br><span class="line">        ((<span class="keyword">void</span> (*)(__block_impl *))((__block_impl *)block1)-&gt;FuncPtr)((__block_impl *)block1);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6 总结"></a>6 总结</h2><p>通过测试、我发现同一种类型的Block实例变量，会分别生成对应的<code>__main_block_impl_X</code>,<code>__main_block_func_X</code>,<code>__main_block_desc_X</code>,<code>__main_block_copy_X</code>,<code>__main_block_dispose_X</code>。但是会共用相同的<code>__block_impl</code>。如果多个Block(不管是不是同一种类型)使用同一个<strong>block变量，则会共享相同的`</strong>Block_byref_YYY_X`结构体。</p>
+<p>把一个Block变量赋值给另一个Block变量。则相当于被复制的Block变量有两个引用，并不会生成一套对应的结构体。</p>
+<p>判断Block是不是同一种类型，只与返回变量、参数类型相关。与通过宏定义的名字无关。</p>
+<p>具体源码位置<a href="https://github.com/huang303513/iOSKeyPointExploration/tree/master/Block%E5%8F%8D%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90">源码地址</a>。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/14/AFNetWorking源码之NSURLSession系列概述/" data-toggle="tooltip" data-placement="top" title="AFNetWorking源码之NSURLSession系列概述">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/04/01/WebViewJavascriptBridge原理解析/" data-toggle="tooltip" data-placement="top" title="WebViewJavascriptBridge原理解析">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-基本说明"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 基本说明</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-void-block-void-类型解析"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 void (*block)(void)类型解析</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-1具体流程分析"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1具体流程分析</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-int-block-int-类型解析"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 int (*block)(int)类型解析</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-带-block变量的void-block-void-类型解析"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 带__block变量的void (*block)(void)类型解析</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-带全局变量、静态全局变量、局部全局变量类型的Block解析"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 带全局变量、静态全局变量、局部全局变量类型的Block解析</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#6-总结"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">6 总结</span></a></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Block" title="Block">Block</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

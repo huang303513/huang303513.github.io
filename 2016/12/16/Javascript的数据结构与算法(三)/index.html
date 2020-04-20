@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          Javascript的数据结构与算法(三) - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2016/12/16/Javascript的数据结构与算法(三)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#数据结构与算法" title="数据结构与算法">数据结构与算法</a>
+                            
+                        </div>
+                        <h1>Javascript的数据结构与算法(三)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2016-12-16
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">4.8k</span> and
+                                Reading Time <span class="post-count">21</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="1-树"><a href="#1-树" class="headerlink" title="1 树"></a>1 树</h1><hr>
+<p>一个树结构包含一系列存在父子关系的节点。每个节点都有一个父节点(除了顶部的第一个节点)以及零个或多个子节点。位于树顶部的节点叫作根节点(11)。它没有父节点。树中的每个元素都叫作节点,节点分 为内部节点和外部节点。至少有一个子节点的节点称为内部节点。没有子元素的节点称为外部节点或叶节点。节点的一个属性是深度,节点的深度取决于它的祖先节点的数量。树的高度取决于所有节点深度的最大值。一棵树也可以被分解成层级。根节点在第0层,它 的子节点在第1层,以此类推。</p>
+<h2 id="1-1-二叉树和二叉搜索树"><a href="#1-1-二叉树和二叉搜索树" class="headerlink" title="1.1 二叉树和二叉搜索树"></a>1.1 二叉树和二叉搜索树</h2><p>二叉树中的节点最多只能有两个子节点:一个是左侧子节点,另一个是右侧子节点。这些定义有助于我们写出更高效的向树中插入、查找和删除节点的算法。</p>
+<p>对于二叉搜索树，我们一般需要实现如下方法：</p>
+<ul>
+<li>insert(key): 向书中插入一个新的键。</li>
+<li>search(key): 在树中查找一个键，如果节点存在，则返回true，否则返回false。</li>
+<li>inOrderTraverse: 通过中序遍历方式遍历所有节点。</li>
+<li>preOrderTraverse: 通过先序遍历方式遍历所有节点。</li>
+<li>postOrderTraverse: 通过后序遍历方式遍历所有节点。</li>
+<li>min: 返回树中最小的键/值。</li>
+<li>max: 返回树中最大的健/值。</li>
+<li>remove(key): 从树中移除某个键。</li>
+</ul>
+<h3 id="1-1-1-二叉搜索树的遍历"><a href="#1-1-1-二叉搜索树的遍历" class="headerlink" title="1.1.1 二叉搜索树的遍历"></a>1.1.1 二叉搜索树的遍历</h3><p>二叉搜索树(BST)是二叉树的一种,但是它只允许你在左侧节点存储(比父节点)小的值, 在右侧节点存储(比父节点)大(或者等于)的值。</p>
+<p>中序遍历是一种以上行顺序访问BST所有节点的遍历方式,也就是以从最小到最大的顺序访问所有节点。中序遍历的一种应用就是对树进行排序操作。</p>
+<p>先序遍历是以优先于后代节点的顺序访问每个节点的。先序遍历的一种应用是打印一个结构化的文档。先序遍历和中序遍历的不同点是,先序遍历会先访问节点本身,然后再访问它的左侧子节点，最后是右侧子节点。</p>
+<p>后序遍历则是先访问节点的后代节点,再访问节点本身。后序遍历的一种应用是计算一个目录和它的子目录中所有文件所占空间的大小。</p>
+<p>树中有三种经常执行的搜索类型，最小值，最大值，搜索特定的值。</p>
+<h3 id="1-1-2-二叉搜索树的实现与基本使用"><a href="#1-1-2-二叉搜索树的实现与基本使用" class="headerlink" title="1.1.2 二叉搜索树的实现与基本使用"></a>1.1.2 二叉搜索树的实现与基本使用</h3><p>下面的minNode方法允许我们从树中任意一个节点开始寻找最小的键。我们可以使用它来找到一棵 树或它的子树中最小的键。因此,我们在调用minNode方法的时候传入树的根节点(行{1}), 因为我们想要找到整棵树的最小键。</p>
+<p>可以把代码中的几个内部方法也写成二叉树结构的属性，这样可以灵活引用。这里我们就不具体修改了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">BinarySearchTree</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Node</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.left = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">this</span>.right = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.root = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">typeof</span> <span class="keyword">this</span>.insert !== <span class="string">'function'</span>) &amp;&amp; (<span class="keyword">typeof</span> <span class="keyword">this</span>.insert !== <span class="string">'string'</span>)) &#123;</span><br><span class="line">        <span class="comment">//内部私有方法，用于插入节点</span></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">insertNode</span>(<span class="params">node, newNode</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (node.key &gt; newNode.key) &#123;</span><br><span class="line">                <span class="keyword">if</span> (node.left === <span class="literal">null</span>) &#123;</span><br><span class="line">                    node.left = newNode;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    insertNode(node.left, newNode);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (node.right === <span class="literal">null</span>) &#123;</span><br><span class="line">                    node.right = newNode;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    insertNode(node.right, newNode);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        BinarySearchTree.prototype.insert = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> newNode = <span class="keyword">new</span> Node(key);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.root === <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.root = newNode;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                insertNode(<span class="keyword">this</span>.root, newNode);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.inOrderTraverse = <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">            <span class="comment">//中序遍历的私有方法,从小到大遍历</span></span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">inOrderTraverseNode</span>(<span class="params">node, callback</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node !== <span class="literal">null</span>) &#123;</span><br><span class="line">                    inOrderTraverseNode(node.left, callback);</span><br><span class="line">                    callback(node.key);</span><br><span class="line">                    inOrderTraverseNode(node.right, callback);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            inOrderTraverseNode(<span class="keyword">this</span>.root, printNode);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.preOrderTraverse = <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">preOrderTraverseNode</span>(<span class="params">node,callback</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node !== <span class="literal">null</span>) &#123;</span><br><span class="line">                    callback(node.key);</span><br><span class="line">                    preOrderTraverseNode(node.left,callback);</span><br><span class="line">                    preOrderTraverseNode(node.right,callback);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            preOrderTraverseNode(<span class="keyword">this</span>.root,callback);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.postOrderTraverse = <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">postOrderTraverseNode</span>(<span class="params">node,callback</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node !== <span class="literal">null</span>) &#123;</span><br><span class="line">                    postOrderTraverseNode(node.left,callback);</span><br><span class="line">                    postOrderTraverseNode(node.right,callback);</span><br><span class="line">                    callback(node.key);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            postOrderTraverseNode(<span class="keyword">this</span>.root,callback);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.min = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">minNode</span>(<span class="params">node</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node) &#123;</span><br><span class="line">                    <span class="keyword">while</span>(node &amp;&amp; node.left !== <span class="literal">null</span>)&#123;</span><br><span class="line">                        node = node.left;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> node.key;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//调用内部方法</span></span><br><span class="line">            <span class="keyword">return</span> minNode(<span class="keyword">this</span>.root);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.max = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">maxNode</span>(<span class="params">node</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node) &#123;</span><br><span class="line">                    <span class="keyword">while</span>(node &amp;&amp; node.right !== <span class="literal">null</span>)&#123;</span><br><span class="line">                        node = node.right;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> node.key;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//调用内部方法</span></span><br><span class="line">            <span class="keyword">return</span> maxNode(<span class="keyword">this</span>.root);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.search = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">searchNode</span>(<span class="params">node,key</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node === <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (node.key &lt; key) &#123;</span><br><span class="line">                    <span class="keyword">return</span> searchNode(node.right,key);</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(node.key &gt; key)&#123;</span><br><span class="line">                    <span class="keyword">return</span> searchNode(node.left,key);</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> searchNode(<span class="keyword">this</span>.root,key);</span><br><span class="line">        &#125;;</span><br><span class="line">        BinarySearchTree.prototype.remove = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>)</span>&#123;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">findMinNode</span>(<span class="params">node</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node) &#123;</span><br><span class="line">                    <span class="keyword">while</span>(node &amp;&amp; node.left !== <span class="literal">null</span>)&#123;</span><br><span class="line">                        node = node.left;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> node;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">removeNode</span>(<span class="params">node,key</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (node === <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (key &lt; node.key) &#123;</span><br><span class="line">                    node.left = removeNode(node.left,key);</span><br><span class="line">                    <span class="keyword">return</span> node;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(key &gt; node.key)&#123;</span><br><span class="line">                    node.right = removeNode(node.right,key);</span><br><span class="line">                    <span class="keyword">return</span> node;</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;<span class="comment">//键等于node.key</span></span><br><span class="line">                    <span class="comment">//第一种情况，一个叶节点</span></span><br><span class="line">                    <span class="keyword">if</span> (node.left === <span class="literal">null</span> &amp;&amp; node.right === <span class="literal">null</span>) &#123;</span><br><span class="line">                        node = <span class="literal">null</span>;</span><br><span class="line">                        <span class="keyword">return</span> node;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//第二种情况 一个只有一个子节点的节点</span></span><br><span class="line">                    <span class="keyword">if</span> (node.left === <span class="literal">null</span>) &#123;</span><br><span class="line">                        node = node.right;</span><br><span class="line">                        <span class="keyword">return</span> node;</span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span> (node.right === <span class="literal">null</span>)&#123;</span><br><span class="line">                        node = node.left;</span><br><span class="line">                        <span class="keyword">return</span> node;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//第三种情况 一个有两个子节点的节点</span></span><br><span class="line">                    <span class="keyword">var</span> aux = findMinNode(node.right);</span><br><span class="line">                    node.key = aux.key;</span><br><span class="line">                    node.right = removeNode(node.right,aux.key);</span><br><span class="line">                    <span class="keyword">return</span> node;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.root = removeNode(<span class="keyword">this</span>.root,key);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>二叉树基本使用：<br><br><img src="/assets/postImages/2016121601.png" alt="img"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//遍历节点操作</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printNode</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> tree = <span class="keyword">new</span> BinarySearchTree();</span><br><span class="line">tree.insert(<span class="number">11</span>);</span><br><span class="line">tree.insert(<span class="number">7</span>);</span><br><span class="line">tree.insert(<span class="number">15</span>);</span><br><span class="line">tree.insert(<span class="number">5</span>);</span><br><span class="line">tree.insert(<span class="number">3</span>);</span><br><span class="line">tree.insert(<span class="number">9</span>);</span><br><span class="line">tree.insert(<span class="number">8</span>);</span><br><span class="line">tree.insert(<span class="number">10</span>);</span><br><span class="line">tree.insert(<span class="number">13</span>);</span><br><span class="line">tree.insert(<span class="number">12</span>);</span><br><span class="line">tree.insert(<span class="number">14</span>);</span><br><span class="line">tree.insert(<span class="number">20</span>);</span><br><span class="line">tree.insert(<span class="number">18</span>);</span><br><span class="line">tree.insert(<span class="number">25</span>);</span><br><span class="line">tree.insert(<span class="number">6</span>);</span><br><span class="line"><span class="comment">//中序遍历</span></span><br><span class="line">tree.inOrderTraverse(printNode);<span class="comment">//3 5 6 7 8 9 10 11 12 13 14 15 18 20 25</span></span><br><span class="line"><span class="comment">//先序遍历</span></span><br><span class="line">tree.preOrderTraverse(printNode);<span class="comment">//11 7 5 3 6 9 8 10 15 13 12 14 20 18 25</span></span><br><span class="line"><span class="comment">//后序遍历</span></span><br><span class="line">tree.postOrderTraverse(printNode);<span class="comment">//3 6 5 8 10 9 7 12 14 13 18 25 20 15 11</span></span><br><span class="line"><span class="built_in">console</span>.log(tree.min());</span><br><span class="line"><span class="built_in">console</span>.log(tree.max());</span><br><span class="line"><span class="comment">//搜索</span></span><br><span class="line"><span class="built_in">console</span>.log(tree.search(<span class="number">1</span>) ? <span class="string">'Key 1 found.'</span> : <span class="string">'Key 1 not found.'</span>);<span class="comment">//Key 1 not found.</span></span><br><span class="line"><span class="built_in">console</span>.log(tree.search(<span class="number">8</span>) ? <span class="string">'Key 8 found.'</span> : <span class="string">'Key 8 not found.'</span>);<span class="comment">//Key 8 found.</span></span><br><span class="line"><span class="comment">//移除节点</span></span><br><span class="line">tree.remove(<span class="number">15</span>);</span><br><span class="line">tree.inOrderTraverse(printNode);<span class="comment">////3 5 6 7 8 9 10 11 12 13 14 15 18 20 25</span></span><br><span class="line"><span class="comment">//console.log(tree.remove(100));</span></span><br></pre></td></tr></table></figure>
+<h1 id="2-图"><a href="#2-图" class="headerlink" title="2 图"></a>2 图</h1><hr>
+<h2 id="2-1-图的相关概念"><a href="#2-1-图的相关概念" class="headerlink" title="2.1 图的相关概念"></a>2.1 图的相关概念</h2><p>由一条边连接在一起的顶点称为相邻顶点。一个顶点的度是其相邻顶点的数量。如果图中不存在环,则称该图是无环的。</p>
+<p>如果图中每两个顶点间都存在路径,则该图是连通的。</p>
+<p>图可以是无向的(边没有方向)或是有向的(有向图)。</p>
+<p>图还可以是未加权的或是加权的。</p>
+<p>图最常见的实现是邻接矩阵。每个节点都和一个整数相关联,该整数将作为数组的索引。我 们用一个二维数组来表示顶点之间的连接。如果索引为i的节点和索引为j的节点相邻,则array[i][j] === 1,否则array[i][j] === 0,邻接矩阵如下图所示:<br><br><img src="/assets/postImages/2016121602.png" alt="img"></p>
+<p>我们也可以使用一种叫作邻接表的动态数据结构来表示图。邻接表由图中每个顶点的相邻顶点列表所组成。存在好几种方式来表示这种数据结构。我们可以用列表(数组)、链表,甚至是 散列表或是字典来表示相邻顶点列表。下面的示意图展示了邻接表数据结构。<br><br><img src="/assets/postImages/2016121603.png" alt="img"></p>
+<p>我们还可以用关联矩阵来表示图。在关联矩阵中,矩阵的行表示顶点,列表示边。如下图所示,我们使用二维数组来表示两者之间的连通性,如果顶点v是边e的入射点,则array[v][e] === 1; 否则,array[v][e]===0。关联矩阵通常用于边的数量比顶点多的情况下,以节省空间和内存。<br><br><img src="/assets/postImages/2016121604.png" alt="img"></p>
+<p>尽管邻接表可能对大多数问题来说都是更好的选择,但以上两种表示法都很有用,且它们有 着不同的性质(例如,要找出顶点v和w是否相邻,使用邻接矩阵会比较快)。在后面示例中, 我们将会使用邻接表表示法。</p>
+<h2 id="2-2-图的遍历"><a href="#2-2-图的遍历" class="headerlink" title="2.2 图的遍历"></a>2.2 图的遍历</h2><p>和树数据结构类似,我们可以访问图的所有节点。有两种算法可以对图进行遍历:广度优先 搜索(Breadth-First Search,BFS)和深度优先搜索(Depth-First Search,DFS)。图遍历可以用来寻找特定的顶点或寻找两个顶点之间的路径,检查图是否连通,检查图是否含有环等。</p>
+<p>图遍历算法的思想是必须追踪每个第一次访问的节点,并且追踪有哪些节点还没有被完全探索。对于两种图遍历算法,都需要明确指出第一个被访问的顶点。</p>
+<p>完全探索一个顶点要求我们查看该顶点的每一条边。对于每一条边所连接的没有被访问过的顶点,将其标注为被发现的,并将其加进待访问顶点列表中。</p>
+<p>为了保证算法的效率,务必访问每个顶点至多两次。连通图中每条边和顶点都会被访问到。广度优先搜索算法和深度优先搜索算法基本上是相同的,只有一点不同,那就是待访问顶点 列表的数据结构。</p>
+<p><img src="/assets/postImages/2016121605.png" alt="img"></p>
+<h2 id="2-3-广度优先搜索"><a href="#2-3-广度优先搜索" class="headerlink" title="2.3 广度优先搜索"></a>2.3 广度优先搜索</h2><p>广度优先搜索算法会从指定的第一个顶点开始遍历图,先访问其所有的相邻点,就像一次访问图的一层。换句话说,就是先宽后深地访问顶点。</p>
+<p>广度优先搜索和深度优先搜索都需要标注被访问过的顶点。为此,我们将使用一个辅助数组color。由于当算法开始执行时,所有的顶点颜色都是白色(行{1}),所以我们可以创建一个辅 助函数initializeColor,为这两个算法执行此初始化操作。</p>
+<p>我们会用到一个队列结构。<a href="http://huang303513.github.io/2016/12/08/Javascript%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(%E4%B8%80" target="_blank" rel="noopener">队列的实现</a>.html)。</p>
+<h3 id="2-3-1广度优先搜索的基本实现"><a href="#2-3-1广度优先搜索的基本实现" class="headerlink" title="2.3.1广度优先搜索的基本实现"></a>2.3.1广度优先搜索的基本实现</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//广度优先搜索算法 v表示初始节点，callback表示回调。</span></span><br><span class="line">Graph.prototype.bfs = <span class="function"><span class="keyword">function</span>(<span class="params">v, callback</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">    <span class="keyword">var</span> queue = <span class="keyword">new</span> Queue();<span class="comment">//存储待访问和待探索的节点</span></span><br><span class="line">    queue.enqueue(v);</span><br><span class="line">    <span class="keyword">while</span>(!queue.isEmpty())&#123;</span><br><span class="line">        <span class="keyword">var</span> u = queue.dequeue();</span><br><span class="line">        <span class="comment">//获取u的相邻节点列表</span></span><br><span class="line">        <span class="keyword">var</span> neighbors = <span class="keyword">this</span>.adjList.get(u);</span><br><span class="line">        color[u] = <span class="string">'grey'</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++)&#123;</span><br><span class="line">            <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">            <span class="comment">//如果从没有标记过，则标记为grey，加入队列</span></span><br><span class="line">            <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                color[w] = <span class="string">'grey'</span>;</span><br><span class="line">                queue.enqueue(w);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//所有相邻节点都被标记了，所以改为黑色</span></span><br><span class="line">        color[u] = <span class="string">'black'</span>;</span><br><span class="line">        <span class="comment">//如果对于标记过得节点有操作，通过callback操作</span></span><br><span class="line">        <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">            callback(u);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-2-广度优先实现最短路径查找"><a href="#2-3-2-广度优先实现最短路径查找" class="headerlink" title="2.3.2 广度优先实现最短路径查找"></a>2.3.2 广度优先实现最短路径查找</h3><p>给定一个图G和源顶点v,找出对每个顶点u,u和v之间最短路径的距离。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用BFS实现最短路径</span></span><br><span class="line">Graph.prototype.BFS = <span class="function"><span class="keyword">function</span>(<span class="params">v, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">    <span class="keyword">var</span> queue = <span class="keyword">new</span> Queue(); <span class="comment">//存储待访问和待探索的节点</span></span><br><span class="line">    <span class="keyword">var</span> d = [];</span><br><span class="line">    <span class="keyword">var</span> pred = [];</span><br><span class="line">    queue.enqueue(v);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++) &#123;</span><br><span class="line">        d[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">        pred[<span class="keyword">this</span>.vertices[i]] = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">var</span> u = queue.dequeue();</span><br><span class="line">        <span class="comment">//获取u的相邻节点列表</span></span><br><span class="line">        <span class="keyword">var</span> neighbors = <span class="keyword">this</span>.adjList.get(u);</span><br><span class="line">        color[u] = <span class="string">'grey'</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++) &#123;</span><br><span class="line">            <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">            <span class="comment">//如果从没有标记过，则标记为grey，加入队列</span></span><br><span class="line">            <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                color[w] = <span class="string">'grey'</span>;</span><br><span class="line">                d[w] = d[u] + <span class="number">1</span>;</span><br><span class="line">                pred[w] = u;</span><br><span class="line">                queue.enqueue(w);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//所有相邻节点都被标记了，所以改为黑色</span></span><br><span class="line">        color[u] = <span class="string">'black'</span>;</span><br><span class="line">        <span class="comment">//如果对于标记过得节点有操作，通过callback操作</span></span><br><span class="line">        <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">            callback(u);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        distances: d,</span><br><span class="line">        predecessors: pred</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-3-深度优先搜索基本实现"><a href="#2-3-3-深度优先搜索基本实现" class="headerlink" title="2.3.3 深度优先搜索基本实现"></a>2.3.3 深度优先搜索基本实现</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//深度优先基本实现</span></span><br><span class="line">Graph.prototype.dfs = <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dfsVisit</span>(<span class="params">u, color, callback</span>) </span>&#123;</span><br><span class="line">        color[u] = <span class="string">'grey'</span>;</span><br><span class="line">        <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">            callback(u);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> neighbors = self.adjList.get(u);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++) &#123;</span><br><span class="line">            <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">            <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                dfsVisit(w, color, callback);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        color[u] = <span class="string">'black'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (color[<span class="keyword">this</span>.vertices[i]] === <span class="string">'white'</span>) &#123;</span><br><span class="line">            dfsVisit(<span class="keyword">this</span>.vertices[i], color, callback);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-4-深度优先搜索实现拓扑排序"><a href="#2-3-4-深度优先搜索实现拓扑排序" class="headerlink" title="2.3.4 深度优先搜索实现拓扑排序"></a>2.3.4 深度优先搜索实现拓扑排序</h3><p>当我们需要编排一些任务或步骤的执行顺序时,这称为拓扑排序。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//DFS可以实现输出被访问顶点的顺序，可以用于拓扑排序实现。</span></span><br><span class="line">Graph.prototype.DFS = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> time = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">DFSVisit</span>(<span class="params">u,color,d,f,p</span>)</span>&#123;</span><br><span class="line">        <span class="comment">//console.log('discovered ' + u);</span></span><br><span class="line">        color[u] = <span class="string">'grey'</span>;</span><br><span class="line">        d[u] = ++time;</span><br><span class="line">        <span class="keyword">var</span> neighbors = self.adjList.get(u);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++)&#123;</span><br><span class="line">            <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">            <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                p[w] = u;</span><br><span class="line">                DFSVisit(w,color,d,f,p);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        color[u] = <span class="string">'black'</span>;</span><br><span class="line">        f[u] = ++time;</span><br><span class="line">        <span class="comment">//console.log('explored ' + u);</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">    <span class="keyword">var</span> d = [];</span><br><span class="line">    <span class="keyword">var</span> f = [];</span><br><span class="line">    <span class="keyword">var</span> p = [];</span><br><span class="line">    <span class="keyword">var</span> time = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++)&#123;</span><br><span class="line">        f[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">        d[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">        p[<span class="keyword">this</span>.vertices[i]] = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i&lt; <span class="keyword">this</span>.vertices.length; i++)&#123;</span><br><span class="line">        <span class="keyword">if</span> (color[<span class="keyword">this</span>.vertices[i]] === <span class="string">'white'</span>) &#123;</span><br><span class="line">            DFSVisit(<span class="keyword">this</span>.vertices[i], color, d, f, p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        discovery:d,</span><br><span class="line">        finished:f,</span><br><span class="line">        predecessors:p</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2-4-图的实现"><a href="#2-4-图的实现" class="headerlink" title="2.4 图的实现"></a>2.4 图的实现</h2><p>我们会实现一个邻接表的图结构。我们使用一个数组来存储图中所有顶点的名字,以及一个字典 <a href="http://huang303513.github.io/2016/12/14/Javascript%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95(%E4%BA%8C" target="_blank" rel="noopener">字典实现</a>.html)来存储邻接表字典将会使用顶点的名字作为键,邻接顶点列表作为值。vertices数组和adjList字典两者都是我们Graph类的私有属性。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Graph</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.vertices = []; <span class="comment">//点数组</span></span><br><span class="line">    <span class="keyword">this</span>.adjList = <span class="keyword">new</span> Dictionary();</span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">typeof</span> <span class="keyword">this</span>.addVertex !== <span class="string">'function'</span>) &amp;&amp; (<span class="keyword">typeof</span> <span class="keyword">this</span>.addVertex !== <span class="string">'string'</span>)) &#123;</span><br><span class="line">        <span class="comment">//私有方法，标记节点颜色 未被访问过是white 被发现是grey 已被探索black。</span></span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">initializeColor</span>(<span class="params">vertices</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> color = [];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; vertices.length; i++) &#123;</span><br><span class="line">                color[vertices[i]] = <span class="string">'white'</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> color;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//添加节点</span></span><br><span class="line">        Graph.prototype.addVertex = <span class="function"><span class="keyword">function</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.vertices.push(v);</span><br><span class="line">            <span class="keyword">this</span>.adjList.set(v, []); <span class="comment">//给节点v设置一个空数组作为值。</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//添加边</span></span><br><span class="line">        Graph.prototype.addEdge = <span class="function"><span class="keyword">function</span>(<span class="params">v, w</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.adjList.get(v).push(w); <span class="comment">//先获取v节点对应的数组，然后把w推入数组中，这样就表示一条v到w的线</span></span><br><span class="line">            <span class="keyword">this</span>.adjList.get(w).push(v);</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//广度优先d</span></span><br><span class="line">        <span class="comment">//搜索算法 v表示初始节点，callback表示回调。</span></span><br><span class="line">        Graph.prototype.bfs = <span class="function"><span class="keyword">function</span>(<span class="params">v, callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">            <span class="keyword">var</span> queue = <span class="keyword">new</span> Queue(); <span class="comment">//存储待访问和待探索的节点</span></span><br><span class="line">            queue.enqueue(v);</span><br><span class="line">            <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">var</span> u = queue.dequeue();</span><br><span class="line">                <span class="comment">//获取u的相邻节点列表</span></span><br><span class="line">                <span class="keyword">var</span> neighbors = <span class="keyword">this</span>.adjList.get(u);</span><br><span class="line">                color[u] = <span class="string">'grey'</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++) &#123;</span><br><span class="line">                    <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">                    <span class="comment">//如果从没有标记过，则标记为grey，加入队列</span></span><br><span class="line">                    <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                        color[w] = <span class="string">'grey'</span>;</span><br><span class="line">                        queue.enqueue(w);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//所有相邻节点都被标记了，所以改为黑色</span></span><br><span class="line">                color[u] = <span class="string">'black'</span>;</span><br><span class="line">                <span class="comment">//如果对于标记过得节点有操作，通过callback操作</span></span><br><span class="line">                <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">                    callback(u);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//用BFS实现最短路径</span></span><br><span class="line">        Graph.prototype.BFS = <span class="function"><span class="keyword">function</span>(<span class="params">v, callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">            <span class="keyword">var</span> queue = <span class="keyword">new</span> Queue(); <span class="comment">//存储待访问和待探索的节点</span></span><br><span class="line">            <span class="keyword">var</span> d = [];</span><br><span class="line">            <span class="keyword">var</span> pred = [];</span><br><span class="line">            queue.enqueue(v);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++) &#123;</span><br><span class="line">                d[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">                pred[<span class="keyword">this</span>.vertices[i]] = <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">var</span> u = queue.dequeue();</span><br><span class="line">                <span class="comment">//获取u的相邻节点列表</span></span><br><span class="line">                <span class="keyword">var</span> neighbors = <span class="keyword">this</span>.adjList.get(u);</span><br><span class="line">                color[u] = <span class="string">'grey'</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++) &#123;</span><br><span class="line">                    <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">                    <span class="comment">//如果从没有标记过，则标记为grey，加入队列</span></span><br><span class="line">                    <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                        color[w] = <span class="string">'grey'</span>;</span><br><span class="line">                        d[w] = d[u] + <span class="number">1</span>;</span><br><span class="line">                        pred[w] = u;</span><br><span class="line">                        queue.enqueue(w);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//所有相邻节点都被标记了，所以改为黑色</span></span><br><span class="line">                color[u] = <span class="string">'black'</span>;</span><br><span class="line">                <span class="comment">//如果对于标记过得节点有操作，通过callback操作</span></span><br><span class="line">                <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">                    callback(u);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                distances: d,</span><br><span class="line">                predecessors: pred</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//深度优先基本实现</span></span><br><span class="line">        Graph.prototype.dfs = <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">dfsVisit</span>(<span class="params">u, color, callback</span>) </span>&#123;</span><br><span class="line">                color[u] = <span class="string">'grey'</span>;</span><br><span class="line">                <span class="keyword">if</span> (callback) &#123;</span><br><span class="line">                    callback(u);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">var</span> neighbors = self.adjList.get(u);</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++) &#123;</span><br><span class="line">                    <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">                    <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                        dfsVisit(w, color, callback);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                color[u] = <span class="string">'black'</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (color[<span class="keyword">this</span>.vertices[i]] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                    dfsVisit(<span class="keyword">this</span>.vertices[i], color, callback);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//DFS可以实现输出被访问顶点的顺序</span></span><br><span class="line">        Graph.prototype.DFS = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">var</span> time = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">            <span class="function"><span class="keyword">function</span> <span class="title">DFSVisit</span>(<span class="params">u,color,d,f,p</span>)</span>&#123;</span><br><span class="line">                <span class="comment">//console.log('discovered ' + u);</span></span><br><span class="line">                color[u] = <span class="string">'grey'</span>;</span><br><span class="line">                d[u] = ++time;</span><br><span class="line">                <span class="keyword">var</span> neighbors = self.adjList.get(u);</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; neighbors.length; i++)&#123;</span><br><span class="line">                    <span class="keyword">var</span> w = neighbors[i];</span><br><span class="line">                    <span class="keyword">if</span> (color[w] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                        p[w] = u;</span><br><span class="line">                        DFSVisit(w,color,d,f,p);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                color[u] = <span class="string">'black'</span>;</span><br><span class="line">                f[u] = ++time;</span><br><span class="line">                <span class="comment">//console.log('explored ' + u);</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">var</span> color = initializeColor(<span class="keyword">this</span>.vertices);</span><br><span class="line">            <span class="keyword">var</span> d = [];</span><br><span class="line">            <span class="keyword">var</span> f = [];</span><br><span class="line">            <span class="keyword">var</span> p = [];</span><br><span class="line">            <span class="keyword">var</span> time = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++)&#123;</span><br><span class="line">                f[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">                d[<span class="keyword">this</span>.vertices[i]] = <span class="number">0</span>;</span><br><span class="line">                p[<span class="keyword">this</span>.vertices[i]] = <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i&lt; <span class="keyword">this</span>.vertices.length; i++)&#123;</span><br><span class="line">                <span class="keyword">if</span> (color[<span class="keyword">this</span>.vertices[i]] === <span class="string">'white'</span>) &#123;</span><br><span class="line">                    DFSVisit(<span class="keyword">this</span>.vertices[i], color, d, f, p);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                discovery:d,</span><br><span class="line">                finished:f,</span><br><span class="line">                predecessors:p</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        Graph.prototype.toString = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> s = <span class="string">''</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="keyword">this</span>.vertices.length; i++) &#123;</span><br><span class="line">                s += <span class="keyword">this</span>.vertices[i] + <span class="string">' -&gt; '</span>;</span><br><span class="line">                <span class="keyword">var</span> neighbors = <span class="keyword">this</span>.adjList.get(<span class="keyword">this</span>.vertices[i]);</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">var</span> j = <span class="number">0</span>; j &lt; neighbors.length; j++) &#123;</span><br><span class="line">                    s += neighbors[j] + <span class="string">' '</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                s += <span class="string">','</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-5-图的基本使用"><a href="#2-5-图的基本使用" class="headerlink" title="2.5 图的基本使用"></a>2.5 图的基本使用</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> graph = <span class="keyword">new</span> Graph();</span><br><span class="line"><span class="keyword">var</span> myVertices = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>, <span class="string">'E'</span>, <span class="string">'F'</span>, <span class="string">'G'</span>, <span class="string">'H'</span>, <span class="string">'I'</span>];</span><br><span class="line"><span class="comment">//添加点</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; myVertices.length; i++) &#123;</span><br><span class="line">    graph.addVertex(myVertices[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//添加点之间的关系</span></span><br><span class="line">graph.addEdge(<span class="string">'A'</span>, <span class="string">'B'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'A'</span>, <span class="string">'C'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'A'</span>, <span class="string">'D'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'C'</span>, <span class="string">'D'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'C'</span>, <span class="string">'G'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'D'</span>, <span class="string">'G'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'D'</span>, <span class="string">'H'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'B'</span>, <span class="string">'E'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'B'</span>, <span class="string">'F'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'E'</span>, <span class="string">'I'</span>);</span><br><span class="line"><span class="comment">//console.log(graph.toString());//A -&gt; B C D ,B -&gt; A E F ,C -&gt; A D G ,D -&gt; A C G H ,E -&gt; B I ,F -&gt; B ,G -&gt; C D ,H -&gt; D ,I -&gt; E </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printNode</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Visited vertex: '</span> + value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//广度搜索算法</span></span><br><span class="line"><span class="comment">//graph.bfs(myVertices[0],printNode);</span></span><br><span class="line"><span class="comment">//上行输出结果，节点的访问顺序</span></span><br><span class="line"><span class="comment">// Visited vertex: A</span></span><br><span class="line"><span class="comment">// Visited vertex: B</span></span><br><span class="line"><span class="comment">// Visited vertex: C</span></span><br><span class="line"><span class="comment">// Visited vertex: D</span></span><br><span class="line"><span class="comment">// Visited vertex: E</span></span><br><span class="line"><span class="comment">// Visited vertex: F</span></span><br><span class="line"><span class="comment">// Visited vertex: G</span></span><br><span class="line"><span class="comment">// Visited vertex: H</span></span><br><span class="line"><span class="comment">// Visited vertex: I</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//广度优先搜索的使用:最短路径算法</span></span><br><span class="line"><span class="keyword">var</span> shortestPathA = graph.BFS(myVertices[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">//console.log(shortestPathA);</span></span><br><span class="line"><span class="comment">//上行输出结果：</span></span><br><span class="line"><span class="comment">// &#123; distances: [ A: 0, B: 1, C: 1, D: 1, E: 2, F: 2, G: 2, H: 2, I: 3 ],</span></span><br><span class="line"><span class="comment">//   predecessors: </span></span><br><span class="line"><span class="comment">//    [ A: null,</span></span><br><span class="line"><span class="comment">//      B: 'A',</span></span><br><span class="line"><span class="comment">//      C: 'A',</span></span><br><span class="line"><span class="comment">//      D: 'A',</span></span><br><span class="line"><span class="comment">//      E: 'B',</span></span><br><span class="line"><span class="comment">//      F: 'B',</span></span><br><span class="line"><span class="comment">//      G: 'C',</span></span><br><span class="line"><span class="comment">//      H: 'D',</span></span><br><span class="line"><span class="comment">//      I: 'E' ]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//深入优先搜索算法</span></span><br><span class="line"><span class="comment">//graph.dfs(printNode);</span></span><br><span class="line"><span class="comment">//上一行运行结果，节点的访问顺序</span></span><br><span class="line"><span class="comment">// Visited vertex: A</span></span><br><span class="line"><span class="comment">// Visited vertex: B</span></span><br><span class="line"><span class="comment">// Visited vertex: E</span></span><br><span class="line"><span class="comment">// Visited vertex: I</span></span><br><span class="line"><span class="comment">// Visited vertex: F</span></span><br><span class="line"><span class="comment">// Visited vertex: C</span></span><br><span class="line"><span class="comment">// Visited vertex: D</span></span><br><span class="line"><span class="comment">// Visited vertex: G</span></span><br><span class="line"><span class="comment">// Visited vertex: H</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//深度优先搜索查找访问过程：</span></span><br><span class="line">graph = <span class="keyword">new</span> Graph();</span><br><span class="line">myVertices = [<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>,<span class="string">'E'</span>,<span class="string">'F'</span>];</span><br><span class="line"><span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;myVertices.length; i++)&#123;</span><br><span class="line">    graph.addVertex(myVertices[i]);</span><br><span class="line">&#125;</span><br><span class="line">graph.addEdge(<span class="string">'A'</span>, <span class="string">'C'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'A'</span>, <span class="string">'D'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'B'</span>, <span class="string">'D'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'B'</span>, <span class="string">'E'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'C'</span>, <span class="string">'F'</span>);</span><br><span class="line">graph.addEdge(<span class="string">'F'</span>, <span class="string">'E'</span>);</span><br><span class="line"><span class="keyword">var</span> result = graph.DFS();</span><br><span class="line"><span class="comment">// 上面运行输出：</span></span><br><span class="line"><span class="comment">// discovered A</span></span><br><span class="line"><span class="comment">// discovered C</span></span><br><span class="line"><span class="comment">// discovered F</span></span><br><span class="line"><span class="comment">// discovered E</span></span><br><span class="line"><span class="comment">// discovered B</span></span><br><span class="line"><span class="comment">// discovered D</span></span><br><span class="line"><span class="comment">// explored D</span></span><br><span class="line"><span class="comment">// explored B</span></span><br><span class="line"><span class="comment">// explored E</span></span><br><span class="line"><span class="comment">// explored F</span></span><br><span class="line"><span class="comment">// explored C</span></span><br><span class="line"><span class="comment">// explored A</span></span><br></pre></td></tr></table></figure>
+<h2 id="源码地址"><a href="#源码地址" class="headerlink" title="源码地址"></a>源码地址</h2><p><a href="https://github.com/huang303513/HTTP-OperationSystem-DataStructer/tree/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95Javascript">Javascript的数据结构与算法(三)源码</a></p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/12/19/Javascript的数据结构与算法(四)/" data-toggle="tooltip" data-placement="top" title="Javascript的数据结构与算法(四)">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/12/14/Javascript的数据结构与算法(二)/" data-toggle="tooltip" data-placement="top" title="Javascript的数据结构与算法(二)">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-树"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 树</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-1-二叉树和二叉搜索树"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 二叉树和二叉搜索树</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-1-二叉搜索树的遍历"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1.1.1 二叉搜索树的遍历</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-2-二叉搜索树的实现与基本使用"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">1.1.2 二叉搜索树的实现与基本使用</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-图"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 图</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-图的相关概念"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 图的相关概念</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-图的遍历"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2 图的遍历</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-3-广度优先搜索"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">2.3 广度优先搜索</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-3-1广度优先搜索的基本实现"><span class="toc-nav-number">2.3.1.</span> <span class="toc-nav-text">2.3.1广度优先搜索的基本实现</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-3-2-广度优先实现最短路径查找"><span class="toc-nav-number">2.3.2.</span> <span class="toc-nav-text">2.3.2 广度优先实现最短路径查找</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-3-3-深度优先搜索基本实现"><span class="toc-nav-number">2.3.3.</span> <span class="toc-nav-text">2.3.3 深度优先搜索基本实现</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-3-4-深度优先搜索实现拓扑排序"><span class="toc-nav-number">2.3.4.</span> <span class="toc-nav-text">2.3.4 深度优先搜索实现拓扑排序</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-4-图的实现"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">2.4 图的实现</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-5-图的基本使用"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">2.5 图的基本使用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#源码地址"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">源码地址</span></a></li></ol></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#数据结构与算法" title="数据结构与算法">数据结构与算法</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

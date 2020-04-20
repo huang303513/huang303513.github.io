@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          一次CocoaPod库的封装总结 - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2018/10/22/一次CocoaPod库的封装总结/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#CocoaPods" title="CocoaPods">CocoaPods</a>
+                            
+                        </div>
+                        <h1>一次CocoaPod库的封装总结</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2018-10-22
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">2.3k</span> and
+                                Reading Time <span class="post-count">11</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>通过CocoaPods来管理项目的依赖关系可以说是iOS开发的基本入门技能了。使用CocoaPods管理有如下几个好处：</p>
+<ul>
+<li>避免了同一个第三库在不同项目之间的复制粘贴，第三方库升级以后，只需要更新Podfile即可。</li>
+<li>项目结构更清晰、可以更直观的查看项目依赖的第三方库。</li>
+<li>可以灵活的指定第三库的版本、分支。方便项目管理。</li>
+<li>对于移动端的组件化开发的基础，一个公司组件化的成功与失败很大程度上决定于组件的依赖和拆分管理。</li>
+</ul>
+<p>既然CocoaPods有这么多好处，我们有必要自己实践一个CocoaPods库的完整封装流程。这篇博客主要分为如下三部：</p>
+<ul>
+<li>CocoaPods库的基本流程</li>
+<li>私有CocoaPods库的建立和上传</li>
+<li>CocoaPods库的复杂封装</li>
+</ul>
+<p>我将通过封装<code>LibAdHub</code>这个功能库并且集成进入<code>NumberTileGame</code>这个<code>ReactNative</code>Demo来验证整个流程</p>
+<h2 id="CocoaPods库的基本流程"><a href="#CocoaPods库的基本流程" class="headerlink" title="CocoaPods库的基本流程"></a>CocoaPods库的基本流程</h2><ul>
+<li>1 通过<code>pod lib create LibAdHub</code>创建一个CocoaPods库，在创建过程中有一系列的交互过程</li>
+</ul>
+<p><img src="/assets/postImages/2018102201.png" alt="img"></p>
+<p>主要就是平台、语言、Demo配置等选择。这个命令运行以后，就会生成一个CocoaPods项目。生成的项目如下图</p>
+<p><img src="/assets/postImages/2018102202.png" alt="img"></p>
+<p>其中最重要的就是CocoaPods项目的名字是<code>LibAdHub</code>，地址是<code>git@gitlab.com:huang303513/libadhub.git</code>。这里只需要给为你需要的地址和名字就可以了。最后我们还需要修改Demo的Podfile</p>
+<ul>
+<li>2 修改Demo的Podfile</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#use_frameworks!&#x2F;&#x2F;注释</span><br><span class="line"></span><br><span class="line"># 添加source和platform</span><br><span class="line">source &#39;https:&#x2F;&#x2F;github.com&#x2F;CocoaPods&#x2F;Specs.git&#39;</span><br><span class="line">platform :ios,&#39;8.0&#39;</span><br><span class="line"></span><br><span class="line">target &#39;LibAdHub_Example&#39; do</span><br><span class="line">  pod &#39;LibAdHub&#39;, :path &#x3D;&gt; &#39;..&#x2F;&#39;</span><br><span class="line"></span><br><span class="line">  target &#39;LibAdHub_Tests&#39; do</span><br><span class="line">    inherit! :search_paths</span><br><span class="line"></span><br><span class="line">#    pod &#39;FBSnapshotTestCase&#39; &#x2F;&#x2F;注释</span><br><span class="line">  end</span><br></pre></td></tr></table></figure>
+<p>这里主要是注释掉<code>#use_frameworks!</code>,因为这个标记表示生成静态库。同时需要注释掉<code>pod &#39;FBSnapshotTestCase&#39;</code>否则会报错。然后我们进入<code>Example</code>目录通过<code>pod install</code>安装。安装成功以后通过命令<code>pod lib lint</code>来查看是否有错，如果有有警告之类可以尝试消除。进入Demo通过<code>#import &lt;LibAdHub/TestPod.h&gt;</code>引入然后运行，如果没错，则表示CocoaPods库配置成功。然后上传到git仓库<code>git@gitlab.com:huang303513/libadhub.git</code>。在其他地方就可以引入了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;LibAdHub&#39;, :git &#x3D;&gt; &#39;git@gitlab.com:huang303513&#x2F;libadhub.git&#39;</span><br></pre></td></tr></table></figure>
+<h2 id="私有CocoaPods仓库的建立和上传"><a href="#私有CocoaPods仓库的建立和上传" class="headerlink" title="私有CocoaPods仓库的建立和上传"></a>私有CocoaPods仓库的建立和上传</h2><p>通过上面的步骤以后，我们并不能对<code>LibAdHub</code>指定对应版本，这样如果不同地方依赖不同版本的<code>LibAdHub</code>以后，就会导致问题。我们接下来会新建一个私有CocoaPods库并且把我们的私有库上传。</p>
+<ul>
+<li><p>1 打Tag上传</p>
+<ul>
+<li><p>通过<code>pod lib lint --allow-warnings</code>来验证文件</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">akdeMacBook-Pro:LibAdHub huangchengdu$ pod lib lint --allow-warnings</span><br><span class="line"></span><br><span class="line">-&gt; LibAdHub (0.1.0)</span><br><span class="line">		- WARN  | source: Git SSH URLs will NOT work for people behind firewalls configured to only allow HTTP, therefore HTTPS is preferred.</span><br><span class="line">		- NOTE  | xcodebuild:  note: Using new build system</span><br><span class="line">		- NOTE  | [iOS] xcodebuild:  note: Planning build</span><br><span class="line">		- NOTE  | [iOS] xcodebuild:  note: Constructing build description</span><br><span class="line">		- NOTE  | [iOS] xcodebuild:  warning: Skipping code signing because the target does not have an Info.plist file. (in target &#39;App&#39;)</span><br><span class="line"></span><br><span class="line">LibAdHub passed validation.</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+<li><p>把<code>LibAdHub.spec</code>文件中的版本号修改：</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">s.name             &#x3D; &#39;LibAdHub&#39;</span><br><span class="line">s.version          &#x3D; &#39;1.0.0&#39;</span><br><span class="line">s.summary          &#x3D; &#39;这是一个实验的Pod库，我要用它做实验&#39;</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+<li><p>添加Tag并且push</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">akdeMacBook-Pro:LibAdHub huangchengdu$ git tag -m &quot;first release&quot; &quot;1.0.0&quot;</span><br><span class="line">akdeMacBook-Pro:LibAdHub huangchengdu$ git push --tags</span><br><span class="line">Counting objects: 1, done.</span><br><span class="line">Writing objects: 100% (1&#x2F;1), 156 bytes | 156.00 KiB&#x2F;s, done.</span><br><span class="line">Total 1 (delta 0), reused 0 (delta 0)</span><br><span class="line">To gitlab.com:huang303513&#x2F;libadhub.git</span><br><span class="line">* [new tag]         1.0.0 -&gt; 1.0.0</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+</li>
+<li><p>2、 私有CocoaPods仓库建立和上传</p>
+<ul>
+<li>在gitlab下新建一个仓库<code>git@gitlab.com:huang303513/wshspecs.git</code>。</li>
+<li>执行<code>pod repo add wshSpecs git@gitlab.com:huang303513/wshspecs.git</code>。这样就会在本地<code>/Users/huangchengdu/.cocoapods/repos</code>下建立一个<code>wshSpecs</code>的私有Pod仓库。</li>
+<li>执行<code>pod repo push wshSpecs LibAdHub.podspec</code>把LibAdHub放到私有仓库中。</li>
+</ul>
+</li>
+</ul>
+<pre><code>   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  akdeMacBook-Pro:repos huangchengdu$ pwd</span><br><span class="line">&#x2F;Users&#x2F;huangchengdu&#x2F;.cocoapods&#x2F;repos</span><br><span class="line">akdeMacBook-Pro:repos huangchengdu$ cd wshSpecs&#x2F;</span><br><span class="line">akdeMacBook-Pro:wshSpecs huangchengdu$ ls</span><br><span class="line">LibAdHub	README.md</span><br><span class="line">akdeMacBook-Pro:wshSpecs huangchengdu$</span><br></pre></td></tr></table></figure>
+</code></pre><ul>
+<li><p>3、 CocoaPods库的引用</p>
+<ul>
+<li><p><code>pod search LibAdHub</code>搜索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-&gt; LibAdHub (1.0.0)</span><br><span class="line">   这是一个实验的Pod库，我要用它做实验</span><br><span class="line">   pod &#39;LibAdHub&#39;, &#39;~&gt; 1.0.0&#39;</span><br><span class="line">   - Homepage: https:&#x2F;&#x2F;gitlab.com&#x2F;huang303513&#x2F;libadhub</span><br><span class="line">   - Source:   git@gitlab.com:huang303513&#x2F;libadhub.git</span><br><span class="line">   - Versions: 1.0.0 [wshSpecs repo]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>项目引入</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># Uncomment the next line to define a global platform for your project</span><br><span class="line">source &#39;https:&#x2F;&#x2F;github.com&#x2F;CocoaPods&#x2F;Specs.git&#39;</span><br><span class="line">source &#39;https:&#x2F;&#x2F;gitlab.com&#x2F;huang303513&#x2F;wshspecs.git&#39;</span><br><span class="line">platform :ios, &#39;8.0&#39;</span><br><span class="line"></span><br><span class="line">target &#39;NumberTileGame&#39; do</span><br><span class="line"> # Your &#39;node_modules&#39; directory is probably in the root of your project,</span><br><span class="line">  # but if not, adjust the &#96;:path&#96; accordingly</span><br><span class="line">  pod &#39;React&#39;, :path &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native&#39;, :subspecs &#x3D;&gt; [</span><br><span class="line">    &#39;Core&#39;,</span><br><span class="line">    &#39;CxxBridge&#39;, # Include this for RN &gt;&#x3D; 0.47</span><br><span class="line">    &#39;DevSupport&#39;, # Include this to enable In-App Devmenu if RN &gt;&#x3D; 0.43</span><br><span class="line">    &#39;RCTText&#39;,</span><br><span class="line">    &#39;RCTImage&#39;,</span><br><span class="line">    &#39;RCTNetwork&#39;,</span><br><span class="line">    &#39;RCTWebSocket&#39;, # Needed for debugging</span><br><span class="line">    &#39;RCTAnimation&#39;,</span><br><span class="line">    &#39;RCTLinkingIOS&#39;,# react-navigator需要</span><br><span class="line">    # Needed for FlatList and animations running on native UI thread</span><br><span class="line">    # Add any other subspecs you want to use in your project</span><br><span class="line">  ]</span><br><span class="line">  # Explicitly include Yoga if you are using RN &gt;&#x3D; 0.42.0</span><br><span class="line">  pod &#39;yoga&#39;, :path &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native&#x2F;ReactCommon&#x2F;yoga&#39;</span><br><span class="line">  pod &#39;RNVectorIcons&#39;, :path &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native-vector-icons&#39;#添加字体</span><br><span class="line">  # Third party deps podspec link</span><br><span class="line">  pod &#39;DoubleConversion&#39;, :podspec &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native&#x2F;third-party-podspecs&#x2F;DoubleConversion.podspec&#39;</span><br><span class="line">  pod &#39;glog&#39;, :podspec &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native&#x2F;third-party-podspecs&#x2F;glog.podspec&#39;</span><br><span class="line">  pod &#39;Folly&#39;, :podspec &#x3D;&gt; &#39;..&#x2F;rn&#x2F;node_modules&#x2F;react-native&#x2F;third-party-podspecs&#x2F;Folly.podspec&#39;</span><br><span class="line">  </span><br><span class="line">#  pod &#39;LibAdHub&#39;, :git &#x3D;&gt; &#39;git@gitlab.com:huang303513&#x2F;libadhub.git&#39;</span><br><span class="line">  pod &#39;LibAdHub&#39;, &#39;1.0.0&#39;</span><br><span class="line"></span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">target &#39;NumberTileGameTests&#39; do</span><br><span class="line">    inherit! :search_paths</span><br><span class="line">    # Pods for testing</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="CocoaPods库的复杂封装"><a href="#CocoaPods库的复杂封装" class="headerlink" title="CocoaPods库的复杂封装"></a>CocoaPods库的复杂封装</h2><p>上面仅仅是做了一个最简单的库，真正在集成一个库的时候可能面临如下几个问题：</p>
+<ul>
+<li><p>库本身依赖很多其他库，然而其中一部分库需要集成进来的库在APP中已经存在，如<code>AFNetworking</code>,<code>Masonry</code>不能集成进来，否则APP会重复引用。</p>
+<p><img src="/assets/postImages/2018102301.png" alt="img"></p>
+</li>
+<li><p>依赖的系统库很多，为了减低耦合性，我们不能修改APP对于系统库的依赖。</p>
+<p><img src="/assets/postImages/2018102302.png" alt="img"></p>
+</li>
+</ul>
+<p>针对上面的情况，我们需要一步一步封装SDK</p>
+<ul>
+<li><p>1 添加对应文件夹，把所有依赖库放入里面，然后加入项目</p>
+<p><img src="/assets/postImages/2018102303.png" alt="img"></p>
+</li>
+<li><p>2 编辑<code>LibAdHub.podspec</code>文件，添加对应的库依赖。通过``</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |s|</span><br><span class="line">  s.name             &#x3D; &#39;LibAdHub&#39;</span><br><span class="line">  s.version          &#x3D; &#39;1.2.0&#39;</span><br><span class="line">  s.summary          &#x3D; &#39;这是一个实验的Pod库，我要用它做实验。呵呵呵&#39;</span><br><span class="line">  s.description      &#x3D; &#39;呵呵呵呵呵呵呵呵呵呵呵呵呵&#39;</span><br><span class="line">  s.homepage         &#x3D; &#39;http:&#x2F;&#x2F;gitlab.com&#x2F;huang303513&#x2F;libadhub&#39;</span><br><span class="line">  # s.screenshots     &#x3D; &#39;www.example.com&#x2F;screenshots_1&#39;, &#39;www.example.com&#x2F;screenshots_2&#39;</span><br><span class="line">  s.license          &#x3D; &#123; :type &#x3D;&gt; &#39;MIT&#39;, :file &#x3D;&gt; &#39;LICENSE&#39; &#125;</span><br><span class="line">  s.author           &#x3D; &#123; &#39;huang303&#39; &#x3D;&gt; &#39;huang2@gmail.com&#39; &#125;</span><br><span class="line">  s.source           &#x3D; &#123; :git &#x3D;&gt; &#39;git@gitlab.com:huang303513&#x2F;libadhub.git&#39;, :tag &#x3D;&gt; s.version.to_s &#125;</span><br><span class="line">  # s.social_media_url &#x3D; &#39;https:&#x2F;&#x2F;twitter.com&#x2F;&lt;TWITTER_USERNAME&gt;&#39;</span><br><span class="line"></span><br><span class="line">  s.ios.deployment_target &#x3D; &#39;8.0&#39;</span><br><span class="line">  s.source_files &#x3D; &#39;LibAdHub&#x2F;Classes&#x2F;**&#x2F;*&#39;</span><br><span class="line">  </span><br><span class="line">  # # subspec, 将没有 Pod 版本的第三方库依赖做为 subspec.</span><br><span class="line">  s.subspec &#39;libAdHub&#39; do |ss|</span><br><span class="line">    ss.vendored_libraries &#x3D; &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;*.a&#39;</span><br><span class="line">    ss.vendored_frameworks &#x3D; &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;*.framework&#39;</span><br><span class="line">    ss.resource_bundles &#x3D; &#123;&#39;libAdHub&#39; &#x3D;&gt; [</span><br><span class="line">        &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;AdHubSDK.bundle&#39;,</span><br><span class="line">        &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;baidumobadsdk.bundle&#39;,</span><br><span class="line">        &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;FmobiBundle.bundle&#39;,</span><br><span class="line">        &#39;LibAdHub&#x2F;Vender&#x2F;libAdHub&#x2F;WMAdSDK.bundle&#39;]</span><br><span class="line">    &#125;</span><br><span class="line">    ss.frameworks &#x3D; &#39;AVFoundation&#39;, &#39;CoreMedia&#39;, &#39;CoreTelephony&#39;, &#39;CoreLocation&#39;, &#39;CoreMotion&#39;, &#39;SystemConfiguration&#39;, &#39;AdSupport&#39;, &#39;CFNetwork&#39;, &#39;MessageUI&#39;, &#39;SafariServices&#39;, &#39;MobileCoreServices&#39;, &#39;Twitter&#39;, &#39;WebKit&#39;, &#39;StoreKit&#39;, &#39;CoreGraphics&#39;, &#39;JavaScriptCore&#39;</span><br><span class="line">    ss.libraries &#x3D; &#39;xml2&#39;, &#39;iconv&#39;, &#39;z&#39;, &#39;sqlite3&#39;, &#39;c++&#39;</span><br><span class="line">  end</span><br><span class="line">  </span><br><span class="line">  s.dependency &#39;AFNetworking&#39;, &#39;~&gt; 3.1.0&#39;</span><br><span class="line">  s.dependency &#39;Masonry&#39;, &#39;~&gt; 1.1.0&#39;</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3 运行命令<code>pod lib lint --allow-warnings  --verbose</code>直到编译通过。最终项目结构如下：</p>
+<p>  <img src="/assets/postImages/2018102304.png" alt="img"></p>
+</li>
+<li><p>4 最后一步。进入<code>Example</code>目录，运行<code>pod install</code>来验证封装的正确性。在<code>LibAdHub.podspec</code>中把版本号改为<code>1.3.0</code>。然后push就大功告成了。</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">localhost:Example huangchengdu$ pod install</span><br><span class="line">Analyzing dependencies</span><br><span class="line">Fetching podspec for &#96;LibAdHub&#96; from &#96;..&#x2F;&#96;</span><br><span class="line">Downloading dependencies</span><br><span class="line">Using AFNetworking (3.2.1)</span><br><span class="line">Using LibAdHub (1.1.0)</span><br><span class="line">Using Masonry (1.1.0)</span><br><span class="line">Generating Pods project</span><br><span class="line">Integrating client project</span><br><span class="line">Sending stats</span><br><span class="line">Pod installation complete! There are 3 dependencies from the Podfile and 3 total pods installed.</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+<li><p>5 然后打tag。上传到私有CocoaPods库</p>
+<ul>
+<li><p>打tag</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">   LibAdHub passed validation.</span><br><span class="line">akdeMacBook-Pro:libadhub huangchengdu$ git tag -m &quot;1.3.0版本&quot; &quot;1.3.0&quot;</span><br><span class="line">akdeMacBook-Pro:libadhub huangchengdu$ git push --tags</span><br><span class="line">Counting objects: 1, done.</span><br><span class="line">Writing objects: 100% (1&#x2F;1), 164 bytes | 164.00 KiB&#x2F;s, done.</span><br><span class="line">Total 1 (delta 0), reused 0 (delta 0)</span><br><span class="line">To gitlab.com:huang303513&#x2F;libadhub.git</span><br><span class="line"> * [new tag]         1.3.0 -&gt; 1.3.0</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>push到私有库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo push wshSpecs LibAdHub.podspec  --allow-warnings</span><br></pre></td></tr></table></figure></li>
+<li><p><code>pod search LibAdHub</code>查找</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  -&gt; LibAdHub (1.4.0)</span><br><span class="line">这是一个实验的Pod库，我要用它做实验。呵呵呵</span><br><span class="line">pod &#39;LibAdHub&#39;, &#39;~&gt; 1.4.0&#39;</span><br><span class="line">- Homepage: http:&#x2F;&#x2F;gitlab.com&#x2F;huang303513&#x2F;libadhub</span><br><span class="line">- Source:   git@gitlab.com:huang303513&#x2F;libadhub.git</span><br><span class="line">- Versions: 1.4.0, 1.0.0 [gitlab-huang303513-wshspecs repo]</span><br><span class="line">- Subspecs:</span><br><span class="line">  - LibAdHub&#x2F;libAdHub (1.4.0)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其他地方使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod install --repo-update</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/02/07/前端CORS和XMLHttpRequest全方位详解/" data-toggle="tooltip" data-placement="top" title="前端CORS和XMLHttpRequest全方位详解">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#概述"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">概述</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#CocoaPods库的基本流程"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">CocoaPods库的基本流程</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#私有CocoaPods仓库的建立和上传"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">私有CocoaPods仓库的建立和上传</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#CocoaPods库的复杂封装"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">CocoaPods库的复杂封装</span></a></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#CocoaPods" title="CocoaPods">CocoaPods</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

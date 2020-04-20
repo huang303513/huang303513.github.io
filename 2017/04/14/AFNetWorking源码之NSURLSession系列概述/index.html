@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          AFNetWorking源码之NSURLSession系列概述 - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/04/14/AFNetWorking源码之NSURLSession系列概述/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                            
+                        </div>
+                        <h1>AFNetWorking源码之NSURLSession系列概述</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-04-14
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">3.5k</span> and
+                                Reading Time <span class="post-count">15</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-基本说明"><a href="#1-基本说明" class="headerlink" title="1 基本说明"></a>1 基本说明</h2><p>记得我刚做iOS的时候，那时候还是ASI和AFN共存，甚至ASI使用比例还多点，一转眼几年过去，ASI基本已经消失了，AFN基本成了iOS项目的标配。我虽然以前也有看过AFN2.x的源码，但是对于AFN3.x的源码一直没有自己阅读。接下来我会对AFN3.x学习并且写博客记录。得益于<code>NSURLSession</code>的强大功能，ANF3.0放弃了<code>NSURLConnection</code>这一部分，让代码简化了很多，但是功能却更加丰富。我觉得在学习AFN之前，有必要仔细了解<code>NSURLSession</code>和<code>https</code>相关，不然会有很多地方迷惑不解,具体可以看我的git仓库<a href="https://github.com/huang303513/iOSSourceCodeStudy">iOSSourceCodeStudy
+</a>。同时我强烈推荐浏览一下<code>NSURLSession.h</code>这个文件。</p>
+<h2 id="2-相互关系"><a href="#2-相互关系" class="headerlink" title="2 相互关系"></a>2 相互关系</h2><p>我们首先来看一下一个简单的<code>NSURLSession</code>请求代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration] delegate:<span class="keyword">self</span> delegateQueue:[[<span class="built_in">NSOperationQueue</span> alloc] init]];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLRequest</span> *request = [[<span class="built_in">NSURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:bigPic]];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURLSessionDataTask</span> *dataTask = [session dataTaskWithRequest:request];</span><br><span class="line">[dataTask resume];</span><br></pre></td></tr></table></figure>
+<p>从上面我们发现，我们要发送一个网络请求，需要新建一个<code>NSURLSession</code>,新建一个<code>NSURLSession</code>又需要一个<code>NSURLSessionConfiguration</code>,并且还需要一些代理方法。同时我们需要一个<code>NSURLSessionDataTask</code>。所以说，我们的<code>NSRULSession</code><br>网络请求系统包括一个session、一个configuration、一个Task已经Task附带的delegate。</p>
+<ul>
+<li>一个<code>NSURLSession</code>,总共只有一个类，也是最核心的类，他有一个对应的代理<code>NSURLSessionDelegate</code>。</li>
+<li>一个<code>NSURLSessionConfiguration</code>,总共有三种模式。</li>
+<li>一个<code>NSURLSessionTask</code>。<code>NSURLSessionTask</code>是抽闲类,对应的代理<code>NSURLSessionTaskDelegate</code>。我们具体使用的时候，会使用他的三种子类，而且每个子类都有对应的delegate。</li>
+</ul>
+<h2 id="3-一个NSURLSession"><a href="#3-一个NSURLSession" class="headerlink" title="3 一个NSURLSession"></a>3 一个NSURLSession</h2><p>首先我们看一下<code>NSRULSession.h</code>里面关于<code>NSURLSession</code>的部分。我们把它分为初始化部分、属性部分、dataTask部分、uploadTask部分、downloadTask部分。也就是说其他很多类都是围绕着下面这几个api衍生的。后面我们会每个部分分析。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化部分</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">class</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">NSURLSession</span> *sharedSession;</span><br><span class="line">+ (<span class="built_in">NSURLSession</span> *)sessionWithConfiguration:(<span class="built_in">NSURLSessionConfiguration</span> *)configuration;</span><br><span class="line">+ (<span class="built_in">NSURLSession</span> *)sessionWithConfiguration:(<span class="built_in">NSURLSessionConfiguration</span> *)configuration delegate:(<span class="keyword">nullable</span> <span class="keyword">id</span> &lt;<span class="built_in">NSURLSessionDelegate</span>&gt;)delegate delegateQueue:(<span class="keyword">nullable</span> <span class="built_in">NSOperationQueue</span> *)queue;</span><br><span class="line"></span><br><span class="line"><span class="comment">//属性部分</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>, <span class="keyword">retain</span>) <span class="built_in">NSOperationQueue</span> *delegateQueue;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">readonly</span>, <span class="keyword">retain</span>) <span class="keyword">id</span> &lt;<span class="built_in">NSURLSessionDelegate</span>&gt; delegate;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">readonly</span>, <span class="keyword">copy</span>) <span class="built_in">NSURLSessionConfiguration</span> *configuration;</span><br><span class="line"></span><br><span class="line"><span class="comment">//dataTask部分</span></span><br><span class="line">- (<span class="built_in">NSURLSessionDataTask</span> *)dataTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request;</span><br><span class="line">- (<span class="built_in">NSURLSessionDataTask</span> *)dataTaskWithURL:(<span class="built_in">NSURL</span> *)url;</span><br><span class="line"></span><br><span class="line"><span class="comment">//uploadTask部分</span></span><br><span class="line">- (<span class="built_in">NSURLSessionUploadTask</span> *)uploadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request fromFile:(<span class="built_in">NSURL</span> *)fileURL;</span><br><span class="line">- (<span class="built_in">NSURLSessionUploadTask</span> *)uploadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request fromData:(<span class="built_in">NSData</span> *)bodyData;</span><br><span class="line">- (<span class="built_in">NSURLSessionUploadTask</span> *)uploadTaskWithStreamedRequest:(<span class="built_in">NSURLRequest</span> *)request;</span><br><span class="line"></span><br><span class="line"><span class="comment">//downloadTask部分</span></span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request;</span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithURL:(<span class="built_in">NSURL</span> *)url;</span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithResumeData:(<span class="built_in">NSData</span> *)resumeData;</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-Block的NSURLSession的api"><a href="#3-1-Block的NSURLSession的api" class="headerlink" title="3.1 Block的NSURLSession的api"></a>3.1 Block的NSURLSession的api</h3><p>我们都知道，<code>NSRULConnection</code>除了一套使用代理的API，还有一套对应的使用Block的api。<code>NSURLSession</code>也不列外。使用这一套api就不用实现代理方法。和delegate一样，Block也有dataTask系列、downloadTask系列、uploadTask系列。具体看下面：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//dataTask系列</span></span><br><span class="line">- (<span class="built_in">NSURLSessionDataTask</span> *)dataTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSURLSessionDataTask</span> *)dataTaskWithURL:(<span class="built_in">NSURL</span> *)url completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//unloadTast系列</span></span><br><span class="line">- (<span class="built_in">NSURLSessionUploadTask</span> *)uploadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request fromFile:(<span class="built_in">NSURL</span> *)fileURL completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSURLSessionUploadTask</span> *)uploadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request fromData:(<span class="keyword">nullable</span> <span class="built_in">NSData</span> *)bodyData completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//downloadTask系列</span></span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithRequest:(<span class="built_in">NSURLRequest</span> *)request completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURL</span> * _Nullable location, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithURL:(<span class="built_in">NSURL</span> *)url completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURL</span> * _Nullable location, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithResumeData:(<span class="built_in">NSData</span> *)resumeData completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURL</span> * _Nullable location, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error))completionHandler&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-Block的NSURLSession使用"><a href="#3-2-Block的NSURLSession使用" class="headerlink" title="3.2 Block的NSURLSession使用"></a>3.2 Block的NSURLSession使用</h3><p>用dataTask下载一张图片，然后用imageView显示。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">IBAction</span>)requestBlockTaskTest:(<span class="keyword">id</span>)sender&#123;</span><br><span class="line">    [<span class="keyword">self</span> clear];</span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sharedSession];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [[<span class="built_in">NSURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:bigPic]];</span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *dataTask = [session dataTaskWithRequest:request completionHandler:^(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [[<span class="built_in">UIImage</span> alloc]initWithData:data];</span><br><span class="line">        <span class="keyword">self</span>.imageView.image = image;</span><br><span class="line">    &#125;];</span><br><span class="line">    [dataTask resume];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-一个NSURLSessionConfiguration"><a href="#4-一个NSURLSessionConfiguration" class="headerlink" title="4 一个NSURLSessionConfiguration"></a>4 一个NSURLSessionConfiguration</h2><p>首先看一下<code>NSURLSessionConfiguration</code>部分。从这个名字，我们可以预感到这个是与session的配置相关的，的确也是这样。总共有三种类型的configuratin,另外还有很多属性，比如配置缓存策略的<code>requestCachePolicy</code>,请求超时的<code>timeoutIntervalForRequest</code>,添加额外请求头的<code>HTTPAdditionalHeaders</code>,其他还有很多属性这里就不一一说了,具体看源码:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//默认的配置会将缓存存储在磁盘上</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">class</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">NSURLSessionConfiguration</span> *defaultSessionConfiguration;</span><br><span class="line"><span class="comment">//第二种瞬时会话模式不会创建持久性存储的缓存.</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">class</span>, <span class="keyword">readonly</span>, <span class="keyword">strong</span>) <span class="built_in">NSURLSessionConfiguration</span> *ephemeralSessionConfiguration;</span><br><span class="line"><span class="comment">//第三种后台会话模式允许程序在后台进行上传下载工作</span></span><br><span class="line">+ (<span class="built_in">NSURLSessionConfiguration</span> *)backgroundSessionConfigurationWithIdentifier:(<span class="built_in">NSString</span> *)identifier;</span><br><span class="line"><span class="comment">//各种属性</span></span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">NSURLRequestCachePolicy</span> requestCachePolicy;</span><br><span class="line"><span class="keyword">@property</span> <span class="built_in">NSTimeInterval</span> timeoutIntervalForRequest;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nullable</span>, <span class="keyword">copy</span>) <span class="built_in">NSDictionary</span> *HTTPAdditionalHeaders;</span><br></pre></td></tr></table></figure>
+<h2 id="5-一个NSURLSessionTask"><a href="#5-一个NSURLSessionTask" class="headerlink" title="5 一个NSURLSessionTask"></a>5 一个NSURLSessionTask</h2><p>从上面<code>NSURLSession</code>初始化一个请求的时候，我们发现<code>NSURLSessionTask</code>并不能直接使用，只能使用他的子类。具体如下：</p>
+<ul>
+<li><code>NSURLSessionTask</code>抽象类。有对应的代理<code>NSURLSessionTaskDelegate</code>,而且这个代理继承了<code>NSURLSessionDelegate</code>代理。</li>
+<li><code>NSURLSessionDataTask</code>是<code>NSURLSessionTask</code>的子类。有对应的代理<code>NSURLSessionTaskDelegate</code>,而且这个代理继承了<code>NSURLSessionTaskDelegate</code>代理。我们一般网络请求，就用这个类。</li>
+<li><code>NSURLSessionDownloadTask</code>是<code>NSURLSessionTask</code>的子类。有对应的代理<code>NSURLSessionDownloadDelegate</code>,而且这个代理继承了<code>NSURLSessionTaskDelegate</code>代理。这个主要用于下载大文件等。</li>
+<li><code>NSURLSessionUploadTask</code>是<code>NSURLSessionDataTask</code>的子类。有对应的代理及时父类代理<code>NSURLSessionDownloadDelegate</code>。这个主要用于处理上传请求如上传图片。</li>
+</ul>
+<p>从上面我们发现Task和delegate有一套对应的继承关系：</p>
+<ul>
+<li><p>NSURLSessionTask (抽象类,<code>NSURLSessionTaskDelegate</code>)</p>
+<ul>
+<li>NSURLSessionDataTask (<code>NSURLSessionDataDelegate</code>)<ul>
+<li>NSURLSessionUploadTask (<code>NSURLSessionDataDelegate</code>)</li>
+</ul>
+</li>
+<li>NSURLSessionDownloadTask (<code>NSURLSessionDownloadDelegate</code>)</li>
+</ul>
+</li>
+<li><p>NSURLSessionDelegate</p>
+<ul>
+<li>NSURLSessionTaskDelegate<ul>
+<li>NSURLSessionDataDelegate</li>
+<li>NSURLSessionDownloadDelegate</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>从继承关系上，我们就可以理解在初始化的时候，只通过设置<code>NSURLSession</code>对象的delegate就可以了。因为根据不同的task，其实就是设置了不同的delegate。这个设计避免了多次设置delegate的情况，同时也根据不同的task实现不同的delegate方法。真是一个很绝妙的设计。</p>
+<h2 id="6-代理说明"><a href="#6-代理说明" class="headerlink" title="6 代理说明"></a>6 代理说明</h2><h3 id="6-1-NSURLSessionDelegate"><a href="#6-1-NSURLSessionDelegate" class="headerlink" title="6.1 NSURLSessionDelegate"></a>6.1 NSURLSessionDelegate</h3><p>接下来我们看看<code>NSURLSession</code>的delegate对象<code>NSURLSessionDelegate</code>的方法,当一个session遇到错误、或者需要认证、应用进入后台都会调用下面的代理方法:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当一个session遇到系统错误或者未检测到的错误的时候，就会调用这个方法。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session didBecomeInvalidWithError:(<span class="keyword">nullable</span> <span class="built_in">NSError</span> *)error&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当请求需要认证、或者https证书认证的时候，我们就需要在这个方法里面处理。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session didReceiveChallenge:(<span class="built_in">NSURLAuthenticationChallenge</span> *)challenge</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionAuthChallengeDisposition</span> disposition, <span class="built_in">NSURLCredential</span> * _Nullable credential))completionHandler&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果应用进入后台、这个方法会被调用。我们在这里可以对session发起的请求做各种操作比如请求完成的回调等。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSessionDidFinishEventsForBackgroundURLSession:(<span class="built_in">NSURLSession</span> *)session &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="6-2-NSURLSessionTaskDelegate"><a href="#6-2-NSURLSessionTaskDelegate" class="headerlink" title="6.2 NSURLSessionTaskDelegate"></a>6.2 NSURLSessionTaskDelegate</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当请求重定向的时候调用这个方法。我们必须设置一个新的`NSURLRequest`对象传入completionHandler来重定向新的请求，但是当`session`是background模式的时候，这个方法不会被调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">willPerformHTTPRedirection:(<span class="built_in">NSHTTPURLResponse</span> *)response</span><br><span class="line">        newRequest:(<span class="built_in">NSURLRequest</span> *)request</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLRequest</span> * _Nullable))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当请求需要认证的时候调用这个方法。如果没有实现这个代理，那么请求认证这个过程不会被调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">didReceiveChallenge:(<span class="built_in">NSURLAuthenticationChallenge</span> *)challenge</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionAuthChallengeDisposition</span> disposition, <span class="built_in">NSURLCredential</span> * _Nullable credential))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    如果请求需要一个新的请求体时，这个方法就会被调用。比如认证失败的时候，我们可以通过这个机会从新认证。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line"> needNewBodyStream:(<span class="keyword">void</span> (^)(<span class="built_in">NSInputStream</span> * _Nullable bodyStream))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当我们上传数据的时候，我们可以通过这个代理方法获取上传进度。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">   didSendBodyData:(int64_t)bytesSent</span><br><span class="line">    totalBytesSent:(int64_t)totalBytesSent</span><br><span class="line">totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当task的统计信息收集好了以后，调用这个方法。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task didFinishCollectingMetrics:(<span class="built_in">NSURLSessionTaskMetrics</span> *)metrics &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个task出错的时候，会调用这个方法。如果error是nil，也会调用这个方法，表示task完成。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">didCompleteWithError:(<span class="keyword">nullable</span> <span class="built_in">NSError</span> *)error&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"数据返回以后，不管有错没错都回调用，如果没错，error及时nil"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="6-3-NSURLSessionDataDelegate"><a href="#6-3-NSURLSessionDataDelegate" class="headerlink" title="6.3 NSURLSessionDataDelegate"></a>6.3 NSURLSessionDataDelegate</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个task接收到返回信息。当所有信息都接收完毕以后，completionHandler会被调用。我们可以在这里取消一个网络请求或者把一个datatask转换为downloadtask。如果没有实现这个代理方法，我们也可以通过task的response属性获取到对应的数据。background模式的uploadtask不会调用这个方法。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didReceiveResponse:(<span class="built_in">NSURLResponse</span> *)response</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionResponseDisposition</span> disposition))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个datatask转换为一个downloadtask以后会调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didBecomeDownloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask&#123;</span><br><span class="line">	<span class="comment">// 允许处理服务器的响应，才会继续接收服务器返回的数据</span></span><br><span class="line">    completionHandler(<span class="built_in">NSURLSessionResponseAllow</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 暂时忽略，这个是和数据流相关的。不管了</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didBecomeStreamTask:(<span class="built_in">NSURLSessionStreamTask</span> *)streamTask&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当data可以使用的时候，调用这个方法。我们可以在这里获取data。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">    didReceiveData:(<span class="built_in">NSData</span> *)data&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 允许我们在这里调用completionHandler缓存data，或者传入nil来禁止缓存</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line"> willCacheResponse:(<span class="built_in">NSCachedURLResponse</span> *)proposedResponse</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSCachedURLResponse</span> * _Nullable cachedResponse))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="6-4-NSURLSessionDownloadDelegate"><a href="#6-4-NSURLSessionDownloadDelegate" class="headerlink" title="6.4 NSURLSessionDownloadDelegate"></a>6.4 NSURLSessionDownloadDelegate</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    当一个下载task任务完成以后，这个方法会被调用。我们可以在这里移动或者复制download的数据</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line">didFinishDownloadingToURL:(<span class="built_in">NSURL</span> *)location&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 获取下载进度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line">      didWriteData:(int64_t)bytesWritten</span><br><span class="line"> totalBytesWritten:(int64_t)totalBytesWritten</span><br><span class="line">totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 重启一个下载任务(比如下载一半后停止然后过一点时间继续)。如果下载出错，`NSURLSessionDownloadTaskResumeData`里面包含重新开始下载的数据。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line"> didResumeAtOffset:(int64_t)fileOffset</span><br><span class="line">expectedTotalBytes:(int64_t)expectedTotalBytes&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-NSURLSession的综合使用案列"><a href="#7-NSURLSession的综合使用案列" class="headerlink" title="7 NSURLSession的综合使用案列"></a>7 NSURLSession的综合使用案列</h2><p>分别用三种不同方式下载一张图片然后在imageView上显示。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">"ViewController.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *<span class="keyword">const</span> bigPic = <span class="string">@"http://i1.piimg.com/4851/d1498fea89ae3bc1.png"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="built_in">NSString</span> *<span class="keyword">const</span> smallPic = <span class="string">@"http://i1.piimg.com/4851/97aef4680d359905.png"</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> ()&lt;<span class="title">NSURLSessionDelegate</span>&gt;</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">weak</span>, <span class="keyword">nonatomic</span>) <span class="keyword">IBOutlet</span> <span class="built_in">UIImageView</span> *imageView;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">strong</span>)<span class="built_in">NSMutableData</span> *data;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ViewController</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view, typically from a nib.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">IBAction</span>)requestDataTest:(<span class="keyword">id</span>)sender &#123;</span><br><span class="line">     [<span class="keyword">self</span> clear];</span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration] delegate:<span class="keyword">self</span> delegateQueue:[[<span class="built_in">NSOperationQueue</span> alloc] init]];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [[<span class="built_in">NSURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:bigPic]];</span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *dataTask = [session dataTaskWithRequest:request];</span><br><span class="line">    [dataTask resume];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">IBAction</span>)requestDownloadTest:(<span class="keyword">id</span>)sender &#123;</span><br><span class="line">     [<span class="keyword">self</span> clear];</span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration] delegate:<span class="keyword">self</span> delegateQueue:[[<span class="built_in">NSOperationQueue</span> alloc] init]];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [[<span class="built_in">NSURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:bigPic]];</span><br><span class="line">    <span class="built_in">NSURLSessionDownloadTask</span> *dataTask = [session downloadTaskWithRequest:request];</span><br><span class="line">    [dataTask resume];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">IBAction</span>)requestBlockTaskTest:(<span class="keyword">id</span>)sender&#123;</span><br><span class="line">    [<span class="keyword">self</span> clear];</span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sharedSession];</span><br><span class="line">    <span class="built_in">NSURLRequest</span> *request = [[<span class="built_in">NSURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:bigPic]];</span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *dataTask = [session dataTaskWithRequest:request completionHandler:^(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        <span class="built_in">UIImage</span> *image = [[<span class="built_in">UIImage</span> alloc]initWithData:data];</span><br><span class="line">        <span class="keyword">self</span>.imageView.image = image;</span><br><span class="line">    &#125;];</span><br><span class="line">    [dataTask resume];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)clear&#123;</span><br><span class="line">    <span class="keyword">self</span>.imageView.image = <span class="literal">nil</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//==============================NSURLSessionDelegate========================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> NSURLSessionDelegate</span></span><br><span class="line"><span class="comment">//当一个session遇到系统错误或者未检测到的错误的时候，就会调用这个方法。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session didBecomeInvalidWithError:(<span class="keyword">nullable</span> <span class="built_in">NSError</span> *)error&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当请求需要认证、或者https证书认证的时候，我们就需要在这个方法里面处理。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session didReceiveChallenge:(<span class="built_in">NSURLAuthenticationChallenge</span> *)challenge</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionAuthChallengeDisposition</span> disposition, <span class="built_in">NSURLCredential</span> * _Nullable credential))completionHandler&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果应用进入后台、这个方法会被调用。我们在这里可以对session发起的请求做各种操作比如请求完成的回调等。</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSessionDidFinishEventsForBackgroundURLSession:(<span class="built_in">NSURLSession</span> *)session &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//==================================NSURLSessionTaskDelegate====================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> NSURLSessionTaskDelegate</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当请求重定向的时候调用这个方法。我们必须设置一个新的`NSURLRequest`对象传入completionHandler来重定向新的请求，但是当`session`是background模式的时候，这个方法不会被调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">willPerformHTTPRedirection:(<span class="built_in">NSHTTPURLResponse</span> *)response</span><br><span class="line">        newRequest:(<span class="built_in">NSURLRequest</span> *)request</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLRequest</span> * _Nullable))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当请求需要认证的时候调用这个方法。如果没有实现这个代理，那么请求认证这个过程不会被调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">didReceiveChallenge:(<span class="built_in">NSURLAuthenticationChallenge</span> *)challenge</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionAuthChallengeDisposition</span> disposition, <span class="built_in">NSURLCredential</span> * _Nullable credential))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    如果请求需要一个新的请求体时，这个方法就会被调用。比如认证失败的时候，我们可以通过这个机会从新认证。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line"> needNewBodyStream:(<span class="keyword">void</span> (^)(<span class="built_in">NSInputStream</span> * _Nullable bodyStream))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当我们上传数据的时候，我们可以通过这个代理方法获取上传进度。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">   didSendBodyData:(int64_t)bytesSent</span><br><span class="line">    totalBytesSent:(int64_t)totalBytesSent</span><br><span class="line">totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@""</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当task的统计信息收集好了以后，调用这个方法。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task didFinishCollectingMetrics:(<span class="built_in">NSURLSessionTaskMetrics</span> *)metrics &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个task出错的时候，会调用这个方法。如果error是nil，也会调用这个方法，表示task完成。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session task:(<span class="built_in">NSURLSessionTask</span> *)task</span><br><span class="line">didCompleteWithError:(<span class="keyword">nullable</span> <span class="built_in">NSError</span> *)error&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"数据返回以后，不管有错没错都回调用，如果没错，error及时nil"</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.data) &#123;</span><br><span class="line">        <span class="keyword">self</span>.imageView.image = [<span class="built_in">UIImage</span> imageWithData:<span class="keyword">self</span>.data];</span><br><span class="line">        <span class="keyword">self</span>.data = <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//==================================NSURLSessionDataDelegate=====================================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> NSURLSessionDataDelegate</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个task接收到返回信息。当所有信息都接收完毕以后，completionHandler会被调用。我们可以在这里取消一个网络请求或者把一个datatask转换为downloadtask。如果没有实现这个代理方法，我们也可以通过task的response属性获取到对应的数据。background模式的uploadtask不会调用这个方法。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didReceiveResponse:(<span class="built_in">NSURLResponse</span> *)response</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSURLSessionResponseDisposition</span> disposition))completionHandler&#123;</span><br><span class="line">    <span class="keyword">self</span>.data = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">self</span>.data = [<span class="built_in">NSMutableData</span> data];</span><br><span class="line">    <span class="comment">// 允许处理服务器的响应，才会继续接收服务器返回的数据</span></span><br><span class="line">    completionHandler(<span class="built_in">NSURLSessionResponseAllow</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当一个datatask转换为一个downloadtask以后会调用。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didBecomeDownloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 暂时忽略，这个是和数据流相关的。不管了</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">didBecomeStreamTask:(<span class="built_in">NSURLSessionStreamTask</span> *)streamTask&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 当data可以使用的时候，调用这个方法。我们可以在这里获取data。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line">    didReceiveData:(<span class="built_in">NSData</span> *)data&#123;</span><br><span class="line">    [<span class="keyword">self</span>.data appendData:data];</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"具体数据在URLSession:(NSURLSession *)session task:(NSURLSessionTask *)taskdidCompleteWithError:(nullable NSError *)error处理"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 允许我们在这里调用completionHandler缓存data，或者传入nil来禁止缓存</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line"> willCacheResponse:(<span class="built_in">NSCachedURLResponse</span> *)proposedResponse</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSCachedURLResponse</span> * _Nullable cachedResponse))completionHandler&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//==================================NSURLSessionDownloadTask=================================</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> NSURLSessionDownloadTask</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    当一个下载task任务完成以后，这个方法会被调用。我们可以在这里移动或者复制download的数据</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line">didFinishDownloadingToURL:(<span class="built_in">NSURL</span> *)location&#123;</span><br><span class="line">    <span class="built_in">NSString</span> *path = location.absoluteString;</span><br><span class="line">    <span class="built_in">UIImage</span> *image = [[<span class="built_in">UIImage</span> alloc]initWithData:[<span class="built_in">NSData</span> dataWithContentsOfURL:location]];</span><br><span class="line">    <span class="keyword">self</span>.imageView.image = image;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"数据下载完成以后，会保存在一个location的地方。%@"</span>,location);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 获取下载进度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line">      didWriteData:(int64_t)bytesWritten</span><br><span class="line"> totalBytesWritten:(int64_t)totalBytesWritten</span><br><span class="line">totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"总得数据大小%lld----"</span>,bytesWritten);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> 重启一个下载任务(比如下载一半后停止然后过一点时间继续)。如果下载出错，`NSURLSessionDownloadTaskResumeData`里面包含重新开始下载的数据。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session downloadTask:(<span class="built_in">NSURLSessionDownloadTask</span> *)downloadTask</span><br><span class="line"> didResumeAtOffset:(int64_t)fileOffset</span><br><span class="line">expectedTotalBytes:(int64_t)expectedTotalBytes&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/15/UIViewController和UIView不同加载方式的生命周期函数/" data-toggle="tooltip" data-placement="top" title="UIViewController和UIView不同加载方式的生命周期函数">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/04/11/Block原理分析详解/" data-toggle="tooltip" data-placement="top" title="Block原理分析详解">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-基本说明"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 基本说明</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-相互关系"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 相互关系</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-一个NSURLSession"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 一个NSURLSession</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-Block的NSURLSession的api"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 Block的NSURLSession的api</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-2-Block的NSURLSession使用"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 Block的NSURLSession使用</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-一个NSURLSessionConfiguration"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 一个NSURLSessionConfiguration</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-一个NSURLSessionTask"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 一个NSURLSessionTask</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#6-代理说明"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">6 代理说明</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#6-1-NSURLSessionDelegate"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">6.1 NSURLSessionDelegate</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#6-2-NSURLSessionTaskDelegate"><span class="toc-nav-number">6.2.</span> <span class="toc-nav-text">6.2 NSURLSessionTaskDelegate</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#6-3-NSURLSessionDataDelegate"><span class="toc-nav-number">6.3.</span> <span class="toc-nav-text">6.3 NSURLSessionDataDelegate</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#6-4-NSURLSessionDownloadDelegate"><span class="toc-nav-number">6.4.</span> <span class="toc-nav-text">6.4 NSURLSessionDownloadDelegate</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#7-NSURLSession的综合使用案列"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">7 NSURLSession的综合使用案列</span></a></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

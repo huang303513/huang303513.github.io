@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          AFNetWorking源码之AFHTTPSessionManager - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/04/20/AFNetWorking源码之AFHTTPSessionManager/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                            
+                        </div>
+                        <h1>AFNetWorking源码之AFHTTPSessionManager</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-04-20
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">3.2k</span> and
+                                Reading Time <span class="post-count">14</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h2><p><code>AFHTTPSessionManager</code>是<code>AFURLSessionManager</code>的子类。我们可以通过这个类做HTTP请求。其实整个<code>AFHTTPSessionManager</code>逻辑很简单，只是用HTTP的方式拼接了请求，并且调用父类的方式做处理。我会通过<code>AFHTTPSessionManager</code>api来讲一下POST上传数据的几种基本格式,然后我再随便分析一下<code>AFHTTPSessionManager</code>。</p>
+<h2 id="2-POST请求的常用格式"><a href="#2-POST请求的常用格式" class="headerlink" title="2 POST请求的常用格式"></a>2 POST请求的常用格式</h2><p>HTTP/1.1协议规定的HTTP请求方法有OPTIONS、GET、HEAD、POST、PUT、DELETE、TRACE、CONNECT 这几种。其中POST一般用来向服务端提交数据，接下来要讨论POST提交数据的几种方式。协议规定POST提交的数据必须放在消息主体中，但协议并没有规定数据必须使用什么编码方式。实际上，开发者完全可以自己决定消息主体的格式，只要最后发送的 HTTP 请求满足上面的格式就可以。</p>
+<p>但是，数据发送出去，还要服务端解析成功才有意义。一般服务端语言如php、python等，以及它们的framework，都内置了自动解析常见数据格式的功能。服务端通常是根据请求头（headers）中的Content-Type字段来获知请求中的消息主体是用何种方式编码，再对主体进行解析。所以说到POST提交数据方案，包含了Content-Type和消息主体编码方式两部分。</p>
+<h4 id="2-1-application-x-www-form-urlencoded格式的POST请求"><a href="#2-1-application-x-www-form-urlencoded格式的POST请求" class="headerlink" title="2.1 application/x-www-form-urlencoded格式的POST请求"></a>2.1 application/x-www-form-urlencoded格式的POST请求</h4><p>这应该是最常见的 POST 提交数据的方式了。浏览器的原生表单，如果不设置enctype属性，那么最终就会以application/x-www-form-urlencoded方式提交数据。Content-Type被指定为application/x-www-form-urlencoded，提交的数据按照 key1=val1&amp;key2=val2的方式进行编码，key和val都进行了URL转码。</p>
+<p>下面这个请求是简书进入一篇文章页面的时候，会自动往服务器POST一个请求，估计是统计文章被阅读的次数等功能。具体看下面：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//发送的请求，删除了cookie相关的部分</span></span><br><span class="line">POST /notes/e15592ce40ae/mark_viewed.json HTTP/<span class="number">1.1</span></span><br><span class="line">Host: www.jianshu.com</span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (Macintosh; Intel Mac OS X <span class="number">10.11</span>; rv:<span class="number">52.0</span>) Gecko/<span class="number">20100101</span> Firefox/<span class="number">52.0</span></span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate</span></span><br><span class="line"><span class="comment">X-CSRF-Token: vJvptva4Tqou/V3dd3nFCrcvRsb78FReHuIYZke5PVAnfR/tIAAMCfuaB2Z2/gaEohIZAsiEksUYyPqzg3DpSA==</span></span><br><span class="line"><span class="comment">Content-Type: application/x-www-form-urlencoded; charset=UTF-8</span></span><br><span class="line"><span class="comment">X-Requested-With: XMLHttpRequest</span></span><br><span class="line"><span class="comment">Referer: http://www.jianshu.com/p/e15592ce40ae</span></span><br><span class="line"><span class="comment">Content-Length: 98</span></span><br><span class="line"><span class="comment">Connection: keep-alive</span></span><br><span class="line"><span class="comment">Cache-Control: max-age=0</span></span><br><span class="line"><span class="comment">//请求体</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">uuid=4e3abc0f-1824-4a5d-982f-7d9dee92d9cd&amp;referrer=http%3A%2F%2Fwww.jianshu.com%2Fu%2Fad726ba6935d</span></span><br></pre></td></tr></table></figure>
+<p>用<code>AFHTTPSessionManager</code>实现上面这个<code>application/x-www-form-urlencoded</code>请求。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration]];</span><br><span class="line"><span class="built_in">NSDictionary</span> *params = @&#123;</span><br><span class="line">                         <span class="string">@"uuid"</span>:<span class="string">@"4e3abc0f-1824-4a5d-982f-7d9dee92d9cd"</span>,</span><br><span class="line">                         <span class="string">@"referrer"</span>:<span class="string">@"http://www.jianshu.com/p/e15592ce40ae"</span></span><br><span class="line">                         &#125;;</span><br><span class="line"><span class="built_in">NSURLSessionDataTask</span> *task = [manager POST:<span class="string">@"http://www.jianshu.com//notes/e15592ce40ae/mark_viewed.json"</span> parameters:params progress:^(<span class="built_in">NSProgress</span> * _Nonnull uploadProgress) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"进度更新"</span>);</span><br><span class="line">&#125; success:^(<span class="built_in">NSURLSessionDataTask</span> * _Nonnull task, <span class="keyword">id</span>  _Nullable responseObject) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"返回数据：%@"</span>,responseObject);</span><br><span class="line">&#125; failure:^(<span class="built_in">NSURLSessionDataTask</span> * _Nullable task, <span class="built_in">NSError</span> * _Nonnull error) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"返回错误：%@"</span>,error);</span><br><span class="line">&#125;];</span><br><span class="line">[task resume];</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-multipart-form-data格式的POST请求"><a href="#2-2-multipart-form-data格式的POST请求" class="headerlink" title="2.2 multipart/form-data格式的POST请求"></a>2.2 multipart/form-data格式的POST请求</h4><p>Multipart/form-data的基础方法是POST , 也就是说是由POST方法来组合实现的.<br>Multipart/form-data与POST方法的不同之处在于请求头和请求体.<br>Multipart/form-data的请求头必须包含一个特殊的头信息 : Content-Type , 且其值也必须规定为multipart/form-data , 同时还需要规定一个内容分割符用于分割请求体中的多个POST的内容 , 如文件内容和文本内容自然需要分割开来 , 不然接收方就无法正常解析和还原这个文件了.<br>Multipart/form-data的请求体也是一个字符串 , 不过和post的请求体不同的是它的构造方式 , post是简单的name=value值连接 , 而Multipart/form-data则是添加了分隔符等内容的构造体.</p>
+<p>请求的头部信息如下:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//其中xxxxx是我自定义的分隔符，每个人都可以选择自己的分隔符</span></span><br><span class="line">Content-Type: multipart/form-data; boundary=xxxxx</span><br></pre></td></tr></table></figure>
+<p>下面我们来看一下一个我的Multipart/form-data请求体:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">POST /uploadFile HTTP/<span class="number">1.1</span></span><br><span class="line">Host: 这里是url,就不暴露了^_^</span><br><span class="line">Content-Type: multipart/form-data; boundary=xxxxx</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">User-Agent: AFNetWorking3.X%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/1 CFNetwork/808.2.16 Darwin/15.6.0</span></span><br><span class="line"><span class="comment">Content-Length: 32175</span></span><br><span class="line"><span class="comment">Accept-Language: en-us</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="file"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">img.jpeg</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="businessType"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">CC_USER_CENTER</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="fileType"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">image</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition:form-data;name="file";filename="img1.jpeg"</span></span><br><span class="line"><span class="comment">Content-Type:image/png</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">这里是图片数据,太长了.我就删了</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">--xxxxx--</span></span><br></pre></td></tr></table></figure>
+<p>这个请求有三个参数<code>file</code>,<code>businessType</code>,<code>fileType</code>。比如<code>file</code>参数和他的值就通过如下格式传输：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--xxxxx</span><br><span class="line">Content-Disposition: form-data;name=<span class="string">"file"</span></span><br><span class="line"></span><br><span class="line">img.jpeg</span><br></pre></td></tr></table></figure>
+<p>上面这种就是一个参数与之对应的值。协议规定的就是这个格式，没有为什么。我们可以看看图片数据部分：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">--xxxxx</span><br><span class="line">Content-Disposition:form-data;name=<span class="string">"file"</span>;filename=<span class="string">"img1.jpeg"</span></span><br><span class="line">Content-Type:image/png</span><br><span class="line"></span><br><span class="line">这里是图片数据,太长了.我就删了</span><br><span class="line"></span><br><span class="line">--xxxxx--</span><br></pre></td></tr></table></figure>
+<p>其中name=”参数名” filename=”文件名” 其中参数名这个要和接收方那边相对应 正常开发中可以去问服务器那边 , 文件名是说在服务器端保存成文件的名字 , 这个参数然并卵 , 因为一般服务端会按照他们自己的要求去处理文件的存储.</p>
+<p>下一行是指定类型 , 我这里示例中写的是PNG图片类型 , 这个可以根据你的实际需求的写。如果我们要上传多分图片或者文件，则只需要按照指定格式就可以了，比如下面就是上传两张图片的请求：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">POST /uploadFile HTTP/<span class="number">1.1</span></span><br><span class="line">Host: 这里是url,就不暴露了^_^</span><br><span class="line">Content-Type: multipart/form-data; boundary=xxxxx</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">User-Agent: AFNetWorking3.X%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/1 CFNetwork/808.2.16 Darwin/15.6.0</span></span><br><span class="line"><span class="comment">Content-Length: 32175</span></span><br><span class="line"><span class="comment">Accept-Language: en-us</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="file"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">img.jpeg</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="businessType"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">CC_USER_CENTER</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition: form-data;name="fileType"</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">image</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition:form-data;name="file";filename="img1.jpeg"</span></span><br><span class="line"><span class="comment">Content-Type:image/png</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">这里是图片1数据,太长了.我就删了</span></span><br><span class="line"><span class="comment">--xxxxx</span></span><br><span class="line"><span class="comment">Content-Disposition:form-data;name="file";filename="img2.jpeg"</span></span><br><span class="line"><span class="comment">Content-Type:image/png</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">这里是图片1数据,太长了.我就删了</span></span><br><span class="line"><span class="comment">--xxxxx--</span></span><br></pre></td></tr></table></figure>
+<p>下面是我Demo中一个<code>multipart/form-data</code>请求的实现代码,分别用<code>NSRULDataTask</code>和<code>AFHTTPSessionManager</code>实现,我们可以发现用第二种方法简便了很多，因为AFN已经帮我们做好了拼接工作：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法一</span></span><br><span class="line">- (<span class="keyword">IBAction</span>)updatePic:(<span class="keyword">id</span>)sender &#123;</span><br><span class="line">    <span class="comment">//请求头参数</span></span><br><span class="line">    <span class="built_in">NSDictionary</span> *dic = @&#123;</span><br><span class="line">                          <span class="string">@"businessType"</span>:<span class="string">@"CC_USER_CENTER"</span>,</span><br><span class="line">                          <span class="string">@"fileType"</span>:<span class="string">@"image"</span>,</span><br><span class="line">                          <span class="string">@"file"</span>:<span class="string">@"img.jpeg"</span></span><br><span class="line">                          &#125;;</span><br><span class="line">    <span class="comment">//请求体图片数据</span></span><br><span class="line">    <span class="built_in">NSData</span> *imageData = <span class="built_in">UIImagePNGRepresentation</span>([<span class="built_in">UIImage</span> imageNamed:<span class="string">@"1.png"</span>]);</span><br><span class="line">    <span class="comment">//创建request</span></span><br><span class="line">    <span class="built_in">NSMutableURLRequest</span> *request = [[<span class="built_in">NSMutableURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">    <span class="comment">//post方法</span></span><br><span class="line">    [request setHTTPMethod:<span class="string">@"POST"</span>];</span><br><span class="line">    <span class="comment">// 设置请求头格式为Content-Type:multipart/form-data; boundary=xxxxx</span></span><br><span class="line">    <span class="comment">//[request setValue:@"multipart/form-data; boundary=xxxxx" forHTTPHeaderField:@"Content-Type"];</span></span><br><span class="line">    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration]];</span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *task = [manager POST:url parameters:dic constructingBodyWithBlock:^(<span class="keyword">id</span>&lt;AFMultipartFormData&gt;  _Nonnull formData) &#123;</span><br><span class="line">        <span class="comment">//请求体里面的参数</span></span><br><span class="line">        <span class="built_in">NSDictionary</span> *bodyDic = @&#123;</span><br><span class="line">                                  <span class="string">@"Content-Disposition"</span>:<span class="string">@"form-data;name=\"file\";filename=\"img.jpeg\""</span>,</span><br><span class="line">                                  <span class="string">@"Content-Type"</span>:<span class="string">@"image/png"</span>,</span><br><span class="line">                                  &#125;;</span><br><span class="line">        [formData appendPartWithHeaders:bodyDic body:imageData];</span><br><span class="line">    &#125; progress:^(<span class="built_in">NSProgress</span> * _Nonnull uploadProgress) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"下载进度"</span>);</span><br><span class="line">    &#125; success:^(<span class="built_in">NSURLSessionDataTask</span> * _Nonnull task, <span class="keyword">id</span>  _Nullable responseObject) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"下载成功:%@"</span>,responseObject);</span><br><span class="line">    &#125; failure:^(<span class="built_in">NSURLSessionDataTask</span> * _Nullable task, <span class="built_in">NSError</span> * _Nonnull error) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"下载失败%@"</span>,error);</span><br><span class="line">    &#125;];</span><br><span class="line">    [task resume];</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//方法二</span></span><br><span class="line">- (<span class="keyword">IBAction</span>)multipartformPost2:(<span class="keyword">id</span>)sender &#123;</span><br><span class="line">    <span class="comment">//参数</span></span><br><span class="line">    <span class="built_in">NSDictionary</span> *dic = @&#123;</span><br><span class="line">                          <span class="string">@"businessType"</span>:<span class="string">@"CC_USER_CENTER"</span>,</span><br><span class="line">                          <span class="string">@"fileType"</span>:<span class="string">@"image"</span>,</span><br><span class="line">                          <span class="string">@"file"</span>:<span class="string">@"img.jpeg"</span></span><br><span class="line">                          &#125;;</span><br><span class="line">    <span class="built_in">NSString</span> *boundaryString = <span class="string">@"xxxxx"</span>;</span><br><span class="line">    <span class="built_in">NSMutableString</span> *str = [<span class="built_in">NSMutableString</span> string];</span><br><span class="line">    [dic enumerateKeysAndObjectsUsingBlock:^(<span class="keyword">id</span>  _Nonnull key, <span class="keyword">id</span>  _Nonnull obj, <span class="built_in">BOOL</span> * _Nonnull stop) &#123;</span><br><span class="line">        [str appendFormat:<span class="string">@"--%@\r\n"</span>,boundaryString];</span><br><span class="line">        [str appendFormat:<span class="string">@"%@name=\"%@\"\r\n\r\n"</span>,<span class="string">@"Content-Disposition: form-data;"</span>,key];</span><br><span class="line">        [str appendFormat:<span class="string">@"%@\r\n"</span>,obj];</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">     <span class="built_in">NSMutableData</span> *requestMutableData=[<span class="built_in">NSMutableData</span> data];</span><br><span class="line"></span><br><span class="line">    [str appendFormat:<span class="string">@"--%@\r\n"</span>,boundaryString];</span><br><span class="line">    [str appendFormat:<span class="string">@"%@:%@"</span>,<span class="string">@"Content-Disposition"</span>,<span class="string">@"form-data;"</span>];</span><br><span class="line">    [str appendFormat:<span class="string">@"%@=\"%@\";"</span>,<span class="string">@"name"</span>,<span class="string">@"file"</span>];</span><br><span class="line">    [str appendFormat:<span class="string">@"%@=\"%@\"\r\n"</span>,<span class="string">@"filename"</span>,<span class="string">@"img1.jpeg"</span>];</span><br><span class="line">    [str appendFormat:<span class="string">@"%@:%@\r\n\r\n"</span>,<span class="string">@"Content-Type"</span>,<span class="string">@"image/png"</span>];</span><br><span class="line">    <span class="comment">//转换成为二进制数据</span></span><br><span class="line">    [requestMutableData appendData:[str dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]];</span><br><span class="line">    <span class="built_in">NSData</span> *imageData = <span class="built_in">UIImagePNGRepresentation</span>([<span class="built_in">UIImage</span> imageNamed:<span class="string">@"1.png"</span>]);</span><br><span class="line">    <span class="comment">//文件数据部分</span></span><br><span class="line">    [requestMutableData appendData:imageData];</span><br><span class="line">    <span class="comment">//添加结尾boundary</span></span><br><span class="line">    [requestMutableData appendData:[[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"\r\n--%@--\r\n"</span>,boundaryString] dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]];</span><br><span class="line">    <span class="comment">//创建一个请求对象</span></span><br><span class="line">    <span class="built_in">NSMutableURLRequest</span> *request = [[<span class="built_in">NSMutableURLRequest</span> alloc]initWithURL:[<span class="built_in">NSURL</span> URLWithString:url]];</span><br><span class="line">    <span class="comment">//post方法</span></span><br><span class="line">    [request setHTTPMethod:<span class="string">@"POST"</span>];</span><br><span class="line">    <span class="comment">// 设置请求头格式为Content-Type:multipart/form-data; boundary=xxxxx</span></span><br><span class="line">    [request setValue:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"multipart/form-data; boundary=%@"</span>,boundaryString] forHTTPHeaderField:<span class="string">@"Content-Type"</span>];</span><br><span class="line">    <span class="comment">//session</span></span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration]];</span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *task = [session uploadTaskWithRequest:request fromData:requestMutableData completionHandler:^(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *result = [[<span class="built_in">NSString</span> alloc]initWithData:data encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,result);</span><br><span class="line">    &#125;];</span><br><span class="line">    [task resume];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Multipart/form-data</code>格式的POST请求总结：</p>
+<ul>
+<li>文件类型参数中<code>name=&quot;参数名&quot;</code>一定要和服务端对应, 开发的时候 , 可以问服务端人员，我这里是<code>file</code>。</li>
+<li>上传文件的数据部分使用二进制数据<code>(NSData)</code>拼接。</li>
+<li>上边界部分和下边界部分的字符串 , 最后都要转换成二进制数据(NSData) , 和文件部分的二进制数据拼接在一起 , 作为请求体发送给服务器。</li>
+<li>每一行末尾需要有一定的`\r\n·。</li>
+</ul>
+<h4 id="2-3-application-json格式的POST请求"><a href="#2-3-application-json格式的POST请求" class="headerlink" title="2.3 application/json格式的POST请求"></a>2.3 application/json格式的POST请求</h4><p>接下来我将常使用<code>NSURLSessionDataTask</code>做一个<code>application/json</code>的POST请求。并且请求体数据我存储在一个<code>test.txt</code>文件中，从文件中读取出来然后上传。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//test.txt文件内容</span></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"huang"</span>,<span class="string">"phone"</span>:<span class="string">"124"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>通过抓包软件我的请求如下，和其他POST请求原理一样，只是拼接请求体的方式不一样，并且更具不同格式的请求体，设置不同的<code>Content-Type</code>：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">POST /posts HTTP/<span class="number">1.1</span></span><br><span class="line">Host: jsonplaceholder.typicode.com</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Accept: application/json</span><br><span class="line">User-Agent: AFNetWorking3.X%E6%BA%<span class="number">90</span>%E7%A0%<span class="number">81</span>%E9%<span class="number">98</span>%<span class="number">85</span>%E8%AF%BB/<span class="number">1</span> <span class="built_in">CFNetwork</span>/<span class="number">808.2</span><span class="number">.16</span> Darwin/<span class="number">15.6</span><span class="number">.0</span></span><br><span class="line">Content-Length: <span class="number">31</span></span><br><span class="line">Accept-Language: en-us</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"huang"</span>,<span class="string">"phone"</span>:<span class="string">"124"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是我Demo的具体实现</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">IBAction</span>)applicationjsonPOST2:(<span class="keyword">id</span>)sender &#123;</span><br><span class="line">    <span class="built_in">NSMutableURLRequest</span> * request = [<span class="built_in">NSMutableURLRequest</span> requestWithURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://jsonplaceholder.typicode.com/posts"</span>]];</span><br><span class="line">    <span class="comment">//指请求体的类型。由于我们test.txt里面的文件是json格式的字符串。所以我这里指定为`application/json`</span></span><br><span class="line">    [request addValue:<span class="string">@"application/json"</span> forHTTPHeaderField:<span class="string">@"Content-Type"</span>];</span><br><span class="line">    [request addValue:<span class="string">@"application/json"</span> forHTTPHeaderField:<span class="string">@"Accept"</span>];</span><br><span class="line">    [request setHTTPMethod:<span class="string">@"POST"</span>];</span><br><span class="line">    [request setCachePolicy:<span class="built_in">NSURLRequestReloadIgnoringCacheData</span>];</span><br><span class="line">    [request setTimeoutInterval:<span class="number">20</span>];</span><br><span class="line">    <span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"test"</span> ofType:<span class="string">@"txt"</span>];</span><br><span class="line">    <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:[path stringByAddingPercentEscapesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]];</span><br><span class="line">    <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:[<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration]];</span><br><span class="line">    <span class="comment">//使用Block来处理返回数据</span></span><br><span class="line">    <span class="built_in">NSURLSessionDataTask</span> *task = [session uploadTaskWithRequest:request fromFile:url completionHandler:^(<span class="built_in">NSData</span> * _Nullable data, <span class="built_in">NSURLResponse</span> * _Nullable response, <span class="built_in">NSError</span> * _Nullable error) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *result = [[<span class="built_in">NSString</span> alloc]initWithData:data encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,result);</span><br><span class="line">    &#125;];</span><br><span class="line">    [task resume];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="AFHTTPSessionManager分析"><a href="#AFHTTPSessionManager分析" class="headerlink" title="AFHTTPSessionManager分析"></a>AFHTTPSessionManager分析</h2><p>上面主要讲了对POST请求的分析，主要是<code>AFHTTPSessionManager</code>并没有多少逻辑,他主要是调用<code>AFURLSessionManager</code>的实现。另外就是通过<code>baseURL</code>改变了url的拼接过程。下面我就抽出他们的不同点分析一下：</p>
+<p>1 首先多了一个属性</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) AFHTTPRequestSerializer &lt;AFURLRequestSerialization&gt; * requestSerializer;</span><br></pre></td></tr></table></figure>
+<p>这个属性的主要作用就是帮我们拼接请求头和请求体，从上面的Demo我们发现很多请求的拼接工作都通过<code>requestSerializer</code>处理了。如果我们不手动设置，默认是一个<code>AFHTTPRequestSerializer</code>对象。具体可以去初始化方法里面看到。</p>
+<p>2 重写了<code>securityPolicy</code>这个属性的<code>setter</code>方法,增加对于<code>SSLPinningMode</code>的异常处理。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setSecurityPolicy:(AFSecurityPolicy *)securityPolicy &#123;</span><br><span class="line">    <span class="comment">//增加对于SSLPinningMode的异常处理。</span></span><br><span class="line">    <span class="keyword">if</span> (securityPolicy.SSLPinningMode != AFSSLPinningModeNone &amp;&amp; ![<span class="keyword">self</span>.baseURL.scheme isEqualToString:<span class="string">@"https"</span>]) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *pinningMode = <span class="string">@"Unknown Pinning Mode"</span>;</span><br><span class="line">        <span class="keyword">switch</span> (securityPolicy.SSLPinningMode) &#123;</span><br><span class="line">            <span class="keyword">case</span> AFSSLPinningModeNone:        pinningMode = <span class="string">@"AFSSLPinningModeNone"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> AFSSLPinningModeCertificate: pinningMode = <span class="string">@"AFSSLPinningModeCertificate"</span>; <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> AFSSLPinningModePublicKey:   pinningMode = <span class="string">@"AFSSLPinningModePublicKey"</span>; <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">NSString</span> *reason = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"A security policy configured with `%@` can only be applied on a manager with a secure base URL (i.e. https)"</span>, pinningMode];</span><br><span class="line">        <span class="keyword">@throw</span> [<span class="built_in">NSException</span> exceptionWithName:<span class="string">@"Invalid Security Policy"</span> reason:reason userInfo:<span class="literal">nil</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//调用`AFURLSessionManager`的`securityPolicy`属性的setter方法。</span></span><br><span class="line">    [<span class="keyword">super</span> setSecurityPolicy:securityPolicy];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>3 NSCopying和NSSecureCoding协议的实现过程</p>
+<p><code>NSCopying</code>和<code>NSSecureCoding</code>协议的实现过程添加了对<code>requestSerializer</code>,<code>responseSerializer</code>,<code>securityPolicy</code>这三个属性的复制。也就是说，用copy方法复制的manager，这三个属性的配置跟着一起复制。而父类<code>AFURSSessionManager</code>只实现了对<code>configuration</code>的复制。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">BOOL</span>)supportsSecureCoding &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithCoder:(<span class="built_in">NSCoder</span> *)decoder &#123;</span><br><span class="line">    <span class="built_in">NSURL</span> *baseURL = [decoder decodeObjectOfClass:[<span class="built_in">NSURL</span> <span class="keyword">class</span>] forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(baseURL))];</span><br><span class="line">    <span class="comment">//获取当前manager的NSURLSessionConfiguration</span></span><br><span class="line">    <span class="built_in">NSURLSessionConfiguration</span> *configuration = [decoder decodeObjectOfClass:[<span class="built_in">NSURLSessionConfiguration</span> <span class="keyword">class</span>] forKey:<span class="string">@"sessionConfiguration"</span>];</span><br><span class="line">    <span class="keyword">if</span> (!configuration) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *configurationIdentifier = [decoder decodeObjectOfClass:[<span class="built_in">NSString</span> <span class="keyword">class</span>] forKey:<span class="string">@"identifier"</span>];</span><br><span class="line">        <span class="keyword">if</span> (configurationIdentifier) &#123;</span><br><span class="line">        <span class="comment">//iOS7和iOS8初始化NSURLSessionConfiguration方法不一样。所以要分开处理</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) &amp;&amp; __IPHONE_OS_VERSION_MIN_REQUIRED &gt;= 80000) || (defined(__MAC_OS_X_VERSION_MIN_REQUIRED) &amp;&amp; __MAC_OS_X_VERSION_MIN_REQUIRED &gt;= 1100)</span></span><br><span class="line">            configuration = [<span class="built_in">NSURLSessionConfiguration</span> backgroundSessionConfigurationWithIdentifier:configurationIdentifier];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">            configuration = [<span class="built_in">NSURLSessionConfiguration</span> backgroundSessionConfiguration:configurationIdentifier];</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//初始化一个新的manager</span></span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">self</span> initWithBaseURL:baseURL sessionConfiguration:configuration];</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//添加了对`requestSerializer`,`responseSerializer`,`securityPolicy`这三个属性的接档。</span></span><br><span class="line">    <span class="keyword">self</span>.requestSerializer = [decoder decodeObjectOfClass:[AFHTTPRequestSerializer <span class="keyword">class</span>] forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(requestSerializer))];</span><br><span class="line">    <span class="keyword">self</span>.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer <span class="keyword">class</span>] forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(responseSerializer))];</span><br><span class="line">    AFSecurityPolicy *decodedPolicy = [decoder decodeObjectOfClass:[AFSecurityPolicy <span class="keyword">class</span>] forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(securityPolicy))];</span><br><span class="line">    <span class="keyword">if</span> (decodedPolicy) &#123;</span><br><span class="line">        <span class="keyword">self</span>.securityPolicy = decodedPolicy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)encodeWithCoder:(<span class="built_in">NSCoder</span> *)coder &#123;</span><br><span class="line">    [<span class="keyword">super</span> encodeWithCoder:coder];</span><br><span class="line">    <span class="comment">//添加对baseURL属性的归档</span></span><br><span class="line">    [coder encodeObject:<span class="keyword">self</span>.baseURL forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(baseURL))];</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span>.session.configuration conformsToProtocol:<span class="class"><span class="keyword">@protocol</span>(<span class="title">NSCoding</span>)]) </span>&#123;</span><br><span class="line">        [coder encodeObject:<span class="keyword">self</span>.session.configuration forKey:<span class="string">@"sessionConfiguration"</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [coder encodeObject:<span class="keyword">self</span>.session.configuration.identifier forKey:<span class="string">@"identifier"</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//添加了对`requestSerializer`,`responseSerializer`,`securityPolicy`这三个属性的归档。</span></span><br><span class="line">    [coder encodeObject:<span class="keyword">self</span>.requestSerializer forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(requestSerializer))];</span><br><span class="line">    [coder encodeObject:<span class="keyword">self</span>.responseSerializer forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(responseSerializer))];</span><br><span class="line">    [coder encodeObject:<span class="keyword">self</span>.securityPolicy forKey:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(securityPolicy))];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> mark - NSCopying</span></span><br><span class="line">- (<span class="keyword">instancetype</span>)copyWithZone:(<span class="built_in">NSZone</span> *)zone &#123;</span><br><span class="line">    AFHTTPSessionManager *HTTPClient = [[[<span class="keyword">self</span> <span class="keyword">class</span>] allocWithZone:zone] initWithBaseURL:<span class="keyword">self</span>.baseURL sessionConfiguration:<span class="keyword">self</span>.session.configuration];</span><br><span class="line">    <span class="comment">//添加了对`requestSerializer`,`responseSerializer`,`securityPolicy`这三个属性的复制。</span></span><br><span class="line">    HTTPClient.requestSerializer = [<span class="keyword">self</span>.requestSerializer copyWithZone:zone];</span><br><span class="line">    HTTPClient.responseSerializer = [<span class="keyword">self</span>.responseSerializer copyWithZone:zone];</span><br><span class="line">    HTTPClient.securityPolicy = [<span class="keyword">self</span>.securityPolicy copyWithZone:zone];</span><br><span class="line">    <span class="keyword">return</span> HTTPClient;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>4 HEAD和PUT等方法的实现</p>
+<p>我在这里不准备深入讲这两个方法是如何实现的，因为<code>AFHTTPSessionManager</code>主要通过他的<code>requestSerializer</code>属性来实现对<code>HEAD</code>和<code>PUT</code>等请求的拼接。我准备分析<code>AFHTTPRequestSerializer</code>的时候再看这一块是如何实现的。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//通过requestSerializer属性来拼接request对象。</span></span><br><span class="line"><span class="built_in">NSMutableURLRequest</span> *request = [<span class="keyword">self</span>.requestSerializer requestWithMethod:method URLString:[[<span class="built_in">NSURL</span> URLWithString:URLString relativeToURL:<span class="keyword">self</span>.baseURL] absoluteString] parameters:parameters error:&amp;serializationError];</span><br></pre></td></tr></table></figure>
+<p>最后<a href="https://huang303513.github.io/2017/04/20/AFNetWorking%E6%BA%90%E7%A0%81%E4%B9%8BAFHTTPSessionManager.html" target="_blank" rel="noopener">原文地址</a>,<a href="https://github.com/huang303513/iOSSourceCodeStudy">demo地址</a>。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/04/25/AFNetWorking源码之AFURLRequestSerialization/" data-toggle="tooltip" data-placement="top" title="AFNetWorking源码之AFURLRequestSerialization">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/04/18/AFNetWorking源码之AFURLSessionManager/" data-toggle="tooltip" data-placement="top" title="AFNetWorking源码之AFURLSessionManager">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-概述"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 概述</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-POST请求的常用格式"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 POST请求的常用格式</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-1-application-x-www-form-urlencoded格式的POST请求"><span class="toc-nav-number">2.0.1.</span> <span class="toc-nav-text">2.1 application&#x2F;x-www-form-urlencoded格式的POST请求</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-2-multipart-form-data格式的POST请求"><span class="toc-nav-number">2.0.2.</span> <span class="toc-nav-text">2.2 multipart&#x2F;form-data格式的POST请求</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-3-application-json格式的POST请求"><span class="toc-nav-number">2.0.3.</span> <span class="toc-nav-text">2.3 application&#x2F;json格式的POST请求</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#AFHTTPSessionManager分析"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">AFHTTPSessionManager分析</span></a></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#AFNetWorking" title="AFNetWorking">AFNetWorking</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>
