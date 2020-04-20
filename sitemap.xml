@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://github.com/huang303513/huang303513.github.io.git/archive/index.html</loc>
+    
+    <lastmod>2020-04-20T16:14:54.862Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://github.com/huang303513/huang303513.github.io.git/categories/index.html</loc>
+    
+    <lastmod>2020-04-20T16:06:01.677Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://github.com/huang303513/huang303513.github.io.git/tags/index.html</loc>
+    
+    <lastmod>2020-04-20T16:02:58.051Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://github.com/huang303513/huang303513.github.io.git/2016/12/19/Javascript%25E7%259A%2584%25E6%2595%25B0%25E6%258D%25AE%25E7%25BB%2593%25E6%259E%2584%25E4%25B8%258E%25E7%25AE%2597%25E6%25B3%2595(%25E5%259B%259B)/</loc>
     
     <lastmod>2020-04-20T14:54:50.314Z</lastmod>
@@ -159,41 +180,6 @@
     <loc>https://github.com/huang303513/huang303513.github.io.git/2018/02/07/%25E5%2589%258D%25E7%25AB%25AFCORS%25E5%2592%258CXMLHttpRequest%25E5%2585%25A8%25E6%2596%25B9%25E4%25BD%258D%25E8%25AF%25A6%25E8%25A7%25A3/</loc>
     
     <lastmod>2020-04-20T14:32:08.205Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://github.com/huang303513/huang303513.github.io.git/about/index.html</loc>
-    
-    <lastmod>2020-04-20T13:41:59.559Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://github.com/huang303513/huang303513.github.io.git/tags/index.html</loc>
-    
-    <lastmod>2020-04-20T12:52:54.534Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://github.com/huang303513/huang303513.github.io.git/photography/index.html</loc>
-    
-    <lastmod>2020-04-20T12:52:54.459Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://github.com/huang303513/huang303513.github.io.git/archive/index.html</loc>
-    
-    <lastmod>2020-04-20T12:52:54.355Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://github.com/huang303513/huang303513.github.io.git/categories/index.html</loc>
-    
-    <lastmod>2020-04-20T12:52:54.355Z</lastmod>
     
   </url>
   
