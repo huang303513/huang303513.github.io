@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          前端CORS和XMLHttpRequest全方位详解 - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2018/02/07/前端CORS和XMLHttpRequest全方位详解/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#CORS,XMLHttpRequest" title="CORS,XMLHttpRequest">CORS,XMLHttpRequest</a>
+                            
+                        </div>
+                        <h1>前端CORS和XMLHttpRequest全方位详解</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2018-02-07
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">4.3k</span> and
+                                Reading Time <span class="post-count">19</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                        <li>
+                            <a href="/博客模板.html">前端JSONP的原理与实现以及XSS,CSRF的相亲相爱</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="1-CORS的详解"><a href="#1-CORS的详解" class="headerlink" title="1 CORS的详解"></a>1 CORS的详解</h1><hr>
+<h2 id="1-1-CORS的基本套路"><a href="#1-1-CORS的基本套路" class="headerlink" title="1.1 CORS的基本套路"></a>1.1 CORS的基本套路</h2><p>上一篇文章，我详细讲解了<code>JSONP</code>的实现和原理，但是毕竟它是一个很古老的东西，就是所谓的落伍了，现在浏览器已经有更好的套路来支持跨域请求了。俗话说得好，<code>上帝为你关上一扇门的时候，必然会为你开启一扇窗</code>,我们日常使用的浏览器也是这个套路，浏览器开启的窗户就是<code>CORS</code>,这个东西呢，可以说是前端独有的，我在做iOS的时候，是没有听说过这个东西的。也就是说这是一个专门针对浏览器的标准并且现在的浏览器都实现了这个标准。<code>CORS</code>就是<code>cross-origin sharing standard</code>,翻译成中文就是<code>跨域资源共享标准</code>。</p>
+<p>跨域资源共享标准新增了一组HTTP首部字段，允许服务器声明哪些源站有权限访问哪些资源。另外，规范要求，对那些可能对服务器数据产生副作用的HTTP请求方法（特别是GET以外的HTTP请求，或者搭配某些MIME类型的POST请求），浏览器必须首先使用OPTIONS方法发起一个预检请求（preflight request），从而获知服务端是否允许该跨域请求。服务器确认允许之后，才发起实际的HTTP请求。在预检请求的返回中，服务器端也可以通知客户端，是否需要携带身份凭证（包括Cookies和HTTP认证相关数据）。下面将会针对每种情况做处理。</p>
+<p>后面我会通过<code>http://localhost:8081(客户端地址)</code>和<code>http://127.0.0.1:5389(服务端地址)</code>来模拟演示整个CORS请求。客户端我是通过<code>Vue框架，并且自己实现XMLHttpRequest</code>来实现。服务端我是通过<code>Node的Express框架来实现</code>。具体代码地址，请看文章最后面。</p>
+<h3 id="1-1-1-简单的请求访问控制"><a href="#1-1-1-简单的请求访问控制" class="headerlink" title="1.1.1 简单的请求访问控制"></a>1.1.1 简单的请求访问控制</h3><p>某些请求不会触发CORS预检请求(具体后面会说，其实就是不会发起options请求)。本文称这样的请求为“简单请求”，请注意，该术语并不属于Fetch（其中定义了CORS）规范。若请求满足所有下述条件，则该请求可视为“简单请求”：</p>
+<ul>
+<li>使用下列方法之一：<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>POST</li>
+</ul>
+</li>
+<li>Fetch规范定义了对CORS安全的首部字段集合，不得人为设置该集合之外的其他首部字段。该集合为：<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type （需要注意额外的限制）</li>
+<li>DPR</li>
+<li>Downlink</li>
+<li>Save-Data</li>
+<li>Viewport-Width</li>
+<li>Width</li>
+</ul>
+</li>
+<li>Content-Type的值仅限于下列三者之一：<ul>
+<li>text/plain</li>
+<li>multipart/form-data</li>
+<li>application/x-www-form-urlencoded</li>
+</ul>
+</li>
+</ul>
+<p>如果我们不做任何配置，那么由于跨域原因，浏览器将会对我们请求做报错处理(<code>注意：并不是服务器请求错误，是请求成功了并且返回了，但是浏览器做了报错处理</code>)。具体请求抓包如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求报文</span></span><br><span class="line">GET /?xx=<span class="number">1</span>&amp;yy=<span class="number">2</span> HTTP/<span class="number">1.1</span></span><br><span class="line">Host: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">5389</span></span><br><span class="line">Pragma: no-cache</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Origin: http:<span class="comment">//localhost:8081</span></span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (iPhone; CPU iPhone OS <span class="number">10</span>_3 like Mac OS X) AppleWebKit/<span class="number">602.1</span><span class="number">.50</span> (KHTML, like Gecko) CriOS/<span class="number">56.0</span><span class="number">.2924</span><span class="number">.75</span> Mobile/<span class="number">14E5239</span>e Safari/<span class="number">602.1</span></span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">Referer: http://localhost:8081/</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate, br</span></span><br><span class="line"><span class="comment">Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">//返回报文</span></span><br><span class="line"><span class="comment">HTTP/1.1 200 OK</span></span><br><span class="line"><span class="comment">X-Powered-By: Express</span></span><br><span class="line"><span class="comment">Content-Type: application/json; charset=utf-8</span></span><br><span class="line"><span class="comment">Content-Length: 86</span></span><br><span class="line"><span class="comment">ETag: W/"56-Zk2w81kjYiGkrYmIocyhxiyDmXY"</span></span><br><span class="line"><span class="comment">Date: Wed, 07 Feb 2018 11:33:20 GMT</span></span><br><span class="line"><span class="comment">Proxy-Connection: Keep-alive</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#123;"name":"隔壁老黄","password":"123456","requestParams":"&#123;\"xx\":\"1\",\"yy\":\"2\"&#125;"&#125;</span></span><br></pre></td></tr></table></figure>
+<p>从上面的报文来看，我们的请求没有任何问题。但是浏览器却给我报了一个错误，就是因为跨域的原因。</p>
+<p><img src="/assets/postImages/2018020701.png" alt="img"></p>
+<p>出现这个的原因是我的服务器没有对跨域支持。我只需要在服务器添加对简单跨域的支持就可以了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=============服务端代码如下============</span></span><br><span class="line">app.all(<span class="string">'*'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//==============添加对简单跨域的支持======================</span></span><br><span class="line">    res.header(<span class="string">'Access-Control-Allow-Origin'</span>, <span class="string">'*'</span>);</span><br><span class="line">    res.header(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER'</span>);</span><br><span class="line">    <span class="comment">// res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');</span></span><br><span class="line">    <span class="keyword">if</span> (req.method == <span class="string">'OPTIONS'</span>) &#123;</span><br><span class="line">        res.send(<span class="number">200</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        next();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//get请求</span></span><br><span class="line">app.get(<span class="string">'/'</span>, (req, res) =&gt; &#123;</span><br><span class="line">    <span class="comment">//console.log(req.query);</span></span><br><span class="line">    res.json(&#123;</span><br><span class="line">        name: <span class="string">"隔壁老黄"</span>,</span><br><span class="line">        password: <span class="string">"123456"</span>,</span><br><span class="line">        <span class="string">"requestParams"</span>:<span class="built_in">JSON</span>.stringify(req.query)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//=============返回的报文如下============================</span></span><br><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">X-Powered-By: Express</span><br><span class="line">Access-Control-Allow-Origin: *</span><br><span class="line">Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER</span><br><span class="line">Content-Type: application/json; charset=utf<span class="number">-8</span></span><br><span class="line">Content-Length: <span class="number">86</span></span><br><span class="line">ETag: W/<span class="string">"56-Zk2w81kjYiGkrYmIocyhxiyDmXY"</span></span><br><span class="line"><span class="built_in">Date</span>: Wed, <span class="number">07</span> Feb <span class="number">2018</span> <span class="number">11</span>:<span class="number">42</span>:<span class="number">30</span> GMT</span><br><span class="line"><span class="built_in">Proxy</span>-Connection: Keep-alive</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"隔壁老黄"</span>,<span class="string">"password"</span>:<span class="string">"123456"</span>,<span class="string">"requestParams"</span>:<span class="string">"&#123;\"xx\":\"1\",\"yy\":\"2\"&#125;"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的返回报文我们可以发现。返回的响应头多了<code>Access-Control-Allow-Origin</code>和<code>Access-Control-Allow-Headers</code>其中。他们的意义如下：</p>
+<ul>
+<li><code>Access-Control-Allow-Origin</code>根据请求头中的<code>Origin</code>和<code>Access-Control-Allow-Origin</code>就能完成最简单的访问控制。本例中，服务端返回的 Access-Control-Allow-Origin: * 表明，该资源可以被任意外域访问。如果服务端仅允许来自 <a href="http://foo.example" target="_blank" rel="noopener">http://foo.example</a> 的访问，则<code>Access-Control-Allow-Origin: http://foo.example</code>。</li>
+<li><code>Access-Control-Allow-Headers</code>表示允许用户自己指定的请求头。其中<code>X-PINGOTHER</code>是我添加的自定义请求头。如果网络请求有这个请求域，但是服务端没有对这个请求域包含，同样也违反CORS导致失败。</li>
+<li><code>Access-Control-Allow-Methods</code>表示服务器允许的跨域请求方法列表。意味着在列表里面的方法都是支持的。</li>
+<li><code>if (req.method == &#39;OPTIONS&#39;) {</code>这句话的意思是如果是<code>OPTIONS</code>请求，也就是跨域请求的预检。则返回<code>200</code>(http状态码，表示请求成功)表示服务端允许当前的跨域请求。如果是非简单跨域(后面会解释)浏览器自己调用的，我们并不需要手动调用。</li>
+</ul>
+<h3 id="1-1-2-非简单的请求访问控制"><a href="#1-1-2-非简单的请求访问控制" class="headerlink" title="1.1.2 非简单的请求访问控制"></a>1.1.2 非简单的请求访问控制</h3><p>当请求满足下述任一条件时，即应首先发送预检请求,比如说<code>POST</code>请求会首先发起一个<code>OPTIONS(预检)</code>请求：</p>
+<ul>
+<li>使用了下面任一HTTP方法：<ul>
+<li>PUT</li>
+<li>DELETE</li>
+<li>CONNECT</li>
+<li>OPTIONS</li>
+<li>TRACE</li>
+<li>PATCH</li>
+</ul>
+</li>
+<li>人为设置了对CORS安全的首部字段集合之外的其他首部字段。该集合为：<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type</li>
+<li>DPR</li>
+<li>Downlink</li>
+<li>Save-Data</li>
+<li>Viewport-Width</li>
+<li>Width</li>
+</ul>
+</li>
+<li>Content-Type 的值不属于下列之一:<ul>
+<li>application/x-www-form-urlencoded</li>
+<li>multipart/form-data</li>
+<li>text/plain</li>
+</ul>
+</li>
+</ul>
+<p>下面我会做一个非简单的跨域请求访问控制，我会制定自定义的请求头域和<code>content-type</code>来触发预检CORS。具体客户端代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">let</span> httpRequest = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    <span class="keyword">if</span> (httpRequest) &#123;</span><br><span class="line">        httpRequest.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (httpRequest.readyState === XMLHttpRequest.DONE) &#123;</span><br><span class="line">                <span class="keyword">if</span> (httpRequest.status === <span class="number">200</span>) &#123;</span><br><span class="line">                    <span class="built_in">console</span>.log(httpRequest.responseText);</span><br><span class="line">                    <span class="keyword">let</span> response = <span class="built_in">JSON</span>.parse(httpRequest.responseText);</span><br><span class="line">                    resolve(&#123;<span class="attr">err</span>:<span class="literal">null</span>,<span class="attr">data</span>:response&#125;);</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"请求出错"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">        httpRequest.open(<span class="string">'POST'</span>,url,<span class="literal">true</span>);</span><br><span class="line">        httpRequest.setRequestHeader(<span class="string">'X-PINGOTHER'</span>, <span class="string">'pingpong'</span>);</span><br><span class="line">        httpRequest.setRequestHeader(<span class="string">'Content-Type'</span>, <span class="string">'application/xml'</span>);</span><br><span class="line">        <span class="keyword">let</span> body = <span class="string">'&lt;?xml version="1.0"?&gt;&lt;person&gt;&lt;name&gt;Arun&lt;/name&gt;&lt;/person&gt;'</span>;</span><br><span class="line">        httpRequest.send(body);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"没有AJAX环境"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">httpRequest.send(body);</span><br></pre></td></tr></table></figure>
+<p>整个网络请求的过程如下图,首先有一个<code>OPTIONS</code>请求，返回<code>200</code>以后，然后再发送我们自己需要的<code>POST</code>请求：</p>
+<p><img src="/assets/postImages/2018020702.png" alt="img"></p>
+<p>两个网络请求的报文如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//================OPSTIONS请求报文=================</span></span><br><span class="line">Host: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">5389</span></span><br><span class="line">Pragma: no-cache</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Access-Control-Request-Method: POST</span><br><span class="line">Origin: http:<span class="comment">//localhost:8081</span></span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (iPhone; CPU iPhone OS <span class="number">10</span>_3 like Mac OS X) AppleWebKit/<span class="number">602.1</span><span class="number">.50</span> (KHTML, like Gecko) CriOS/<span class="number">56.0</span><span class="number">.2924</span><span class="number">.75</span> Mobile/<span class="number">14E5239</span>e Safari/<span class="number">602.1</span></span><br><span class="line">Access-Control-Request-Headers: content-type,x-pingother</span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate, br</span></span><br><span class="line"><span class="comment">Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7</span></span><br><span class="line"><span class="comment">//================OPSTIONS响应报文=================</span></span><br><span class="line"><span class="comment">HTTP/1.1 200 OK</span></span><br><span class="line"><span class="comment">X-Powered-By: Express</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Origin: *</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER</span></span><br><span class="line"><span class="comment">Content-Type: text/plain; charset=utf-8</span></span><br><span class="line"><span class="comment">Content-Length: 2</span></span><br><span class="line"><span class="comment">ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"</span></span><br><span class="line"><span class="comment">Date: Wed, 07 Feb 2018 12:23:42 GMT</span></span><br><span class="line"><span class="comment">Proxy-Connection: Keep-alive</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">OK</span></span><br><span class="line"><span class="comment">//===============POST请求报文=================</span></span><br><span class="line"><span class="comment">POST / HTTP/1.1</span></span><br><span class="line"><span class="comment">Host: 127.0.0.1:5389</span></span><br><span class="line"><span class="comment">Content-Length: 55</span></span><br><span class="line"><span class="comment">Pragma: no-cache</span></span><br><span class="line"><span class="comment">Cache-Control: no-cache</span></span><br><span class="line"><span class="comment">X-PINGOTHER: pingpong</span></span><br><span class="line"><span class="comment">Origin: http://localhost:8081</span></span><br><span class="line"><span class="comment">User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1</span></span><br><span class="line"><span class="comment">Content-Type: application/xml</span></span><br><span class="line"><span class="comment">Accept: */</span>*</span><br><span class="line">Referer: http:<span class="comment">//localhost:8081/</span></span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=<span class="number">0.9</span>,zh-TW;q=<span class="number">0.8</span>,en;q=<span class="number">0.7</span></span><br><span class="line"></span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span>?&gt;<span class="xml"><span class="tag">&lt;<span class="name">person</span>&gt;</span><span class="tag">&lt;<span class="name">name</span>&gt;</span>Arun<span class="tag">&lt;/<span class="name">name</span>&gt;</span><span class="tag">&lt;/<span class="name">person</span>&gt;</span></span></span><br><span class="line"><span class="comment">//================POST响应报文=================</span></span><br><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">X-Powered-By: Express</span><br><span class="line">Access-Control-Allow-Origin: *</span><br><span class="line">Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER</span><br><span class="line">Content-Type: application/json; charset=utf<span class="number">-8</span></span><br><span class="line">Content-Length: <span class="number">40</span></span><br><span class="line">ETag: W/<span class="string">"28-gEkkRvjiOndybUpThNV94uAc6yA"</span></span><br><span class="line"><span class="built_in">Date</span>: Wed, <span class="number">07</span> Feb <span class="number">2018</span> <span class="number">12</span>:<span class="number">23</span>:<span class="number">42</span> GMT</span><br><span class="line"><span class="built_in">Proxy</span>-Connection: Keep-alive</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"隔壁老黄"</span>,<span class="string">"password"</span>:<span class="string">"123456"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>上面四个报文的解释如下：</p>
+<ul>
+<li><code>OPTIONS请求报文</code>中的<code>Access-Control-Request-Method</code>表示客户端发起的跨域请求是<code>POST</code>,<code>Origin</code>表示客户端的地址,<code>Access-Control-Request-Headers</code>表示客户端请求用户手动修改过的请求头域。</li>
+<li><code>OPTIONS响应报文</code>中的<code>Access-Control-Allow-Origin:*</code>表示允许所有客户端做跨域访问。<code>Access-Control-Allow-Headers</code>表示支持用户自定义的请求头域的集合。如果客户端自己处理的请求头域超过了这个范围<code>我这里的content-type,x-pingother</code>，则违反了CORS规则导致请求失败。</li>
+<li><code>POST请求报文</code>没事好解释的，关注<code>Origin</code>,<code>X-PINGOTHER</code>,<code>Content-Type</code>这三个关键域的值就可以了。</li>
+<li><code>POST响应报文</code>的响应头和<code>OPTIONS响应报文</code>一样的，不一样的就是响应体。后者返回我们真正需要的数据。</li>
+</ul>
+<h3 id="1-1-3-cookie和Access-Control-Allow-Credentials"><a href="#1-1-3-cookie和Access-Control-Allow-Credentials" class="headerlink" title="1.1.3 cookie和Access-Control-Allow-Credentials"></a>1.1.3 cookie和Access-Control-Allow-Credentials</h3><p>还有一点是必须要强调额，就是cookie。我们通常使用它来记录一些认证信息，但是由于跨域的原因，<code>CORS</code>对于cookie的使用就更加严格了。而且好像我们并不能获取到cookie(至少我想了各种办法也没有找到通过XMLHttpRequest获取跨域cookie的原因)。貌似是从协议上就禁止了。那如果我们需要在跨域服务器上使用cookie的话，需要做那些配置呢？这就需要借助<code>Access-Control-Allow-Credentials</code>。下面我就通过一个真实案列来讲解跨域的cookie。下面是一个带cookie的跨域网络请求报文：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//=================OPTIONS请求报文=========================</span></span><br><span class="line">OPTIONS / HTTP/<span class="number">1.1</span></span><br><span class="line">Host: <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">5389</span></span><br><span class="line">Pragma: no-cache</span><br><span class="line">Cache-Control: no-cache</span><br><span class="line">Access-Control-Request-Method: POST</span><br><span class="line">Origin: http:<span class="comment">//localhost:8081</span></span><br><span class="line">User-Agent: Mozilla/<span class="number">5.0</span> (iPhone; CPU iPhone OS <span class="number">10</span>_3 like Mac OS X) AppleWebKit/<span class="number">602.1</span><span class="number">.50</span> (KHTML, like Gecko) CriOS/<span class="number">56.0</span><span class="number">.2924</span><span class="number">.75</span> Mobile/<span class="number">14E5239</span>e Safari/<span class="number">602.1</span></span><br><span class="line">Access-Control-Request-Headers: content-type,x-pingother</span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">Accept-Encoding: gzip, deflate, br</span></span><br><span class="line"><span class="comment">Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7</span></span><br><span class="line"><span class="comment">//=================OPTIONS响应报文=========================</span></span><br><span class="line"><span class="comment">HTTP/1.1 200 OK</span></span><br><span class="line"><span class="comment">X-Powered-By: Express</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Origin: http://localhost:8081</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Methods: PUT, POST, GET, DELETE, OPTIONS</span></span><br><span class="line"><span class="comment">Access-Control-Expose-Headers: token</span></span><br><span class="line"><span class="comment">Access-Control-Allow-Credentials: true</span></span><br><span class="line"><span class="comment">Access-Control-Max-Age: 3600</span></span><br><span class="line"><span class="comment">Content-Type: text/plain; charset=utf-8</span></span><br><span class="line"><span class="comment">Content-Length: 2</span></span><br><span class="line"><span class="comment">ETag: W/"2-nOO9QiTIwXgNtWtBJezz8kv3SLc"</span></span><br><span class="line"><span class="comment">Date: Thu, 08 Feb 2018 06:42:55 GMT</span></span><br><span class="line"><span class="comment">Proxy-Connection: Keep-alive</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">OK</span></span><br><span class="line"><span class="comment">//=================POST请求报文=========================</span></span><br><span class="line"><span class="comment">POST / HTTP/1.1</span></span><br><span class="line"><span class="comment">Host: 127.0.0.1:5389</span></span><br><span class="line"><span class="comment">Content-Length: 55</span></span><br><span class="line"><span class="comment">Pragma: no-cache</span></span><br><span class="line"><span class="comment">Cache-Control: no-cache</span></span><br><span class="line"><span class="comment">X-PINGOTHER: pingpong</span></span><br><span class="line"><span class="comment">Origin: http://localhost:8081</span></span><br><span class="line"><span class="comment">User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1</span></span><br><span class="line"><span class="comment">Content-Type: application/xml</span></span><br><span class="line"><span class="comment">Accept: */</span>*</span><br><span class="line">Referer: http:<span class="comment">//localhost:8081/</span></span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=<span class="number">0.9</span>,zh-TW;q=<span class="number">0.8</span>,en;q=<span class="number">0.7</span></span><br><span class="line"></span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span>?&gt;<span class="xml"><span class="tag">&lt;<span class="name">person</span>&gt;</span><span class="tag">&lt;<span class="name">name</span>&gt;</span>Arun<span class="tag">&lt;/<span class="name">name</span>&gt;</span><span class="tag">&lt;/<span class="name">person</span>&gt;</span></span></span><br><span class="line"><span class="comment">//=================POST响应报文=========================</span></span><br><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">X-Powered-By: Express</span><br><span class="line">Access-Control-Allow-Origin: http:<span class="comment">//localhost:8081</span></span><br><span class="line">Access-Control-Allow-Headers: Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER</span><br><span class="line">Access-Control-Allow-Methods: PUT, POST, GET, DELETE, OPTIONS</span><br><span class="line">Access-Control-Expose-Headers: token</span><br><span class="line">Access-Control-Allow-Credentials: <span class="literal">true</span></span><br><span class="line">Access-Control-Max-Age: <span class="number">3600</span></span><br><span class="line"><span class="built_in">Set</span>-Cookie: Thu Feb <span class="number">08</span> <span class="number">2018</span> <span class="number">14</span>:<span class="number">42</span>:<span class="number">55</span> GMT+<span class="number">0800</span> (CST)=%E9%BB%<span class="number">84</span>%E6%<span class="number">88</span>%<span class="number">90</span>%E9%<span class="number">83</span>%BD; Path=<span class="regexp">/</span></span><br><span class="line"><span class="regexp">token: Thu Feb 08 2018 14:42:55 GMT+0800 (CST)</span></span><br><span class="line"><span class="regexp">Content-Type: application/</span>json; charset=utf<span class="number">-8</span></span><br><span class="line">Content-Length: <span class="number">40</span></span><br><span class="line">ETag: W/<span class="string">"28-gEkkRvjiOndybUpThNV94uAc6yA"</span></span><br><span class="line"><span class="built_in">Date</span>: Thu, <span class="number">08</span> Feb <span class="number">2018</span> <span class="number">06</span>:<span class="number">42</span>:<span class="number">55</span> GMT</span><br><span class="line"><span class="built_in">Proxy</span>-Connection: Keep-alive</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"隔壁老黄"</span>,<span class="string">"password"</span>:<span class="string">"123456"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的的带cookie信息的非简单跨域请求，我们发现和前面不带cookie的请求有几个区别：</p>
+<ul>
+<li><code>POST请求报文</code>没啥好说的，只需要关注<code>Origin</code>就可以了。</li>
+<li><code>POST响应报文</code>中最关键的1 <code>Access-Control-Allow-Credentials: true</code>，只有他为true的时候，表示服务器允许客户端的请求带cookie，否则不允许带cookie。2 <code>Access-Control-Allow-Origin: http://localhost:8081</code>的值不能是<code>*</code>了，必须是特定的客户端域名一个或者多个。只有在满足这两个条件的情况下，才支持跨域cookie的携带。</li>
+<li><code>POST响应报文</code>的响应报文中，就包含了<code>Set-Cookie</code>和<code>Access-Control-Allow-Credentials</code>这两个域。</li>
+<li>如果网络请求要携带cookie信息。对于客户端需要在创建<code>XMLHttpRequest</code>对象的时候，通过<code>httpRequest.withCredentials = true;</code>来配置。对于服务端，需要在响应头中通过<code>res.header(&#39;Access-Control-Allow-Credentials&#39;,true);</code>来配置。只有客户端和服务端都配置好以后，才能使用跨域cookie。</li>
+</ul>
+<p>由于<code>CORS</code>标准的限制，在客户端很多响应域都是不能获取到的。比如cookie我们就不能通过<code>getResponseHeader</code>或者<code>getAllResponseHeaders</code>获取，只能获取到协议允许我们获取到的与。我这里试了一下，通过<code>getAllResponseHeaders</code>只能获取如下几个：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content-type: application/json; charset=utf<span class="number">-8</span></span><br><span class="line">token: Thu Feb <span class="number">08</span> <span class="number">2018</span> <span class="number">14</span>:<span class="number">55</span>:<span class="number">24</span> GMT+<span class="number">0800</span> (CST)</span><br></pre></td></tr></table></figure>
+<p>其中<code>content-type</code>是系统带的域,是协议允许获取的。<code>token</code>就是我自己定义，如果我想要获取到这个域。就需要服务端在响应头里面通过<code>Access-Control-Expose-Headers: token</code>来控制。比如我这里表示只允许获取到自定义的<code>token</code>域。由于我们并不能获取到cookie，所以可以通过自定义的域来存放认证信息。</p>
+<p>下面我将贴出我所有客户端和服务端的最关键的代码：</p>
+<ul>
+<li>客户端(自己实现的XMLHpptRequest对象)：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建XMLHttpRequest对象的方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createAjax</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> httpRequest;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.XMLHTTPRequest) &#123;</span><br><span class="line">        httpRequest = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">window</span>.ActiveXObject)&#123;</span><br><span class="line">        httpRequest = <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> httpRequest;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 创建get请求。返回一个promise对象</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>请求地址 url </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>请求参数，可以使字符串或者对象 params </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>配置，这里暂时没有实现 config </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params">url,params,config</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>) =&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> httpRequest = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">            <span class="keyword">if</span> (httpRequest) &#123;</span><br><span class="line">                <span class="keyword">let</span> query;</span><br><span class="line">                <span class="comment">//拼接get请求的query部分</span></span><br><span class="line">                <span class="keyword">if</span> (params <span class="keyword">instanceof</span> <span class="built_in">String</span>) &#123;</span><br><span class="line">                    query = <span class="string">"?"</span> + params;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span>(params <span class="keyword">instanceof</span> <span class="built_in">Object</span>)&#123;</span><br><span class="line">                    query = <span class="string">"?"</span>;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">let</span> [key,value] <span class="keyword">of</span> <span class="built_in">Object</span>.entries(params)) &#123;</span><br><span class="line">                        query = query + key + <span class="string">"="</span> + <span class="built_in">encodeURIComponent</span>(value) + <span class="string">"&amp;"</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    query= query.substring(<span class="number">0</span>,query.length - <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//处理网络返回</span></span><br><span class="line">                httpRequest.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                    <span class="comment">//网络请求完成</span></span><br><span class="line">                    <span class="keyword">if</span> (httpRequest.readyState === XMLHttpRequest.DONE) &#123;</span><br><span class="line">                        <span class="comment">//请求成功</span></span><br><span class="line">                        <span class="keyword">if</span> (httpRequest.status === <span class="number">200</span>) &#123;</span><br><span class="line">                            <span class="comment">// console.log(httpRequest.responseText);</span></span><br><span class="line">                            <span class="keyword">let</span> response = <span class="built_in">JSON</span>.parse(httpRequest.responseText);</span><br><span class="line">                            resolve(&#123;<span class="attr">err</span>:<span class="literal">null</span>,<span class="attr">data</span>:response&#125;);</span><br><span class="line">                        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                            reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"请求出错"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; </span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//把query添加到url后面</span></span><br><span class="line">                <span class="keyword">if</span> (query) &#123;</span><br><span class="line">                    url = url + query;</span><br><span class="line">                &#125; </span><br><span class="line">                <span class="comment">//发送请求</span></span><br><span class="line">                httpRequest.open(<span class="string">'GET'</span>,url,<span class="literal">true</span>);</span><br><span class="line">                httpRequest.send();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"没有AJAX环境"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            reject(&#123;<span class="attr">err</span>:error,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义XMLHttpRequest的POST请求，返回一个Promise对象</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>请求的地址 url </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>没用 params </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>没用 config </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">post</span>(<span class="params">url,params,config</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>) =&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> httpRequest = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">            <span class="comment">//让请求支持cookie信息的携带</span></span><br><span class="line">            httpRequest.withCredentials = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (httpRequest) &#123;</span><br><span class="line">                httpRequest.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                    <span class="comment">//获取响应域</span></span><br><span class="line">                    <span class="built_in">console</span>.log(<span class="string">"========cookie======="</span>,httpRequest.getAllResponseHeaders(),httpRequest.getResponseHeader(<span class="string">"token"</span>));</span><br><span class="line">                    <span class="keyword">if</span> (httpRequest.readyState === XMLHttpRequest.DONE) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (httpRequest.status === <span class="number">200</span>) &#123;</span><br><span class="line">                            <span class="built_in">console</span>.log(httpRequest.responseText);</span><br><span class="line">                            <span class="keyword">let</span> response = <span class="built_in">JSON</span>.parse(httpRequest.responseText);</span><br><span class="line">                            resolve(&#123;<span class="attr">err</span>:<span class="literal">null</span>,<span class="attr">data</span>:response&#125;);</span><br><span class="line">                        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                            reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"请求出错"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; </span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//post请求</span></span><br><span class="line">                httpRequest.open(<span class="string">'POST'</span>,url,<span class="literal">true</span>);</span><br><span class="line">                <span class="comment">//添加自定义的请求头域</span></span><br><span class="line">                httpRequest.setRequestHeader(<span class="string">'X-PINGOTHER'</span>, <span class="string">'pingpong'</span>);</span><br><span class="line">                <span class="comment">//设置body的类型为xml</span></span><br><span class="line">                httpRequest.setRequestHeader(<span class="string">'Content-Type'</span>, <span class="string">'application/xml'</span>);</span><br><span class="line">                <span class="comment">//post请求的请求体</span></span><br><span class="line">                <span class="keyword">let</span> body = <span class="string">'&lt;?xml version="1.0"?&gt;&lt;person&gt;&lt;name&gt;Arun&lt;/name&gt;&lt;/person&gt;'</span>;</span><br><span class="line">                <span class="comment">//发送请求</span></span><br><span class="line">                httpRequest.send(body);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                reject(&#123;<span class="attr">err</span>:&#123;<span class="attr">message</span>:<span class="string">"没有AJAX环境"</span>&#125;,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            reject(&#123;<span class="attr">err</span>:error,<span class="attr">data</span>:<span class="literal">null</span>&#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">    <span class="keyword">get</span>,post</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>客户端(如何使用)：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//引入模块</span></span><br><span class="line"><span class="keyword">import</span> &#123;<span class="keyword">get</span>,post&#125; from '../XMLHttpRequest/request.js';</span><br><span class="line"></span><br><span class="line">//<span class="keyword">get</span>请求的发送</span><br><span class="line">async getRequest() &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123;err,data&#125; = <span class="keyword">await</span> <span class="keyword">get</span>('http://127.0.0.1:5389', &#123;<span class="string">"xx"</span>: <span class="number">1</span>,<span class="string">"yy"</span>: <span class="number">2</span>&#125;).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"出错了"</span>, err);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(err, data);</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">//post请求的发送</span></span><br><span class="line"><span class="keyword">async</span> postRequest() &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123;err,data&#125; = <span class="keyword">await</span> post(<span class="string">'http://127.0.0.1:5389'</span>, &#123;<span class="string">"xx"</span>: <span class="number">1</span>,<span class="string">"yy"</span>: <span class="number">2</span>&#125;).catch(<span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"出错了"</span>, err);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">console</span>.log(err, data);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>服务端的实现代码：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">app</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//对所有的网络请求做跨域处理</span></span><br><span class="line">    app.all(<span class="string">'*'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//允许跨域的客户端域名</span></span><br><span class="line">        res.header(<span class="string">'Access-Control-Allow-Origin'</span>, <span class="string">'http://localhost:8081'</span>);</span><br><span class="line">        <span class="comment">//允许客户端携带的请求头域，包括自定义的请求头域，否则会失败。</span></span><br><span class="line">        res.header(<span class="string">'Access-Control-Allow-Headers'</span>, <span class="string">'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , X-PINGOTHER'</span>);</span><br><span class="line">        <span class="comment">//允许客户端发起的请求体方法。</span></span><br><span class="line">        res.header(<span class="string">'Access-Control-Allow-Methods'</span>, <span class="string">'PUT, POST, GET, DELETE, OPTIONS'</span>);</span><br><span class="line">        <span class="comment">//允许客户端访问的响应头域</span></span><br><span class="line">        res.header(<span class="string">'Access-Control-Expose-Headers'</span>, <span class="string">'token'</span>);</span><br><span class="line">        <span class="comment">//允许携带cookie信息</span></span><br><span class="line">        res.header(<span class="string">'Access-Control-Allow-Credentials'</span>,<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">//CORS认证的有效期</span></span><br><span class="line">        res.header(<span class="string">"Access-Control-Max-Age"</span>, <span class="string">"3600"</span>);</span><br><span class="line">        <span class="keyword">if</span> (req.method == <span class="string">'OPTIONS'</span>) &#123;</span><br><span class="line">            res.send(<span class="number">200</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            next();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//get请求</span></span><br><span class="line">    app.get(<span class="string">'/'</span>, (req, res) =&gt; &#123;</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            name: <span class="string">"隔壁老黄"</span>,</span><br><span class="line">            password: <span class="string">"123456"</span>,</span><br><span class="line">            <span class="string">"requestParams"</span>:<span class="built_in">JSON</span>.stringify(req.query)</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">//post请求</span></span><br><span class="line">    app.post(<span class="string">'/'</span>, (req, res) =&gt; &#123;</span><br><span class="line">        <span class="comment">//设置cookie，只有客户端和服务端都配置好以后才能成功</span></span><br><span class="line">        res.cookie((<span class="keyword">new</span> <span class="built_in">Date</span>()), <span class="string">"隔壁老黄"</span>);</span><br><span class="line">        <span class="comment">//设置自定义的响应头域，可以存放认证信息或者响应给客户端的信息。</span></span><br><span class="line">        res.header(<span class="string">"token"</span>,(<span class="keyword">new</span> <span class="built_in">Date</span>()));</span><br><span class="line">        res.json(&#123;</span><br><span class="line">            name: <span class="string">"隔壁老黄"</span>,</span><br><span class="line">            password: <span class="string">"123456"</span>,</span><br><span class="line">            <span class="string">"requestParams"</span>:<span class="built_in">JSON</span>.stringify(req.body)</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
+<p>第一部分到此结束。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/12/27/前端JSONP的原理与实现以及XSS,CSRF的相亲相爱/" data-toggle="tooltip" data-placement="top" title="前端JSONP的原理与实现以及XSS,CSRF的相亲相爱">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-CORS的详解"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 CORS的详解</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-1-CORS的基本套路"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 CORS的基本套路</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-1-简单的请求访问控制"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1.1.1 简单的请求访问控制</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-2-非简单的请求访问控制"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">1.1.2 非简单的请求访问控制</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-3-cookie和Access-Control-Allow-Credentials"><span class="toc-nav-number">1.1.3.</span> <span class="toc-nav-text">1.1.3 cookie和Access-Control-Allow-Credentials</span></a></li></ol></li></ol></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#CORS,XMLHttpRequest" title="CORS,XMLHttpRequest">CORS,XMLHttpRequest</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>

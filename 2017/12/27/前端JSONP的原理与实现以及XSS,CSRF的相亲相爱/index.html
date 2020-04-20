@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="黄成都的技术博客">
+    <meta name="keyword"  content="黄成都, 黄成都的技术博客">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          前端JSONP的原理与实现以及XSS,CSRF的相亲相爱 - 黄成都的技术博客
+        
+    </title>
+
+    <link rel="canonical" href="https://github.com/huang303513/huang303513.github.io.git/2017/12/27/前端JSONP的原理与实现以及XSS,CSRF的相亲相爱/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('snail-bg.jpg')
+                /*post*/
+            
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#JSONP,XSS" title="JSONP,XSS">JSONP,XSS</a>
+                            
+                        </div>
+                        <h1>前端JSONP的原理与实现以及XSS,CSRF的相亲相爱</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by 黄成都 on
+                            2017-12-27
+                        </span>
+
+                        
+                            <div class="blank_box"></div>
+                            <span class="meta">
+                                Words <span class="post-count">3.8k</span> and
+                                Reading Time <span class="post-count">15</span> Minutes
+                            </span>
+                            <div class="blank_box"></div>
+                            <!-- 不蒜子统计 start -->
+                            <span class="meta">
+                                Viewed <span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span> Times
+                            </span>
+                            <!-- 不蒜子统计 end -->
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">黄成都的技术博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                        <li>
+                            <a href="/博客模板.html">前端JSONP的原理与实现以及XSS,CSRF的相亲相爱</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/photography/">Photography</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/huang303513" target="_blank">Chinese Blog</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="1-JSONP的原理与实现"><a href="#1-JSONP的原理与实现" class="headerlink" title="1 JSONP的原理与实现"></a>1 JSONP的原理与实现</h1><hr>
+<h2 id="1-1-同源策略"><a href="#1-1-同源策略" class="headerlink" title="1.1 同源策略"></a>1.1 同源策略</h2><p>前端跨域是每个前端人绕不过的坎，也是必须了解的一个知识点。我记得第一次遇到前端跨域这个坑的时候，真是无语到极点，对于一个移动端出身的人来说，觉得这个玩意无可理喻。但是后来慢慢了解，觉得前端的同源策略是非常有必要的。同源策略就是浏览器默认让<code>www.baidu.com</code>不能加载来自<code>www.google.com</code>的数据。对于现在来说，所有数据都是同源的可能性基本上很小，比如我们公司静态资源<code>www.image.com</code>和前端资源<code>www.htmlcss.com</code>的CDN路径都不一样，前端获取后台数据<code>www.apidata.com</code>又是另一个地址。如何解决这个坑呢？我们公司通过两种方式来避开。具体就是通过设置<code>Access-Control-Allow-Origin</code>来做<code>POST</code>请求，用<code>JSONP</code>来实现<code>GET</code>请求,因为<code>JSONP</code>只能实现<code>GET</code>请求。</p>
+<h3 id="1-1-1-通过Access-Control-Allow-Origin支持跨域"><a href="#1-1-1-通过Access-Control-Allow-Origin支持跨域" class="headerlink" title="1.1.1 通过Access-Control-Allow-Origin支持跨域"></a>1.1.1 通过Access-Control-Allow-Origin支持跨域</h3><p>有些人肯定就纳闷了，我就喜欢跨域，我就不关注安全，难道就没有办法了吗？当然是否定的。你需要做的，只是让服务器在返回的header里面加上<code>Access-Control-Allow-Origin</code>这个域就可以了。这样浏览器在接收到服务器返回的数据，就不会因为违反同源策略限制你拿到数据了。下面就用抓包来具体看一下：</p>
+<p>当我打开<a href="https://pages.ctrip.com/ztrip/market/goldshare/?shareKey=aUuRkqYuXwjCmAS5Vef0btZmexmKwG5z&amp;channel=ZXA_anzhi&amp;partner=zhixing" target="_blank" rel="noopener">这里点开h5链接</a>这个链接的时候。会去<code>https//m.ctrip.com</code>通过<code>POST</code>请求数据，这里就用到了跨域。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">:method: POST</span><br><span class="line">:authority: m.ctrip.com</span><br><span class="line">:scheme: https</span><br><span class="line">:path: <span class="regexp">/restapi/</span>xyz</span><br><span class="line">content-length: <span class="number">290</span></span><br><span class="line">pragma: no-cache</span><br><span class="line">cache-control: no-cache</span><br><span class="line">accept: application/json</span><br><span class="line">origin: https:<span class="comment">//pages.ctrip.com</span></span><br><span class="line">user-agent: Mozilla/<span class="number">5.0</span> (Linux; Android <span class="number">6.0</span>; Nexus <span class="number">5</span> Build/MRA58N) AppleWebKit/<span class="number">537.36</span> (KHTML, like Gecko) Chrome/<span class="number">63.0</span><span class="number">.3239</span><span class="number">.84</span> Mobile Safari/<span class="number">537.36</span></span><br><span class="line">content-type: application/json;charset=UTF<span class="number">-8</span></span><br><span class="line">referer: https:<span class="comment">//pages.ctrip.com/ztrip</span></span><br><span class="line">accept-encoding: gzip, deflate, br</span><br><span class="line">accept-language: zh-CN,zh;q=<span class="number">0.9</span>,zh-TW;q=<span class="number">0.8</span>,en;q=<span class="number">0.7</span></span><br><span class="line"></span><br><span class="line">&#123;请求体，post请求的参数&#125;</span><br></pre></td></tr></table></figure>
+<p>服务器返回的响应头如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">:status: <span class="number">200</span></span><br><span class="line">server: Tengine/<span class="number">2.1</span><span class="number">.2</span></span><br><span class="line">date: Thu, <span class="number">28</span> Dec <span class="number">2017</span> <span class="number">11</span>:<span class="number">01</span>:<span class="number">29</span> GMT</span><br><span class="line">content-type: application/json;charset=utf<span class="number">-8</span></span><br><span class="line">access-control-allow-origin: *</span><br><span class="line">access-control-expose-headers: RootMessageId</span><br><span class="line">cache-control: private</span><br><span class="line">vary: Accept-Encoding</span><br><span class="line">clogging_trace_id: <span class="number">8196881814119217567</span></span><br><span class="line">rootmessageid: <span class="number">921812</span><span class="number">-0</span>a0e0de1<span class="number">-420683</span><span class="number">-219524</span></span><br><span class="line">x-powered-by: CTrip/SOA2<span class="number">.0</span> Win32NT/.NET</span><br><span class="line">soa20-response-status: Success</span><br><span class="line">x-aspnet-version: <span class="number">4.0</span><span class="number">.30319</span></span><br><span class="line">x-powered-by: ASP.NET</span><br><span class="line">x-gate: ctrip-gate</span><br><span class="line">x-gate-instance: unknown</span><br><span class="line">x-originating-url: http:<span class="comment">//m.ctrip.com/xyz</span></span><br><span class="line">x-gate-remote-call-cost: <span class="number">9</span></span><br><span class="line">content-encoding: gzip</span><br><span class="line">slb-http-protocol-version: HTTP/<span class="number">2.0</span></span><br><span class="line">access-control-expose-headers: slb-http-protocol-version</span><br><span class="line"></span><br><span class="line">&#123;服务器返回的有用数据&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，这里有<code>access-control-allow-origin</code>这个响应域就解决了问题。这个方法是最简单的，而且前端<code>POST</code>请求最常见的方法(不确定还有其他好的解决方案)。这种方式最好就是通过他获取服务数据，不要加载js脚本。小心被别人注入攻击。</p>
+<h3 id="1-1-2-JSONP的基本原理"><a href="#1-1-2-JSONP的基本原理" class="headerlink" title="1.1.2 JSONP的基本原理"></a>1.1.2 JSONP的基本原理</h3><p>讲<code>JSONP</code>之前，我先亮出一段常见的代码。下面这个方法主要就是动态的创建一个<code>script</code>标签，然后设置src属性。并且添加到<code>document</code>的第一个<code>script</code>标签之前。也就是说动态去加载一个<code>javscript</code>脚本。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadJs</span>(<span class="params">src, attrs = &#123;&#125;</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> ref = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'script'</span>)[<span class="number">0</span>]</span><br><span class="line">        <span class="comment">//创建一个scrpt标签</span></span><br><span class="line">        <span class="keyword">const</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>)</span><br><span class="line">        <span class="comment">//设置script标签的资源路径</span></span><br><span class="line">        script.src = src</span><br><span class="line">        script.async = <span class="literal">true</span></span><br><span class="line">        <span class="comment">//设置属性</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> attrs) &#123;</span><br><span class="line">            script.setAttribute(key, attrs[key])</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//script标签加入document中</span></span><br><span class="line">        ref.parentNode.insertBefore(script, ref)</span><br><span class="line">        script.onload = resolve</span><br><span class="line">        script.onerror = reject</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最有意思的是<code>script</code>标签的<code>src</code>不受跨域限制。也就是说<code>wwww.baidu.com</code>的文件可以通过上面这个方法无限制的加载<code>www.google.com</code>的js文件。这个就是<code>JSONP</code>的实现的最基本原理。每一个<code>JSONP</code>请求就是动态的创建<code>script</code>元素，然后通过src属性去加载数据，而且一般是通过callback这个回调方法来返回服务器数据，然后再把<code>script</code>标签移除。如此周而复始的循环，想想都累啊。下面看一个JSON的标准格式,服务器会获取到<code>callback</code>这个回调方法。然后通过<code>方法调用</code>的方式把数据返回来，也就是执行<code>callbackFun</code>方法。<code>serverdata</code>就是服务器给客户端的数据。至于<code>callback</code>这个名字，可以自己定义，有客户端和服务器商量决定。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callbackFun</span>(<span class="params">serverdata</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(serverdata)</span><br><span class="line">&#125;</span><br><span class="line">&lt;script src=<span class="string">"http://wwww.baidu.com/jsonp.js?callback=callbackFun"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="1-2-JSONP的实现"><a href="#1-2-JSONP的实现" class="headerlink" title="1.2 JSONP的实现"></a>1.2 JSONP的实现</h2><p>下面我会对<code>JSONP</code>做一个最基本的实现。使用<code>Vue</code>和<code>node.js</code>分别实现客户端和服务端,<a href="https://github.com/huang303513/NodejsVuePractice">代码地址</a>。</p>
+<p>首先我们先看客户端的实现：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取header的第一个子元素</span></span><br><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"head"</span>)[<span class="number">0</span>];</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 生成随机字符串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">makeid</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> text = <span class="string">""</span>;</span><br><span class="line">    <span class="keyword">var</span> possible = <span class="string">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">        text += possible.charAt(<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * possible.length));</span><br><span class="line">    <span class="keyword">return</span> text;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * jsonp请求的实现。返回一个promise对象对应请求成功和请求失败。</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*请求的url&#125;</span> </span>url </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;*请求的参数&#125;</span> </span>options </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonpRequest</span>(<span class="params">url, options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!url) &#123;</span><br><span class="line">                reject(&#123;</span><br><span class="line">                    err: <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"url不能为空"</span>),</span><br><span class="line">                    result: <span class="literal">null</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="built_in">document</span> || !global) &#123;</span><br><span class="line">                reject(&#123;</span><br><span class="line">                    err: <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"系统环境有问题"</span>),</span><br><span class="line">                    result: <span class="literal">null</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//创建一个script元素</span></span><br><span class="line">            <span class="keyword">let</span> scriptNode = <span class="built_in">document</span>.createElement(<span class="string">"script"</span>);</span><br><span class="line">            <span class="comment">//请求参数</span></span><br><span class="line">            <span class="keyword">let</span> data = options || &#123;&#125;;</span><br><span class="line">            <span class="comment">//回调函数的具体值，服务器和客户端就根据这个方法名来确定请求与返回数据之间的对应。</span></span><br><span class="line">            <span class="keyword">let</span> fnName = <span class="string">"jsonp"</span> + makeid();</span><br><span class="line">            <span class="comment">// 把callback加入请求参数中</span></span><br><span class="line">            data[<span class="string">"callback"</span>] = fnName;</span><br><span class="line">            <span class="comment">// 拼接url</span></span><br><span class="line">            <span class="keyword">var</span> params = [];</span><br><span class="line">            <span class="comment">//参数的拼接与处理</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> [key, value] <span class="keyword">of</span> <span class="built_in">Object</span>.entries(data)) &#123;</span><br><span class="line">                params.push(<span class="built_in">encodeURIComponent</span>(key) + <span class="string">"="</span> + <span class="built_in">encodeURIComponent</span>(data[key]));</span><br><span class="line">            &#125;</span><br><span class="line">            url = (url.indexOf(<span class="string">"?"</span>)) &gt; <span class="number">0</span> ? (url + <span class="string">"&amp;"</span>) : (url + <span class="string">"?"</span>);</span><br><span class="line">            url += params.join(<span class="string">"&amp;"</span>);</span><br><span class="line">            <span class="comment">//把处理好的url赋值给script元素的src属性。</span></span><br><span class="line">            scriptNode.src = url;</span><br><span class="line">            <span class="comment">// 把回调函数暴露为全局方法。script加载回来以后，会执行fnName对应的这个方法。</span></span><br><span class="line">            global[fnName] = <span class="function"><span class="keyword">function</span>(<span class="params">ret</span>) </span>&#123;</span><br><span class="line">                    resolve(&#123;</span><br><span class="line">                        err: <span class="literal">null</span>,</span><br><span class="line">                        result: ret</span><br><span class="line">                    &#125;)</span><br><span class="line">                    <span class="comment">//请求完成。删除script元素</span></span><br><span class="line">                    container.removeChild(scriptNode);</span><br><span class="line">                    <span class="comment">//全局对象中删除已经请求完成的回调方法</span></span><br><span class="line">                    <span class="keyword">delete</span> global[fnName];</span><br><span class="line">                &#125;</span><br><span class="line">            <span class="comment">// script元素遇到错误</span></span><br><span class="line">            scriptNode.onerror = <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">                reject(&#123;</span><br><span class="line">                    err: err,</span><br><span class="line">                    result: <span class="literal">null</span></span><br><span class="line">                &#125;)</span><br><span class="line">                <span class="comment">//删除script元素和全局回调方法</span></span><br><span class="line">                container.removeChild(scriptNode);</span><br><span class="line">                global[fnName] &amp;&amp; <span class="keyword">delete</span> global[fnName];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//指定元素类型</span></span><br><span class="line">            scriptNode.type = <span class="string">"text/javascript"</span>;</span><br><span class="line">            <span class="comment">//把script元素添加到header元素中。到这里script元素就会自动加载src。也就是我们的请求发出去了。</span></span><br><span class="line">            container.appendChild(scriptNode)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">            <span class="comment">//异常处理捕获</span></span><br><span class="line">            reject(&#123;</span><br><span class="line">                err: error,</span><br><span class="line">                result: <span class="literal">null</span></span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> jsonpRequest;</span><br></pre></td></tr></table></figure>
+<p>这段代码主要做了如下几件事：</p>
+<ul>
+<li>创建一个<code>script</code>标签元素，并且添加到<code>header</code>元素里面。</li>
+<li>拼接<code>script</code>元素的<code>src</code>属性，其中必然好汉callback这个参数，服务端根据这个参数的值回调。</li>
+<li>回调以后需要手动把<code>script</code>标签元素移除，并且删除全局的回调函数名。</li>
+</ul>
+<p>客户端的使用如下,是不是感觉简洁明了，比ES5的回调爽多了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jsonpRequest <span class="keyword">from</span> <span class="string">"../lib/jsonpRequest.js"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> sendJSONPRequest() &#123;</span><br><span class="line">    <span class="comment">//参数</span></span><br><span class="line">    <span class="keyword">let</span> params = &#123;</span><br><span class="line">        name: <span class="string">"老黄"</span>,</span><br><span class="line">        site: <span class="string">"www.huangchengdu.com"</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">this</span>.showLoading();</span><br><span class="line">    <span class="comment">//发送请求</span></span><br><span class="line">    <span class="keyword">let</span> &#123;</span><br><span class="line">        err,</span><br><span class="line">        result</span><br><span class="line">    &#125; = <span class="keyword">await</span> jsonpRequest(</span><br><span class="line">        <span class="string">"https://www.huangchengdu.com/jsonp/jsonpRequest"</span>,</span><br><span class="line">        params</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">//处理返回的数据</span></span><br><span class="line">    <span class="keyword">this</span>.hiddenLoading();</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        alert(err.message || <span class="string">"请求出错了"</span>);</span><br><span class="line">        <span class="keyword">this</span>.serverData.err = <span class="built_in">JSON</span>.stringify(err);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.serverData = result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务端的实现如下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">let</span> router = express.Router();</span><br><span class="line"><span class="comment">//JSONP请求</span></span><br><span class="line">router.get(<span class="string">'/jsonpRequest'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//console.log("=====================" + JSON.stringify(req.query));</span></span><br><span class="line">    <span class="comment">//获取name和site参数的值</span></span><br><span class="line">    <span class="keyword">let</span> name = req.query.name;</span><br><span class="line">    <span class="keyword">let</span> site = req.query.site;</span><br><span class="line">    <span class="comment">//拼接回调值</span></span><br><span class="line">    <span class="keyword">let</span> serverres = &#123;</span><br><span class="line">    	serverReceive:&#123;</span><br><span class="line">    		name:name,</span><br><span class="line">    		site:site</span><br><span class="line">    	&#125;,</span><br><span class="line">    	serverSend:<span class="string">"hello,"</span> + name + <span class="string">".your site is https://"</span> + site</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//返回值。其实就是callback....()种种类型javascript字符串</span></span><br><span class="line">    res.end(req.query.callback + <span class="string">"("</span> + <span class="built_in">JSON</span>.stringify(serverres) + <span class="string">")"</span>)</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">module</span>.exports = router;</span><br></pre></td></tr></table></figure>
+<p>服务端代码说明如下：</p>
+<ul>
+<li><code>res.end</code>是<code>express</code>表示对http请求返回。具体返回的数据类似于<code>callback随机数(服务端数据)</code>这种类型。</li>
+<li>客户端在收到<code>callback随机数(服务端数据)</code>这个数据以后，会自动按照javascript脚本解析执行。具体就是一个全局方法调用，方法名是<code>callback随机数</code>,参数是<code>服务端数据</code>。这样就实现了服务端数据的回调。</li>
+<li>客户端在global对象下面注册了<code>callback随机数</code>这个方法。具体代码是上面<code>global[fnName] = function(ret) {</code>这一行。</li>
+<li><code>callback随机数</code>是服务端和客户端商量，具体可以自己决定，真实的时候类似于<code>callbacksuijishu</code>这种类型。</li>
+</ul>
+<h3 id="1-2-1-JSONP请求报文"><a href="#1-2-1-JSONP请求报文" class="headerlink" title="1.2.1 JSONP请求报文"></a>1.2.1 JSONP请求报文</h3><p><code>JSONP</code>本质上就是一个普通的<code>GET</code>请求。无非就是这个请求是通过<code>script</code>标签来发送的。而且请求参数里面必定会有一个<code>callback</code>参数。<br>下面我们具体抓包看一下我们的请求报文：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /jsonp/jsonpRequest?name=%E8%<span class="number">80</span>%<span class="number">81</span>%E9%BB%<span class="number">84</span>&amp;site=www.huangchengdu.com&amp;callback=jsonpiFuL4 HTTP/<span class="number">1.1</span></span><br><span class="line">Host: www.huangchengdu.com</span><br><span class="line">Accept: *<span class="comment">/*</span></span><br><span class="line"><span class="comment">Connection: keep-alive</span></span><br><span class="line"><span class="comment">Cookie: session=s%3Anot8KTW5FiTLY0VNgrrKksXY96AE2kWT.hrQeyL%2BVjt8ICJjfFqoFdV8JV3lx0IsDntx%2B%2Bc%2FEM98</span></span><br><span class="line"><span class="comment">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7</span></span><br><span class="line"><span class="comment">Accept-Language: zh-cn</span></span><br><span class="line"><span class="comment">Referer: http://localhost:8081/</span></span><br><span class="line"><span class="comment">Accept-Encoding: br, gzip, deflate</span></span><br></pre></td></tr></table></figure>
+<p>返回报文：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">Server: nginx/<span class="number">1.6</span><span class="number">.2</span></span><br><span class="line"><span class="built_in">Date</span>: Fri, <span class="number">29</span> Dec <span class="number">2017</span> <span class="number">03</span>:<span class="number">26</span>:<span class="number">31</span> GMT</span><br><span class="line">X-Powered-By: Express</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line">Connection: Keep-alive</span><br><span class="line"></span><br><span class="line">jsonpiFuL4(&#123;<span class="string">"serverReceive"</span>:&#123;<span class="string">"name"</span>:<span class="string">"èé»"</span>,<span class="string">"site"</span>:<span class="string">"www.huangchengdu.com"</span>&#125;,<span class="string">"serverSend"</span>:<span class="string">"hello,èé».your site is https://www.huangchengdu.com"</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>从上面的报文我们可以返现。请求的<code>callback</code>参数的值和返回的响应体的名称是一样的。响应提就是一个普通的函数。服务器返回的数据作为函数的参数。</p>
+<h1 id="2-XSS攻击"><a href="#2-XSS攻击" class="headerlink" title="2 XSS攻击"></a>2 XSS攻击</h1><p><code>XSS</code>的全称是<code>Cross-site scripting</code>,翻译过来就是<code>跨站脚本</code>。<code>script</code>可以跨域加载脚本这个特性，合理利用比如<code>JSONP</code>。如果不合理利用，比如某个坏人通过某种方式，让你的浏览器去加载恶意的<code>javascrpt</code>脚本，必然就会导致敏感信息被盗或者财务损失。最常见的就是<code>XSS</code>攻击，其实就是注入恶意脚本。真是凡事都有利有弊，就看如何使用了。常用的XSS攻击手段和目的有如下几种：</p>
+<ul>
+<li>盗用cookie，获取敏感信息。</li>
+<li>利用植入Flash，通过crossdomain权限设置进一步获取更高权限；或者利用Java等得到类似的操作。</li>
+<li>利用iframe、frame、XMLHttpRequest或上述Flash等方式，以（被攻击）用户的身份执行一些管理动作，或执行一些一般的如发微博、加好友、- 发私信等操作。</li>
+<li>利用可被攻击的域受到其他域信任的特点，以受信任来源的身份请求一些平时不允许的操作，如进行不当的投票活动。</li>
+<li>在访问量极大的一些页面上的XSS可以攻击一些小型网站，实现DDoS攻击的效果。</li>
+</ul>
+<p>如果某一个字符串里面有<code>var a = 1;&lt;script&gt;alert(&#39;我是你大爷&#39;)&lt;/script&gt;;var b = 2;</code>这种类型的字符串。而且我们刚好要通过<code>script</code>标签加载。那么他就会弹出一个<code>我是你大爷</code>。避免的方式就是把存在这种可能性的地方都处理过，如果包含类似<code>&lt;script&gt;</code>这种字符的脚本就处理掉或者干脆返回错误。目前最常见的预防操作有如下几种：</p>
+<ul>
+<li>将重要的cookie标记为http only,这样的话Javascript 中的document.cookie语句就不能获取到cookie了。</li>
+<li>只允许用户输入我们期望的数据。例如:年龄的textbox中，只允许用户输入数字。 而数字之外的字符都过滤掉。</li>
+<li>对数据进行Html Encode处理。</li>
+<li>过滤或移除特殊的Html标签，例如:”script,iframe,for等”。</li>
+<li>过滤JavaScript事件的标签。例如”onclick=”,”onfocus”等等。</li>
+</ul>
+<h1 id="3-CSRF攻击"><a href="#3-CSRF攻击" class="headerlink" title="3 CSRF攻击"></a>3 CSRF攻击</h1><p>这玩意我了解不多，也无法做出模拟操作。跨站请求伪造（英语：Cross-site request forgery），也被称为one-click attack或者session riding，通常缩写为 CSRF 或者 XSRF， 是一种挟制用户在当前已登录的Web应用程序上执行非本意的操作的攻击方法。[1] 跟跨网站脚本（XSS）相比，XSS 利用的是用户对指定网站的信任，CSRF 利用的是网站对用户网页浏览器的信任。</p>
+<p>我的理解就是，比如你刚去淘宝买了东西，并且浏览器有你的<code>session</code>护着<code>cookie</code>之类的信息。然后你马上又进入一个不该去的网站，并且点击了里面的一个淘宝链接，然后在你不知情的情况下做一些违法操作。这样阿里后台是不知道的，因为你刚刚通过合法手段买了东西，从而达到在你不知情的情况下，而且淘宝也信任你的情况下，畏畏缩缩偷偷摸摸的干坏事。</p>
+<h2 id="3-1-SCRF预防"><a href="#3-1-SCRF预防" class="headerlink" title="3.1 SCRF预防"></a>3.1 SCRF预防</h2><p>检查Referer字段,通过这个字段来判断用户是从那个地址跳转到当前地址的。HTTP头中有一个Referer字段，这个字段用以标明请求来源于哪个地址。在处理敏感数据请求时，通常来说，Referer字段应和请求的地址位于同一域名下。以上文银行操作为例，Referer字段地址通常应该是转账按钮所在的网页地址，应该也位于www.examplebank.com之下。而如果是CSRF攻击传来的请求，Referer字段会是包含恶意网址的地址，不会位于www.examplebank.com之下，这时候服务器就能识别出恶意的访问。这种办法简单易行，工作量低，仅需要在关键访问处增加一步校验。但这种办法也有其局限性，因其完全依赖浏览器发送正确的Referer字段。虽然http协议对此字段的内容有明确的规定，但并无法保证来访的浏览器的具体实现，亦无法保证浏览器没有安全漏洞影响到此字段。并且也存在攻击者攻击某些浏览器，篡改其Referer字段的可能。</p>
+<p>添加校验token,这个就最常见了，现在那个前端网站还不加一个验证码啊。不管你如何千变万化，你验证码中是用户数据的吧，而且现在好像越来越流行手机号码验证了。CSRF的本质在于攻击者欺骗用户去访问自己设置的地址，所以如果要求在访问敏感数据请求时，要求用户浏览器提供不保存在cookie中，并且攻击者无法伪造的数据作为校验，那么攻击者就无法再执行CSRF攻击。这种数据通常是表单中的一个数据项。服务器将其生成并附加在表单中，其内容是一个伪乱数。当客户端通过表单提交请求时，这个伪乱数也一并提交上去以供校验。正常的访问时，客户端浏览器能够正确得到并传回这个伪乱数，而通过CSRF传来的欺骗性攻击中，攻击者无从事先得知这个伪乱数的值，服务器端就会因为校验token的值为空或者错误，拒绝这个可疑请求。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/02/07/前端CORS和XMLHttpRequest全方位详解/" data-toggle="tooltip" data-placement="top" title="前端CORS和XMLHttpRequest全方位详解">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <div class="comment_notes">
+                    <p>
+                        This is copyright.
+                    </p>
+                </div>
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                <!--  css & js -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      
+        <aside id="sidebar">
+          <div id="toc" class="toc-article">
+          <strong class="toc-title">Contents</strong>
+          
+            
+              <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-JSONP的原理与实现"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 JSONP的原理与实现</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-1-同源策略"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 同源策略</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-1-通过Access-Control-Allow-Origin支持跨域"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1.1.1 通过Access-Control-Allow-Origin支持跨域</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-1-2-JSONP的基本原理"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">1.1.2 JSONP的基本原理</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-2-JSONP的实现"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">1.2 JSONP的实现</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-2-1-JSONP请求报文"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1.2.1 JSONP请求报文</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-XSS攻击"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 XSS攻击</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-CSRF攻击"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 CSRF攻击</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-SCRF预防"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 SCRF预防</span></a></li></ol></li></ol>
+            
+          
+          </div>
+        </aside>
+      
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#JSONP,XSS" title="JSONP,XSS">JSONP,XSS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://github.com/huang303513" target="_blank">底部标题</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/huang303513">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 黄成都 2020 
+                    <br>
+                    Powered by 
+                    <a href="https://github.com/dusign/hexo-theme-snail">
+                        <i>hexo-theme-snail</i>
+                    </a> | 
+                    <iframe name="star" style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0"
+                        width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://github.com/huang303513/huang303513.github.io.git/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+            <script type="text/javascript" src="/js/mouse-click.js" content='[&quot;🌱&quot;,&quot;just do it&quot;,&quot;🍀&quot;]' color='[&quot;rgb(121,93,179)&quot; ,&quot;rgb(76,180,231)&quot; ,&quot;rgb(184,90,154)&quot;]'></script>
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+
+</html>
