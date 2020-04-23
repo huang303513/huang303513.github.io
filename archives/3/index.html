@@ -389,24 +389,23 @@ join: 将所有的数组元素链接成一个字......
 
         <div class="post-preview">
 
-            <a href="/2016/06/30/ES6新特性总结之迭代器和for-of循环/">
+            <a href="/2016/06/30/ES6新特性总结之let和const理解/">
                 <h2 class="post-title">
-                    ES6新特性总结之迭代器和for-of循环
+                    ES6新特性总结之let和const理解
                 </h2>
                 <h3 class="post-subtitle">
                     
                 </h3>
                 <div class="post-content-preview">
-                    for-in我们将 要探究一下 for-of 循环的外表下隐藏着哪些强大的功能。现在,只需记住:
+                    letlet的作用基本与var相同，区别是let声明的变量只在所在代码块里面有用。
+{
+    let a = 10;
+    var b = 1;
+}
+//alert(a);//检测不到a
+alert(b);
 
-这是最简洁、最直接的遍历数组元素的语法
-这个方法避开了 for-in 循环的所有缺陷
-与forEach()不同的是,它可以正确响应 break、continue 和 return 语句
-for-in 循环用来遍历对象属性。
-for-of 循环用来遍历数据—例如数组中的值。
-
-基本用法：
-var......
+let在for循环里面的使用,下面代码中，变量i是let声明的，当前的i只在本轮循环有效，所以每一次循环的i其实都是一个新的变量，所以最后输出的是6。[这里是关于for循环let块......
                 </div>
             </a>
             
@@ -430,23 +429,24 @@ var......
 
         <div class="post-preview">
 
-            <a href="/2016/06/30/ES6新特性总结之let和const理解/">
+            <a href="/2016/06/30/ES6新特性总结之迭代器和for-of循环/">
                 <h2 class="post-title">
-                    ES6新特性总结之let和const理解
+                    ES6新特性总结之迭代器和for-of循环
                 </h2>
                 <h3 class="post-subtitle">
                     
                 </h3>
                 <div class="post-content-preview">
-                    letlet的作用基本与var相同，区别是let声明的变量只在所在代码块里面有用。
-{
-    let a = 10;
-    var b = 1;
-}
-//alert(a);//检测不到a
-alert(b);
+                    for-in我们将 要探究一下 for-of 循环的外表下隐藏着哪些强大的功能。现在,只需记住:
 
-let在for循环里面的使用,下面代码中，变量i是let声明的，当前的i只在本轮循环有效，所以每一次循环的i其实都是一个新的变量，所以最后输出的是6。[这里是关于for循环let块......
+这是最简洁、最直接的遍历数组元素的语法
+这个方法避开了 for-in 循环的所有缺陷
+与forEach()不同的是,它可以正确响应 break、continue 和 return 语句
+for-in 循环用来遍历对象属性。
+for-of 循环用来遍历数据—例如数组中的值。
+
+基本用法：
+var......
                 </div>
             </a>
             
@@ -535,13 +535,13 @@ let在for循环里面的使用,下面代码中，变量i是let声明的，当前
             
         
             
-        
-            
-        
-            
-        
-            
             <a href="/tags/#AFNetWorking" title="AFNetWorking" rel="5">AFNetWorking</a>
+            
+        
+            
+        
+            
+        
             
         
             
@@ -567,7 +567,7 @@ let在for循环里面的使用,下面代码中，变量i是let声明的，当前
     <ul>
       
         <li>
-          <a href="/2020/04/23/%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAPromise/">自己实现一个Promise</a>
+          <a href="/2020/04/22/%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAPromise/">自己实现一个Promise</a>
         </li>
       
         <li>
